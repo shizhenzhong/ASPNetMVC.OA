@@ -13,7 +13,8 @@ namespace MyWebApp.OA.BLL
     {
         public IDBSession DbSession
         {
-            get { return new DBSession(); }
+            // get { return new DBSession(); }
+            get { return DBSessionFactory.CreateDbSession(); }
         }
 
         public IBaseDal<T> CurentDal { get; set; }

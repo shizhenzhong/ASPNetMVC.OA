@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="DALAbstractFactory.cs" />
     <Compile Include="DBSession.cs" />
+    <Compile Include="DBSessionFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
