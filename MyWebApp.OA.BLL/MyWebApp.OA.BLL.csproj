@@ -39,7 +39,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserInfoService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyWebApp.OA.Common\MyWebApp.OA.Common.csproj">
+      <Project>{28b80f52-2cad-4054-a3dc-329019d716f2}</Project>
+      <Name>MyWebApp.OA.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyWebApp.OA.DALFactory\MyWebApp.OA.DALFactory.csproj">
+      <Project>{999602cc-c9d4-4ed9-9e06-1f2874274330}</Project>
+      <Name>MyWebApp.OA.DALFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyWebApp.OA.DAL\MyWebApp.OA.DAL.csproj">
+      <Project>{5b9cfd85-cee1-4cf8-b8e7-3dd5403b0d59}</Project>
+      <Name>MyWebApp.OA.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyWebApp.OA.IBLL\MyWebApp.OA.IBLL.csproj">
+      <Project>{82ab5ec7-34f5-446e-8a83-ed5642b7ff5b}</Project>
+      <Name>MyWebApp.OA.IBLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyWebApp.OA.IDAL\MyWebApp.OA.IDAL.csproj">
+      <Project>{9d8070e3-e1c0-403b-9eaa-83f12fe27100}</Project>
+      <Name>MyWebApp.OA.IDAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyWebApp.OA.Model\MyWebApp.OA.Model.csproj">
+      <Project>{f885ced5-597b-4e3e-9f06-f1603cc95e56}</Project>
+      <Name>MyWebApp.OA.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
