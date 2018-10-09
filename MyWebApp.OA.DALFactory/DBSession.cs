@@ -1,7 +1,9 @@
 ﻿using MyWebApp.OA.DAL;
 using MyWebApp.OA.IDAL;
+using MyWebApp.OA.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +19,8 @@ namespace MyWebApp.OA.DALFactory
 
    public class DBSession:IDBSession
     {
+
+        DbContext Db = new OAEntities();
         private IUserInfoDal _UserInfoDal;
         public IUserInfoDal UserInfoDal
         {
@@ -31,6 +35,13 @@ namespace MyWebApp.OA.DALFactory
             set {
                 _UserInfoDal = value;
             }
+        }
+
+       
+
+        public bool SaveChanges()
+        {
+            return Db.SaveChanges() > 0;
         }
     }
 }
