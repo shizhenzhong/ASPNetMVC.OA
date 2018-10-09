@@ -9,7 +9,7 @@ namespace MyWebApp.OA.IDAL
 {
     public interface IDBSession
     {
-        IUserInfoDal UserInfo { get; set; }
+        IUserInfoDal UserInfoDal { get; set; }
         bool SaveChanges();
     }
 }
