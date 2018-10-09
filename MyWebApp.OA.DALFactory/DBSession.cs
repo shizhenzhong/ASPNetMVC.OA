@@ -38,7 +38,11 @@ namespace MyWebApp.OA.DALFactory
         }
 
        
-
+        /// <summary>
+        /// 保存数据，将要操作的数据先添加到EF上下文中，然后再统一保存到数据库中，
+        /// 就完成了链接一次数据库完成了多次操作，提高了数据操作的性能
+        /// </summary>
+        /// <returns></returns>
         public bool SaveChanges()
         {
             return Db.SaveChanges() > 0;
