@@ -39,8 +39,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IBaseService.cs" />
     <Compile Include="IUserInfoService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyWebApp.OA.IDAL\MyWebApp.OA.IDAL.csproj">
+      <Project>{9D8070E3-E1C0-403B-9EAA-83F12FE27100}</Project>
+      <Name>MyWebApp.OA.IDAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyWebApp.OA.Model\MyWebApp.OA.Model.csproj">
+      <Project>{F885CED5-597B-4E3E-9F06-F1603CC95E56}</Project>
+      <Name>MyWebApp.OA.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -26,5 +26,6 @@ namespace MyWebApp.OA.Model
         }
     
         public DbSet<UserInfo> UserInfo { get; set; }
+        public DbSet<UserInfoDepartment> UserInfoDepartment { get; set; }
     }
 }

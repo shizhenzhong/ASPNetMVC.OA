@@ -1,4 +1,5 @@
 ﻿
+using MyWebApp.OA.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace MyWebApp.OA.IBLL
 {
-    public class IUserInfoService
+    public interface IUserInfoService:IBaseService<UserInfo>
     {
     }
 }

@@ -17,7 +17,7 @@ namespace MyWebApp.OA.BLL
             get { return DBSessionFactory.CreateDbSession(); }
         }
 
-        public IBaseDal<T> CurentDal { get; set; }
+        public IBaseDal<T> CurrentDal { get; set; }
             
         public abstract void SetCurrentDal();
 
@@ -28,7 +28,7 @@ namespace MyWebApp.OA.BLL
 
         public IQueryable<T> LoadEntities(System.Linq.Expressions.Expression<Func<T, bool>> whereLambda)
         {
-           return  this.CurentDal.LoadEntities(whereLambda);
+           return  this.CurrentDal.LoadEntities(whereLambda);
         }
 
         public IQueryable<T> LoadPagedEntities<s>(int pageIndex, int pageSize, out int totalCount,
@@ -36,26 +36,26 @@ namespace MyWebApp.OA.BLL
             System.Linq.Expressions.Expression<Func<T, s>> orderbyLambda,
             bool isAsc)
         {
-            return this.CurentDal.LoadPagedEntities(pageIndex,pageSize,out totalCount,whereLambda,orderbyLambda,isAsc);
+            return this.CurrentDal.LoadPagedEntities(pageIndex,pageSize,out totalCount,whereLambda,orderbyLambda,isAsc);
         }
 
         public bool DeleteEntity(T entity)
         {
-            this.CurentDal.DeleteEntity(entity);
+            this.CurrentDal.DeleteEntity(entity);
             return this.DbSession.SaveChanges();
         }
 
 
         public bool UpdateEntity(T entity)
         {
-            this.CurentDal.UpdateEntity(entity);
+            this.CurrentDal.UpdateEntity(entity);
             return this.DbSession.SaveChanges();
            
         }
 
         public T AddEntity(T entity)
         {
-            this.CurentDal.AddEntity(entity);
+            this.CurrentDal.AddEntity(entity);
             return entity;
         }
     }

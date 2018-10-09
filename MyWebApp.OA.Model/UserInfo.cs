@@ -14,6 +14,11 @@ namespace MyWebApp.OA.Model
     
     public partial class UserInfo
     {
+        public UserInfo()
+        {
+            this.UserInfoDepartment = new HashSet<UserInfoDepartment>();
+        }
+    
         public int ID { get; set; }
         public string UName { get; set; }
         public string UPwd { get; set; }
@@ -22,5 +27,7 @@ namespace MyWebApp.OA.Model
         public System.DateTime ModifiedOn { get; set; }
         public string Remark { get; set; }
         public string Sort { get; set; }
+    
+        public virtual ICollection<UserInfoDepartment> UserInfoDepartment { get; set; }
     }
 }

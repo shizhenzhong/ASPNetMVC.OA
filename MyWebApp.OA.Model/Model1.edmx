@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="OAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="OAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="UserInfo">
           <Key>
             <PropertyRef Name="ID" />
@@ -18,11 +18,35 @@
           <Property Name="Remark" Type="nvarchar" MaxLength="256" />
           <Property Name="Sort" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="UserInfoDepartment">
+          <Key>
+            <PropertyRef Name="UserInfo_ID" />
+            <PropertyRef Name="Department_ID" />
+          </Key>
+          <Property Name="UserInfo_ID" Type="int" Nullable="false" />
+          <Property Name="Department_ID" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_UserInfoDepartment_UserInfo">
+          <End Role="UserInfo" Type="Self.UserInfo" Multiplicity="1" />
+          <End Role="UserInfoDepartment" Type="Self.UserInfoDepartment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserInfo">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserInfoDepartment">
+              <PropertyRef Name="UserInfo_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="OAModelStoreContainer">
           <EntitySet Name="UserInfo" EntityType="Self.UserInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserInfoDepartment" EntityType="Self.UserInfoDepartment" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_UserInfoDepartment_UserInfo" Association="Self.FK_UserInfoDepartment_UserInfo">
+            <End Role="UserInfo" EntitySet="UserInfo" />
+            <End Role="UserInfoDepartment" EntitySet="UserInfoDepartment" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="OAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -38,10 +62,37 @@
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Remark" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="Sort" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserInfoDepartment" Relationship="OAModel.FK_UserInfoDepartment_UserInfo" FromRole="UserInfo" ToRole="UserInfoDepartment" />
         </EntityType>
         <EntityContainer Name="OAEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="UserInfo" EntityType="Self.UserInfo" />
+          <EntitySet Name="UserInfoDepartment" EntityType="OAModel.UserInfoDepartment" />
+          <AssociationSet Name="FK_UserInfoDepartment_UserInfo" Association="OAModel.FK_UserInfoDepartment_UserInfo">
+            <End Role="UserInfo" EntitySet="UserInfo" />
+            <End Role="UserInfoDepartment" EntitySet="UserInfoDepartment" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="UserInfoDepartment">
+          <Key>
+            <PropertyRef Name="UserInfo_ID" />
+            <PropertyRef Name="Department_ID" />
+          </Key>
+          <Property Name="UserInfo_ID" Type="Int32" Nullable="false" />
+          <Property Name="Department_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="UserInfo" Relationship="OAModel.FK_UserInfoDepartment_UserInfo" FromRole="UserInfoDepartment" ToRole="UserInfo" />
+        </EntityType>
+        <Association Name="FK_UserInfoDepartment_UserInfo">
+          <End Type="OAModel.UserInfo" Role="UserInfo" Multiplicity="1" />
+          <End Type="OAModel.UserInfoDepartment" Role="UserInfoDepartment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserInfo">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserInfoDepartment">
+              <PropertyRef Name="UserInfo_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -59,6 +110,14 @@
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
                 <ScalarProperty Name="Sort" ColumnName="Sort" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserInfoDepartment">
+            <EntityTypeMapping TypeName="OAModel.UserInfoDepartment">
+              <MappingFragment StoreEntitySet="UserInfoDepartment">
+                <ScalarProperty Name="Department_ID" ColumnName="Department_ID" />
+                <ScalarProperty Name="UserInfo_ID" ColumnName="UserInfo_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
