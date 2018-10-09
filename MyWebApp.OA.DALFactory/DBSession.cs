@@ -20,7 +20,11 @@ namespace MyWebApp.OA.DALFactory
    public class DBSession:IDBSession
     {
 
-        DbContext Db = new OAEntities();
+        //DbContext Db = new OAEntities();
+        
+        public DbContext Db {
+            get { return DBContextFactory.CreateDbContext(); }//完成EF上下文创建
+        }
         private IUserInfoDal _UserInfoDal;
         public IUserInfoDal UserInfoDal
         {

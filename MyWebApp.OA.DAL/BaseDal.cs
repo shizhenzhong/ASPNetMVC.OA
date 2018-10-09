@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,9 @@ namespace MyWebApp.OA.DAL
 {
    public  class BaseDal<T> where T:class ,new()
     {
-       OAEntities Db= new OAEntities();
+        //OAEntities Db= new OAEntities();
+
+        DbContext Db = DBContextFactory.CreateDbContext();//完成EF上下文创建
         public IQueryable<T> LoadEntities(System.Linq.Expressions.Expression<Func<T, bool>> whereLambda)
         {
             return Db.Set<T>().Where<T>(whereLambda);
@@ -27,7 +30,10 @@ namespace MyWebApp.OA.DAL
        /// <param name="orderbyLambda">排序条件</param>
        /// <param name="isAsc">是否升序</param>
        /// <returns></returns>
-        public IQueryable<T> LoadPagedEntities<s>(int pageIndex, int pageSize, out int totalCount, System.Linq.Expressions.Expression<Func<T, bool>> whereLambda, System.Linq.Expressions.Expression<Func<T, s>> orderbyLambda, bool isAsc)
+        public IQueryable<T> LoadPagedEntities<s>(int pageIndex, int pageSize, out int totalCount,
+            System.Linq.Expressions.Expression<Func<T, bool>> whereLambda,
+            System.Linq.Expressions.Expression<Func<T, s>> orderbyLambda, 
+            bool isAsc)
         {
             var temp = Db.Set<T>().Where<T>(whereLambda);
             totalCount = temp.Count();
@@ -47,14 +53,16 @@ namespace MyWebApp.OA.DAL
         public bool DeleteEntity(T entity)
         {
             Db.Entry<T>(entity).State = System.Data.EntityState.Deleted;
-            return Db.SaveChanges() > 0;
+            // return Db.SaveChanges() > 0;
+            return true;
 
         }
 
         public bool UpdateEntity(T entity)
         {
             Db.Entry<T>(entity).State = System.Data.EntityState.Modified;
-            return Db.SaveChanges() > 0;
+            // return Db.SaveChanges() > 0;
+            return true;
         }
 
         public T AddEntity(T entity)
@@ -62,7 +70,7 @@ namespace MyWebApp.OA.DAL
             //Db.Entry<T>(entity).State = System.Data.EntityState.Added;
   
             Db.Set<T>().Add(entity);
-            Db.SaveChanges();
+           // Db.SaveChanges();
             return entity;
         }
     }
