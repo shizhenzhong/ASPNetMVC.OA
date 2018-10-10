@@ -473,7 +473,9 @@
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -492,6 +494,20 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyWebApp.OA.BLL\MyWebApp.OA.BLL.csproj">
+      <Project>{AC9B50AA-EC6D-4825-859B-D888B2EFBAC6}</Project>
+      <Name>MyWebApp.OA.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyWebApp.OA.IBLL\MyWebApp.OA.IBLL.csproj">
+      <Project>{82AB5EC7-34F5-446E-8A83-ED5642B7FF5B}</Project>
+      <Name>MyWebApp.OA.IBLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyWebApp.OA.Model\MyWebApp.OA.Model.csproj">
+      <Project>{f885ced5-597b-4e3e-9f06-f1603cc95e56}</Project>
+      <Name>MyWebApp.OA.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
