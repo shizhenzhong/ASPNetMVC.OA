@@ -17,7 +17,7 @@ namespace MyWebApp.OA.BLL
             get { return DBSessionFactory.CreateDbSession(); }
         }
 
-        public IBaseDal<T> CurrentDal { get; set; }
+        public IBaseDal<T> CurrentDal { get; set; }//获取当前数据操作类
             
         public abstract void SetCurrentDal();
 
