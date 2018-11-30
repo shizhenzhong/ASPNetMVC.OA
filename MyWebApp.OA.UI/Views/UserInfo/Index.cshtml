@@ -24,7 +24,7 @@
             $('#tt').datagrid({
                 url: '/UserInfo/GetUserInfo',
                 title: '用户数据表格',
-                width: 700,
+                width: 650,
                 height: 400,
                 fitColumns: true, //列自适应
                 nowrap: false,
@@ -38,14 +38,13 @@
                 queryParams: {},//往后台传递参数
                 columns: [[//c.UserName, c.UserPass, c.Email, c.RegTime
                     { field: 'ck', checkbox: true, align: 'left', width: 50 },
-                    { field: 'ID', title: '编号', width: 80 },
-                    { field: 'UName', title: '姓名', width: 120 },
-                    { field: 'UPwd', title: '密码', width: 120 },
-                    { field: 'Remark', title: '备注', width: 120 },
-                    {
-                        field: 'SubTime', title: '时间', width:100, align: 'right',
+                    { field: 'ID', title: '编号', width: 200 },
+                    { field: 'UName', title: '姓名', width: 200 },
+                    { field: 'UPwd', title: '密码', width: 200 },
+                    { field: 'Remark', title: '备注', width: 200 },
+                    { field: 'SubTime', title: '时间', width:500,
                         formatter: function (value, row, index) {
-                            return (eval(value.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"))).pattern("yyyy-MM-dd");
+                            return (eval(value.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"))).pattern("yyyy-MM-dd hh:mm:ss");
                         }
                     }
                 ]],
