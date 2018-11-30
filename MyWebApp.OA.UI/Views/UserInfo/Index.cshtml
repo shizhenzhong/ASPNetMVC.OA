@@ -43,7 +43,7 @@
                     { field: 'UPwd', title: '密码', width: 120 },
                     { field: 'Remark', title: '备注', width: 120 },
                     {
-                        field: 'SubTime', title: '时间', width: 80, align: 'right',
+                        field: 'SubTime', title: '时间', width:100, align: 'right',
                         formatter: function (value, row, index) {
                             return (eval(value.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"))).pattern("yyyy-MM-dd");
                         }
