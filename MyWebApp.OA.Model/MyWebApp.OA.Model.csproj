@@ -69,6 +69,8 @@
     <Compile Include="UserInfoDepartment.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="UserInfoSearch\BaseParam.cs" />
+    <Compile Include="UserInfoSearch\UserInfoSearchParam.cs" />
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="Model1.edmx">

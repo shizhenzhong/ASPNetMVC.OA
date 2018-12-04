@@ -56,6 +56,7 @@ namespace MyWebApp.OA.BLL
         public T AddEntity(T entity)
         {
             this.CurrentDal.AddEntity(entity);
+            this.DbSession.SaveChanges();
             return entity;
         }
     }

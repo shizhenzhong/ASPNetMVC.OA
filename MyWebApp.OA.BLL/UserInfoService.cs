@@ -1,6 +1,7 @@
 ﻿
 using MyWebApp.OA.IBLL;
 using MyWebApp.OA.Model;
+using MyWebApp.OA.Model.UserInfoSearch;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,6 +26,26 @@ namespace MyWebApp.OA.BLL
             return this.DbSession.SaveChanges();//将数据
         }
 
+        #region 多条件搜索
+        public IQueryable<UserInfo> LoadSearchUserInfo(UserInfoSearchParam userInfoSearchParam)
+        {
+            var temp = this.DbSession.UserInfoDal.LoadEntities(c => true);
+            if (!string.IsNullOrEmpty(userInfoSearchParam.UName))
+            {
+                temp = temp.Where<UserInfo>(u => u.UName.Contains(userInfoSearchParam.UName));
+
+            }
+            if (!string.IsNullOrEmpty(userInfoSearchParam.URemark))
+            {
+                temp = temp.Where<UserInfo>(u => u.Remark.Contains(userInfoSearchParam.URemark));
+            }
+
+            userInfoSearchParam.TotalCount = temp.Count();
+
+            return temp.Where(u=>u.DelFlag==userInfoSearchParam.DelFlag).OrderBy<UserInfo, string>(u => u.Sort).Skip<UserInfo>((userInfoSearchParam.PageIndex - 1) * userInfoSearchParam
+               .PageSize).Take<UserInfo>(userInfoSearchParam.PageSize);
+        }
+        #endregion
         public override void SetCurrentDal()
         {
             CurrentDal = this.DbSession.UserInfoDal;
