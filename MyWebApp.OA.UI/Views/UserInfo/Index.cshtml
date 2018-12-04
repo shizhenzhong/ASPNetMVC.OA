@@ -42,7 +42,8 @@
                     { field: 'UName', title: '姓名', width: 200 },
                     { field: 'UPwd', title: '密码', width: 200 },
                     { field: 'Remark', title: '备注', width: 200 },
-                    { field: 'SubTime', title: '时间', width:500,
+                    {
+                        field: 'SubTime', title: '时间', width: 500,
                         formatter: function (value, row, index) {
                             return (eval(value.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"))).pattern("yyyy-MM-dd hh:mm:ss");
                         }
@@ -53,14 +54,42 @@
                     text: '删除',
                     iconCls: 'icon-remove',
                     handler: function () {
-                      
+                        deleteInfo();
                     }
                 }],
             });
         }
 
+        //删除信息
+
+        function deleteInfo() {
+            var rows = $('#tt').datagrid('getSelections');
+            if (rows.length == 0 || !rows) {
+                $.messager.alert("提醒", "请选择要删除的记录!", 'error');
+                return;
+            }
+            if ($.messager.confirm("提示", "确定要删除吗？", function (r) {
+                if (r) {
+                    var strId = "";
+                    for (var i = 0; i < rows.length; i++) {
+                        strId = strId + rows[i].ID + ",";
+                    }
+
+                    strId = strId.substr(0, strId.length - 1);
+                    $.post("/UserInfo/DeleteUserInfo", { "strId": strId }, function (data) {
+                        if (data == "ok") {
+                            $('#tt').datagrid('reload');
+                            $('#tt').datagrid('clearSelections');
+                        }
+                    })
+
+                }
+
+            }));
+            
+         }
     </script>
-   
+
 </head>
 <body>
     <div>

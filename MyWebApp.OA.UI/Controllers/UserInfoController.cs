@@ -1,4 +1,5 @@
-﻿using MyWebApp.OA.BLL;
+﻿
+using MyWebApp.OA.BLL;
 using MyWebApp.OA.IBLL;
 using MyWebApp.OA.Model.Enum;
 using System;
@@ -20,6 +21,9 @@ namespace MyWebApp.OA.UI.Controllers
             return View();
         }
 
+
+
+        #region 获取用户信息
         public ActionResult GetUserInfo()
         {
             int pageIndex = int.Parse(Request["page"]);//当前页码
@@ -33,5 +37,30 @@ namespace MyWebApp.OA.UI.Controllers
                            Remark = u.Remark, SubTime = u.SubTime };
             return Json(new { rows = temp, total = totalCount }, JsonRequestBehavior.AllowGet);
         }
+        #endregion
+
+        #region 删除用户信息
+
+        public ActionResult DeleteUserInfo()
+        {
+            string strId = Request["strId"];
+            string[] strIds = strId.Split(',');
+            List<int> list = new List<int>();
+            foreach (var id in strIds)
+            {
+                list.Add(int.Parse(id));
+            }
+
+            if (userInfoService.DeleteEntities(list))
+            {
+                return Content("ok");
+            }
+            else
+            {
+                return Content("no");
+            }
+        }
+
+        #endregion
     }
 }
