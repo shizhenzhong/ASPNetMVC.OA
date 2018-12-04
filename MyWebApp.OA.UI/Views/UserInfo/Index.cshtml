@@ -132,7 +132,7 @@
                 $.messager.alert("提醒", "请选择要删除的记录!", 'error');
                 return;
             }
-            if ($.messager.confirm("提示", "确定要删除吗？", function (r) {
+            if ($.messager.confirm("提示", "您确定要删除吗？", function (r) {
                 if (r) {
                     var strId = "";
                     for (var i = 0; i < rows.length; i++) {
@@ -158,7 +158,7 @@
         function editInfo(){
             var rows = $("#tt").datagrid('getSelections');
             if (rows.length != 1) {
-                $.messager.alert("提示", "会修改吗？", "error");
+                $.messager.alert("提示", "请选择一条要修改的数据", "error");
                 return;
             }
 
