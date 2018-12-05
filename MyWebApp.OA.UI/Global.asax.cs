@@ -1,4 +1,5 @@
-﻿using MyWebApp.OA.UI.Models;
+﻿using log4net;
+using MyWebApp.OA.UI.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,6 +21,7 @@ namespace MyWebApp.OA.UI
     {
         protected void Application_Start()
         {
+            log4net.Config.XmlConfigurator.Configure();//读取配置信息
             AreaRegistration.RegisterAllAreas();
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -36,8 +38,10 @@ namespace MyWebApp.OA.UI
                         Exception ex = MyExceptionAttribute.exceptionQueue.Dequeue();
                         if (ex!=null)
                         {
-                            string fileName = DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-                            File.AppendAllText(fileLogPath + fileName, ex.ToString(), Encoding.Default);
+                            ILog logger = LogManager.GetLogger("errorMsg");
+                            logger.Error(ex);
+                            //string fileName = DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+                            //File.AppendAllText(fileLogPath + fileName, ex.ToString(), Encoding.Default);
                         }
                     }
                     else
