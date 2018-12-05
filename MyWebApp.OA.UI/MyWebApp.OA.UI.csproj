@@ -146,10 +146,12 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UserInfoController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\MyExceptionAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -472,6 +474,7 @@
     <Content Include="Content\themes\metro\tree.css" />
     <Content Include="Content\themes\metro\validatebox.css" />
     <Content Include="Content\themes\metro\window.css" />
+    <Content Include="Error.html" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
@@ -508,10 +511,11 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\UserInfo\Index.cshtml" />
     <Content Include="Views\UserInfo\ShowEdit.cshtml" />
+    <Content Include="Views\Test\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
+    <Folder Include="Log\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
