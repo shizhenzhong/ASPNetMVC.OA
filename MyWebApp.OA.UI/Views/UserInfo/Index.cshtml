@@ -163,25 +163,27 @@
             }
 
             $("#editDiv").css("display", "block");
-            $("#txtName").val(rows[0].UName);
-            $("#txtPwd").val(rows[0].UPwd);
-            $("#txtRemark").val(rows[0].Remark);
-            $("#txtID").val(rows[0].ID);
-            $("#txtSubTime").val(ChangeDateFormat(rows[0].SubTime));
-            $("#txtDelFlag").val(rows[0].DelFlag);
-            $("#txtSort").val(rows[0].Sort);
+            $("#editFrame").attr("src", "/UserInfo/ShowEdit/?id=" + rows[0].ID);
+            //$("#txtName").val(rows[0].UName);
+            //$("#txtPwd").val(rows[0].UPwd);
+            //$("#txtRemark").val(rows[0].Remark);
+            //$("#txtID").val(rows[0].ID);
+            //$("#txtSubTime").val(ChangeDateFormat(rows[0].SubTime));
+            //$("#txtDelFlag").val(rows[0].DelFlag);
+            //$("#txtSort").val(rows[0].Sort);
             $('#editDiv').dialog({
                 title: "修改用户信息",
                 modal: true,
                 collapsible: true,
-                width: 300,
-                height:250,
+                width: 400,
+                height:500,
                 buttons: [{
                     text: '确定',
                     iconCls: 'icon-ok',
                     handler: function () {
                         //自己完成表单校验
-                        $("#editForm").submit();//提交表单.
+                        var childWindow = $("#editFrame")[0].contentWindow;
+                        childWindow.submitForm();
                     }
                 }, {
                     text: '取消',
@@ -238,8 +240,8 @@
 
     <!--------------修改信息-->
     <div id="editDiv">
-
-        @using (Ajax.BeginForm("EditUserInfo", new { }, new AjaxOptions() { Confirm = "确定要修改吗？", OnSuccess = "afterEdit", HttpMethod = "post" }, new { id = "editForm" }))
+        <iframe id="editFrame" frameborder="0" scrolling="no" width="100%" height="100%"></iframe>
+        @*@using (Ajax.BeginForm("EditUserInfo", new { }, new AjaxOptions() { Confirm = "确定要修改吗？", OnSuccess = "afterEdit", HttpMethod = "post" }, new { id = "editForm" }))
         {
             <input type="hidden" name="ID" id="txtID" />
             <input type="hidden"  name="SubTime" id="txtSubTime"/>
@@ -250,7 +252,7 @@
                 <tr><td>排序</td><td><input type="text" name="Sort" id="txtSort" /></td></tr>
                 <tr><td>备注</td><td><input type="text" name="Remark" id="txtRemark" /></td></tr>
             </table>
-        }
+        }*@
 
     </div>
     <!------------------------------------修改信息结束-->

@@ -108,7 +108,17 @@ namespace MyWebApp.OA.UI.Controllers
 
         }
 
-        
+
+        #endregion
+
+        #region 获取要修改的用户信息
+        public ActionResult ShowEdit()
+        {
+            int id = int.Parse(Request["id"]);
+            var userinfo = userInfoService.LoadEntities(u => u.ID == id).FirstOrDefault();
+            ViewData.Model = userinfo;
+            return View();
+        }
         #endregion
     }
 }
