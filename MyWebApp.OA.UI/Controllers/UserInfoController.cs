@@ -17,7 +17,7 @@ namespace MyWebApp.OA.UI.Controllers
         //
         // GET: /UserInfo/
 
-        IUserInfoService userInfoService = new UserInfoService();
+        public  IUserInfoService userInfoService { get; set; } //new UserInfoService();
         public ActionResult Index()
         {
             return View();

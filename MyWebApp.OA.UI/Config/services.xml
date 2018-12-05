@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects>
+  <object type=" MyWebApp.OA.BLL.UserInfoService, MyWebApp.OA.BLL" singleton="false" name="userInfoService" >
+  </object>
+</objects>
