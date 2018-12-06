@@ -47,8 +47,17 @@
     <Reference Include="Common.Logging.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
       <HintPath>..\packages\Common.Logging.Core.3.0.0\lib\net40\Common.Logging.Core.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="Commons, Version=0.4.2.8580, Culture=neutral, PublicKeyToken=44382d1b57473eda">
+      <HintPath>..\packages\Memcached.ClientLibrary.1.0\lib\net20\Commons.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.84.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
+      <HintPath>..\packages\Memcached.ClientLibrary.1.0\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <HintPath>..\packages\Memcached.ClientLibrary.1.0\lib\net20\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Memcached.ClientLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42c0400964dcc297, processorArchitecture=MSIL">
+      <HintPath>..\packages\Memcached.ClientLibrary.1.0\lib\net20\Memcached.ClientLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Spring.Core, Version=2.0.1.45000, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
