@@ -158,6 +158,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UserInfoController.cs" />
     <Compile Include="Global.asax.cs">
@@ -169,6 +172,22 @@
   <ItemGroup>
     <Content Include="Config\controllers.xml" />
     <Content Include="Config\services.xml" />
+    <Content Include="Content\Images\3DSMAX.png" />
+    <Content Include="Content\Images\7_7.jpg" />
+    <Content Include="Content\Images\Alien Folder.png" />
+    <Content Include="Content\Images\applebg.jpg" />
+    <Content Include="Content\Images\bg.png" />
+    <Content Include="Content\Images\bg3.png" />
+    <Content Include="Content\Images\big.png" />
+    <Content Include="Content\Images\blue_glow.jpg" />
+    <Content Include="Content\Images\login\HeadBack.jpg" />
+    <Content Include="Content\Images\login\login-btn.gif" />
+    <Content Include="Content\Images\login\panel-c.gif" />
+    <Content Include="Content\Images\login\panel-f.gif" />
+    <Content Include="Content\Images\login\panel-h.gif" />
+    <Content Include="Content\Images\logo.gif" />
+    <Content Include="Content\Images\Program Files Folder.png" />
+    <Content Include="Content\Images\Xp-G5 006.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -489,6 +508,8 @@
     <Content Include="Error.html" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\Images\login\vssver2.scc" />
+    <Content Include="Content\Images\vssver2.scc" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\datapattern.js" />
     <Content Include="Scripts\easyui-lang-zh_CN.js" />
@@ -524,6 +545,8 @@
     <Content Include="Views\UserInfo\Index.cshtml" />
     <Content Include="Views\UserInfo\ShowEdit.cshtml" />
     <Content Include="Views\Test\Index.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -535,6 +558,10 @@
     <ProjectReference Include="..\MyWebApp.OA.BLL\MyWebApp.OA.BLL.csproj">
       <Project>{AC9B50AA-EC6D-4825-859B-D888B2EFBAC6}</Project>
       <Name>MyWebApp.OA.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyWebApp.OA.Common\MyWebApp.OA.Common.csproj">
+      <Project>{28B80F52-2CAD-4054-A3DC-329019D716F2}</Project>
+      <Name>MyWebApp.OA.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyWebApp.OA.IBLL\MyWebApp.OA.IBLL.csproj">
       <Project>{82AB5EC7-34F5-446E-8A83-ED5642B7FF5B}</Project>

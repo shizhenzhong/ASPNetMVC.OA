@@ -11,7 +11,7 @@ namespace MyWebApp.OA.Common
         private static readonly MemcachedClient mc = null;
         static MemcacheHelper()
         {
-            string[] serverList = { "127.0.0.1", "10.0.0.132:11211" };//放在配置文件中。 
+            string[] serverList = { "127.0.0.1:11211", "10.0.0.132:11211" };//放在配置文件中。 
 
             //初始化池
             SockIOPool pool = SockIOPool.GetInstance();

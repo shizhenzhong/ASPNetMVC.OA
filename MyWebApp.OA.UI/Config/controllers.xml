@@ -4,4 +4,8 @@
     <property name="userInfoService" ref="userInfoService" />
    
   </object>
+  <object type="MyWebApp.OA.UI.Controllers.LoginController, MyWebApp.OA.UI" singleton="false" >
+    <property name="userInfoService" ref="userInfoService" />
+
+  </object>
 </objects>
