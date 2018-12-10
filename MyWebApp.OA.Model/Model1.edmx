@@ -172,7 +172,7 @@
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="Remark" Type="nvarchar" MaxLength="256" />
           <Property Name="Sort" Type="nvarchar(max)" />
-          <Property Name="Mail" Type="nchar" MaxLength="32" />
+          <Property Name="Mail" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="UserInfoDepartment">
           <Key>
@@ -2048,7 +2048,7 @@ FROM [snapshots].[trace_data] AS [trace_data]</DefiningQuery>
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Remark" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="Sort" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Mail" Type="String" MaxLength="32" FixedLength="true" Unicode="true" />
+          <Property Name="Mail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="R_UserInfo_ActionInfo" Relationship="OAModel.FK_UserInfoR_UserInfo_ActionInfo" FromRole="UserInfo" ToRole="R_UserInfo_ActionInfo" />
           <NavigationProperty Name="Department" Relationship="OAModel.UserInfoDepartment1" FromRole="UserInfo" ToRole="Department" />
           <NavigationProperty Name="RoleInfo" Relationship="OAModel.UserInfoRoleInfo" FromRole="UserInfo" ToRole="RoleInfo" />
