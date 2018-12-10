@@ -12,11 +12,15 @@ namespace MyWebApp.OA.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class UserInfoDepartment
+    public partial class performance_counter_values
     {
-        public int UserInfo_ID { get; set; }
-        public int Department_ID { get; set; }
+        public int performance_counter_instance_id { get; set; }
+        public int snapshot_id { get; set; }
+        public System.DateTimeOffset collection_time { get; set; }
+        public double formatted_value { get; set; }
+        public long raw_value_first { get; set; }
+        public Nullable<long> raw_value_second { get; set; }
     
-        public virtual UserInfo UserInfo { get; set; }
+        public virtual snapshots_internal snapshots_internal { get; set; }
     }
 }

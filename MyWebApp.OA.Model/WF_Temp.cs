@@ -12,27 +12,24 @@ namespace MyWebApp.OA.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class UserInfo
+    public partial class WF_Temp
     {
-        public UserInfo()
+        public WF_Temp()
         {
-            this.R_UserInfo_ActionInfo = new HashSet<R_UserInfo_ActionInfo>();
-            this.Department = new HashSet<Department>();
-            this.RoleInfo = new HashSet<RoleInfo>();
+            this.WF_Instance = new HashSet<WF_Instance>();
         }
     
         public int ID { get; set; }
-        public string UName { get; set; }
-        public string UPwd { get; set; }
+        public string TempName { get; set; }
         public System.DateTime SubTime { get; set; }
+        public System.DateTime ModfiedOn { get; set; }
         public short DelFlag { get; set; }
-        public System.DateTime ModifiedOn { get; set; }
         public string Remark { get; set; }
-        public string Sort { get; set; }
-        public string Mail { get; set; }
+        public string TempDescription { get; set; }
+        public string TempForm { get; set; }
+        public short TempStatus { get; set; }
+        public int SubBy { get; set; }
     
-        public virtual ICollection<R_UserInfo_ActionInfo> R_UserInfo_ActionInfo { get; set; }
-        public virtual ICollection<Department> Department { get; set; }
-        public virtual ICollection<RoleInfo> RoleInfo { get; set; }
+        public virtual ICollection<WF_Instance> WF_Instance { get; set; }
     }
 }

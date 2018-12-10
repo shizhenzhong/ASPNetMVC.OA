@@ -65,5 +65,23 @@ namespace MyWebApp.OA.UI.Controllers
         }
 
         #endregion
+
+
+        #region 找回密码
+
+        public ActionResult FindPwd()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult FindPwd(FormCollection formCollection)
+        {
+            string txtName = Request["txtName"];
+            string txtMail = Request["txtNail"];
+            var userInfo = userInfoService.LoadEntities(u => u.UName == txtName && u.Mail == txtMail).FirstOrDefault();
+            return View();
+        }
+        #endregion
     }
 }
