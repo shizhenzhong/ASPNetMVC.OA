@@ -78,13 +78,13 @@ namespace MyWebApp.OA.UI.Controllers
         public ActionResult FindPwd(FormCollection formCollection)
         {
             string txtName = Request["txtName"];
-            string txtMail = Request["txtNail"];
+            string txtMail = Request["txtMail"];
             var userInfo = userInfoService.LoadEntities(u => u.UName == txtName).FirstOrDefault();
             if (userInfo != null)
             {
-                if (txtMail == userInfo.Mail)
+                if (userInfo.Mail.ToString()==txtMail)
                 {
-
+                    userInfoService.FindUserPwd(userInfo);
                 }
                 else
                 {

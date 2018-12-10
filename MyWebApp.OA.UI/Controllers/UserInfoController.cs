@@ -49,8 +49,8 @@ namespace MyWebApp.OA.UI.Controllers
             //var userInfoList=userInfoService.LoadPagedEntities<string>(pageIndex, pageSize, out totalCount, 
             //    c =>c.DelFlag== deleteType, c=>c.Sort,true);
             var temp = from u in userInfoList
-                       select new { ID = u.ID, UName = u.UName, UPwd = u.UPwd,
-                           Remark = u.Remark, SubTime = u.SubTime,DelFlag=u.DelFlag,Sort=u.Sort  };
+                       select new { ID = u.ID, UName = u.UName, UPwd = u.UPwd,Mail=u.Mail,
+                           Remark = u.Remark, SubTime = u.SubTime,DelFlag=u.DelFlag,Sort=u.Sort };
             return Json(new { rows = temp, total = userInfoSearchParam.TotalCount }, JsonRequestBehavior.AllowGet);
         }
         #endregion

@@ -45,7 +45,7 @@ namespace MyWebApp.OA.BLL
             sb.Append("密码:" + newPwd);
             mailMessage.Body =sb.ToString();
             SmtpClient client=new SmtpClient("smtp.qq.com");//smtp服务器地址
-            client.Credentials = new NetworkCredential("shizhenzhong2013@qq.com", "szzszz");//发件人用户名mima 
+            client.Credentials = new NetworkCredential("shizhenzhong2013@qq.com", "szzszz!");//发件人用户名mima 
             client.Send(mailMessage);
         }
 
