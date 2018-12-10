@@ -25,5 +25,7 @@ namespace MyWebApp.OA.IBLL
         /// <param name="userInfoSearchParam"></param>
         /// <returns></returns>
         IQueryable<UserInfo> LoadSearchUserInfo(UserInfoSearchParam userInfoSearchParam);
+
+        void FindUserPwd(UserInfo userInfo);
     }
 }

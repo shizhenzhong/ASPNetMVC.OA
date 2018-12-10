@@ -79,7 +79,22 @@ namespace MyWebApp.OA.UI.Controllers
         {
             string txtName = Request["txtName"];
             string txtMail = Request["txtNail"];
-            var userInfo = userInfoService.LoadEntities(u => u.UName == txtName && u.Mail == txtMail).FirstOrDefault();
+            var userInfo = userInfoService.LoadEntities(u => u.UName == txtName).FirstOrDefault();
+            if (userInfo != null)
+            {
+                if (txtMail == userInfo.Mail)
+                {
+
+                }
+                else
+                {
+                    return Content("邮箱错误");
+                }
+            }
+            else
+            {
+                return Content("没有此人");
+            }
             return View();
         }
         #endregion
