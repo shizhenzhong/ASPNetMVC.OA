@@ -1,15 +1,13 @@
 ﻿/**
-* jQuery ligerUI 1.1.9
+* jQuery ligerUI 1.3.2
 * 
 * http://ligerui.com
 *  
-* Author daomi 2012 [ gd_star@163.com ] 
+* Author daomi 2015 [ gd_star@163.com ] 
 * 
 */
 (function ($)
 {
-
-
     //ligerui 继承方法
     Function.prototype.ligerExtend = function (parent, overrides)
     {
@@ -34,15 +32,19 @@
 
     // 核心对象
     window.liger = $.ligerui = {
-        version: 'V1.1.9',
+        version: 'V1.3.2',
         managerCount: 0,
         //组件管理器池
         managers: {},
         managerIdPrev: 'ligerui',
+        //管理器id已经存在时自动创建新的
+        autoNewId: true,
         //错误提示
         error: {
             managerIsExist: '管理器id已经存在'
         },
+        pluginPrev: 'liger',
+        attrPrev:'data',
         getId: function (prev)
         {
             prev = prev || this.managerIdPrev;
@@ -60,35 +62,49 @@
                 return;
             }
             if (!manager.id) manager.id = this.getId(manager.__idPrev());
-            if (this.managers[manager.id])
-                throw new Error(this.error.managerIsExist);
+            //if (this.managers[manager.id]) manager.id = this.getId(manager.__idPrev());
+            //if (this.managers[manager.id])
+            //{
+            //    throw new Error(this.error.managerIsExist);
+            //}
             this.managers[manager.id] = manager;
         },
         remove: function (arg)
         {
             if (typeof arg == "string" || typeof arg == "number")
             {
-                delete $.ligerui.managers[arg];
+                delete liger.managers[arg];
             }
-            else if (typeof arg == "object" && arg instanceof $.ligerui.core.Component)
+            else if (typeof arg == "object")
             {
-                delete $.ligerui.managers[arg.id];
+                if (arg instanceof liger.core.Component)
+                {
+                    delete liger.managers[arg.id];
+                }
+                else
+                {
+                    if (!$(arg).attr(this.idAttrName)) return false;
+                    delete liger.managers[$(arg).attr(this.idAttrName)];
+                }
             }
+             
         },
         //获取ligerui对象
         //1,传入ligerui ID
-        //2,传入Dom Object Array(jQuery)
+        //2,传入Dom Object
         get: function (arg, idAttrName)
         {
             idAttrName = idAttrName || "ligeruiid";
             if (typeof arg == "string" || typeof arg == "number")
             {
-                return $.ligerui.managers[arg];
+                return liger.managers[arg];
             }
-            else if (typeof arg == "object" && arg.length)
+            else if (typeof arg == "object")
             {
-                if (!arg[0][idAttrName] && !$(arg[0]).attr(idAttrName)) return null;
-                return $.ligerui.managers[arg[0][idAttrName] || $(arg[0]).attr(idAttrName)];
+                var domObj = arg.length ? arg[0] : arg;
+                var id = domObj[idAttrName] || $(domObj).attr(idAttrName);
+                if (!id) return null;
+                return liger.managers[id];
             }
             return null;
         },
@@ -125,9 +141,9 @@
         },
         //$.fn.liger{Plugin} 和 $.fn.ligerGet{Plugin}Manager
         //会调用这个方法,并传入作用域(this)
-        //@parm [plugin]  插件名
-        //@parm [args] 参数(数组)
-        //@parm [ext] 扩展参数,定义命名空间或者id属性名
+        //parm [plugin]  插件名
+        //parm [args] 参数(数组)
+        //parm [ext] 扩展参数,定义命名空间或者id属性名
         run: function (plugin, args, ext)
         {
             if (!plugin) return;
@@ -144,28 +160,28 @@
             plugin = plugin.replace(/^liger/, '');
             if (this == null || this == window || ext.isStatic)
             {
-                if (!$.ligerui.plugins[plugin])
+                if (!liger.plugins[plugin])
                 {
-                    $.ligerui.plugins[plugin] = {
-                        fn: $['liger' + plugin],
+                    liger.plugins[plugin] = {
+                        fn: $[liger.pluginPrev + plugin],
                         isStatic: true
                     };
                 }
                 return new $.ligerui[ext.controlNamespace][plugin]($.extend({}, $[ext.defaultsNamespace][plugin] || {}, $[ext.defaultsNamespace][plugin + 'String'] || {}, args.length > 0 ? args[0] : {}));
             }
-            if (!$.ligerui.plugins[plugin])
+            if (!liger.plugins[plugin])
             {
-                $.ligerui.plugins[plugin] = {
-                    fn: $.fn['liger' + plugin],
+                liger.plugins[plugin] = {
+                    fn: $.fn[liger.pluginPrev + plugin],
                     isStatic: false
                 };
             }
-            if (/Manager$/.test(plugin)) return $.ligerui.get(this, ext.idAttrName);
+            if (/Manager$/.test(plugin)) return liger.get(this, ext.idAttrName);
             this.each(function ()
             {
                 if (this[ext.idAttrName] || $(this).attr(ext.idAttrName))
                 {
-                    var manager = $.ligerui.get(this[ext.idAttrName] || $(this).attr(ext.idAttrName));
+                    var manager = liger.get(this[ext.idAttrName] || $(this).attr(ext.idAttrName));
                     if (manager && args.length > 0) manager.set(args[0]);
                     //已经执行过 
                     return;
@@ -173,8 +189,7 @@
                 if (args.length >= 1 && typeof args[0] == 'string') return;
                 //只要第一个参数不是string类型,都执行组件的实例化工作
                 var options = args.length > 0 ? args[0] : null;
-                var p = $.extend({}, $[ext.defaultsNamespace][plugin] || {}
-                , $[ext.defaultsNamespace][plugin + 'String'] || {}, options || {});
+                var p = $.extend({}, $[ext.defaultsNamespace][plugin], $[ext.defaultsNamespace][plugin + 'String'], options);
                 if (ext.propertyToElemnt) p[ext.propertyToElemnt] = this;
                 if (ext.hasElement)
                 {
@@ -186,11 +201,11 @@
                 }
             });
             if (this.length == 0) return null;
-            if (args.length == 0) return $.ligerui.get(this, ext.idAttrName);
-            if (typeof args[0] == 'object') return $.ligerui.get(this, ext.idAttrName);
+            if (args.length == 0) return liger.get(this, ext.idAttrName);
+            if (typeof args[0] == 'object') return liger.get(this, ext.idAttrName);
             if (typeof args[0] == 'string')
             {
-                var manager = $.ligerui.get(this, ext.idAttrName);
+                var manager = liger.get(this, ext.idAttrName);
                 if (manager == null) return;
                 if (args[0] == "option")
                 {
@@ -235,20 +250,20 @@
     $.ligerMethos = {};
 
     //关联起来
-    $.ligerui.defaults = $.ligerDefaults;
-    $.ligerui.methods = $.ligerMethos;
+    liger.defaults = $.ligerDefaults;
+    liger.methods = $.ligerMethos;
 
     //获取ligerui对象
-    //@parm [plugin]  插件名,可为空
+    //parm [plugin]  插件名,可为空
     $.fn.liger = function (plugin)
     {
         if (plugin)
         {
-            return $.ligerui.run.call(this, plugin, arguments);
+            return liger.run.call(this, plugin, arguments);
         }
         else
         {
-            return $.ligerui.get(this);
+            return liger.get(this);
         }
     };
 
@@ -256,7 +271,7 @@
     //组件基类
     //1,完成定义参数处理方法和参数属性初始化的工作
     //2,完成定义事件处理方法和事件属性初始化的工作
-    $.ligerui.core.Component = function (options)
+    liger.core.Component = function (options)
     {
         //事件容器
         this.events = this.events || {};
@@ -265,10 +280,10 @@
         //子组件集合索引
         this.children = {};
     };
-    $.extend($.ligerui.core.Component.prototype, {
+    $.extend(liger.core.Component.prototype, {
         __getType: function ()
         {
-            return '$.ligerui.core.Component';
+            return 'liger.core.Component';
         },
         __idPrev: function ()
         {
@@ -278,7 +293,7 @@
         //设置属性
         // arg 属性名    value 属性值 
         // arg 属性/值   value 是否只设置事件
-        set: function (arg, value)
+        set: function (arg, value,value2)
         {
             if (!arg) return;
             if (typeof arg == 'object')
@@ -306,7 +321,7 @@
                     for (var p in tmp)
                     {
                         if (p.indexOf('on') != 0)
-                            this.set(p, tmp[p]);
+                            this.set(p, tmp[p], value2);
                     }
                 }
                 return;
@@ -319,15 +334,15 @@
                     this.bind(name.substr(2), value);
                 return;
             }
-            this.trigger('propertychange', arg, value);
             if (!this.options) this.options = {};
+            if (this.trigger('propertychange', [arg, value]) == false) return;
             this.options[name] = value;
             var pn = '_set' + name.substr(0, 1).toUpperCase() + name.substr(1);
             if (this[pn])
             {
-                this[pn].call(this, value);
+                this[pn].call(this, value, value2);
             }
-            this.trigger('propertychanged', arg, value);
+            this.trigger('propertychanged', [arg, value]);
         },
 
         //获取属性
@@ -353,6 +368,7 @@
         //data (可选) Array(可选)传递给事件处理函数的附加参数
         trigger: function (arg, data)
         {
+            if (!arg) return;
             var name = arg.toLowerCase();
             var event = this.events[name];
             if (!event) return;
@@ -417,7 +433,7 @@
         },
         destroy: function ()
         {
-            $.ligerui.remove(this);
+            liger.remove(this);
         }
     });
 
@@ -425,11 +441,11 @@
     //界面组件基类, 
     //1,完成界面初始化:设置组件id并存入组件管理器池,初始化参数
     //2,渲染的工作,细节交给子类实现
-    //@parm [element] 组件对应的dom element对象
-    //@parm [options] 组件的参数
-    $.ligerui.core.UIComponent = function (element, options)
+    //parm [element] 组件对应的dom element对象
+    //parm [options] 组件的参数
+    liger.core.UIComponent = function (element, options)
     {
-        $.ligerui.core.UIComponent.base.constructor.call(this, options);
+        liger.core.UIComponent.base.constructor.call(this, options);
         var extendMethods = this._extendMethods();
         if (extendMethods) $.extend(this, extendMethods);
         this.element = element;
@@ -440,10 +456,10 @@
         this.trigger('rendered');
         this._rendered();
     };
-    $.ligerui.core.UIComponent.ligerExtend($.ligerui.core.Component, {
+    liger.core.UIComponent.ligerExtend(liger.core.Component, {
         __getType: function ()
         {
-            return '$.ligerui.core.UIComponent';
+            return 'liger.core.UIComponent';
         },
         //扩展方法
         _extendMethods: function ()
@@ -455,14 +471,14 @@
             this.type = this.__getType();
             if (!this.element)
             {
-                this.id = this.options.id || $.ligerui.getId(this.__idPrev());
+                this.id = this.options.id || liger.getId(this.__idPrev());
             }
             else
             {
-                this.id = this.options.id || this.element.id || $.ligerui.getId(this.__idPrev());
+                this.id = this.options.id || this.element.id || liger.getId(this.__idPrev());
             }
             //存入管理器池
-            $.ligerui.add(this);
+            liger.add(this);
 
             if (!this.element) return;
 
@@ -473,7 +489,10 @@
                 for (var i = 0; i < attributes.length; i++)
                 {
                     var name = attributes[i];
-                    this.options[name] = $(this.element).attr(name);
+                    if ($(this.element).attr(name))
+                    {
+                        this.options[name] = $(this.element).attr(name);
+                    }
                 }
             }
             //读取ligerui这个属性，并加载到参数，比如 ligerui = "width:120,heigth:100"
@@ -489,6 +508,33 @@
                 }
                 catch (e) { }
             }
+
+            //v1.3.2增加 从data-XX 加载属性
+            function loadDataOp(control, jelement)
+            { 
+                var op = {};
+                if (!control || control.indexOf('.') != -1) return op;
+                var defaultOp = liger.defaults[control]; 
+                if (!defaultOp) return op;
+                for (var name in defaultOp)
+                {
+                    if (jelement.attr(liger.attrPrev + "-" + name))
+                    {
+                        var value = jelement.attr(liger.attrPrev + "-" + name);
+                        if (typeof (defaultOp[name]) == "boolean")
+                        {
+                            op[name] = value == "true" || value == "1";
+                        } else
+                        {
+                            op[name] = value;
+                        }
+                    }
+                }
+                return op;
+            }
+
+            $.extend(p, loadDataOp(this.__getType(), $(this.element)));
+
         },
         //预渲染,可以用于继承扩展
         _preRender: function ()
@@ -506,6 +552,13 @@
                 $(this.element).attr("ligeruiid", this.id);
             }
         },
+        _setCls: function (value)
+        {
+            if (this.element && value)
+            {
+                $(this.element).addClass(value);
+            }
+        },
         //返回要转换成ligerui参数的属性,比如['url']
         attr: function ()
         {
@@ -513,23 +566,26 @@
         },
         destroy: function ()
         {
-            if (this.element) $(this.element).remove();
+            if (this.element)
+            {
+                $(this.element).remove();
+            }
             this.options = null;
-            $.ligerui.remove(this);
+            liger.remove(this);
         }
     });
 
 
     //表单控件基类
-    $.ligerui.controls.Input = function (element, options)
+    liger.controls.Input = function (element, options)
     {
-        $.ligerui.controls.Input.base.constructor.call(this, element, options);
+        liger.controls.Input.base.constructor.call(this, element, options);
     };
 
-    $.ligerui.controls.Input.ligerExtend($.ligerui.core.UIComponent, {
+    liger.controls.Input.ligerExtend(liger.core.UIComponent, {
         __getType: function ()
         {
-            return '$.ligerui.controls.Input';
+            return 'liger.controls.Input';
         },
         attr: function ()
         {
@@ -543,6 +599,26 @@
         {
             return this.get('value');
         },
+        //设置只读
+        _setReadonly: function (readonly)
+        {
+            var wrapper = this.wrapper || this.text;
+            if (!wrapper || !wrapper.hasClass("l-text")) return;
+            var inputText = this.inputText;
+            if (readonly)
+            {
+                if (inputText) inputText.attr("readonly", "readonly");
+                wrapper.addClass("l-text-readonly");
+            } else
+            {
+                if (inputText) inputText.removeAttr("readonly");
+                wrapper.removeClass("l-text-readonly");
+            }
+        },
+        setReadonly: function (readonly)
+        {
+            return this.set('readonly', readonly);
+        },
         setEnabled: function ()
         {
             return this.set('disabled', false);
@@ -554,11 +630,15 @@
         updateStyle: function ()
         {
 
+        },
+        resize: function (width, height)
+        {
+            this.set({ width: width, height: height + 2 });
         }
     });
 
     //全局窗口对象
-    $.ligerui.win = {
+    liger.win = {
         //顶端显示
         top: false,
 
@@ -567,9 +647,9 @@
         {
             function setHeight()
             {
-                if (!$.ligerui.win.windowMask) return;
+                if (!liger.win.windowMask) return;
                 var h = $(window).height() + $(window).scrollTop();
-                $.ligerui.win.windowMask.height(h);
+                liger.win.windowMask.height(h);
             }
             if (!this.windowMask)
             {
@@ -591,7 +671,7 @@
                 var winid = jwins.eq(i).attr("ligeruiid");
                 if (win && win.id == winid) continue;
                 //获取ligerui对象
-                var winmanager = $.ligerui.get(winid);
+                var winmanager = liger.get(winid);
                 if (!winmanager) continue;
                 //是否模态窗口
                 var modal = winmanager.get('modal');
@@ -711,7 +791,7 @@
         //前端显示
         setFront: function (win)
         {
-            var wins = $.ligerui.find($.ligerui.core.Win);
+            var wins = liger.find(liger.core.Win);
             for (var i in wins)
             {
                 var w = wins[i];
@@ -730,25 +810,25 @@
 
 
     //窗口基类 window、dialog
-    $.ligerui.core.Win = function (element, options)
+    liger.core.Win = function (element, options)
     {
-        $.ligerui.core.Win.base.constructor.call(this, element, options);
+        liger.core.Win.base.constructor.call(this, element, options);
     };
 
-    $.ligerui.core.Win.ligerExtend($.ligerui.core.UIComponent, {
+    liger.core.Win.ligerExtend(liger.core.UIComponent, {
         __getType: function ()
         {
-            return '$.ligerui.controls.Win';
+            return 'liger.controls.Win';
         },
         mask: function ()
         {
             if (this.options.modal)
-                $.ligerui.win.mask(this);
+                liger.win.mask(this);
         },
         unmask: function ()
         {
             if (this.options.modal)
-                $.ligerui.win.unmask(this);
+                liger.win.unmask(this);
         },
         min: function ()
         {
@@ -762,16 +842,16 @@
     });
 
 
-    $.ligerui.draggable = {
+    liger.draggable = {
         dragging: false
     };
 
-    $.ligerui.resizable = {
+    liger.resizable = {
         reszing: false
     };
 
 
-    $.ligerui.toJSON = typeof JSON === 'object' && JSON.stringify ? JSON.stringify : function (o)
+    liger.toJSON = typeof JSON === 'object' && JSON.stringify ? JSON.stringify : function (o)
     {
         var f = function (n)
         {
@@ -799,7 +879,7 @@
         {
             if (typeof o.toJSON === 'function')
             {
-                return $.ligerui.toJSON(o.toJSON());
+                return liger.toJSON(o.toJSON());
             }
             if (o.constructor === Date)
             {
@@ -816,7 +896,7 @@
             {
                 for (var i = 0, l = o.length; i < l; i++)
                 {
-                    pairs.push($.ligerui.toJSON(o[i]) || 'null');
+                    pairs.push(liger.toJSON(o[i]) || 'null');
                 }
                 return '[' + pairs.join(',') + ']';
             }
@@ -839,11 +919,372 @@
                 {
                     continue;
                 }
-                val = $.ligerui.toJSON(o[k]);
+                val = liger.toJSON(o[k]);
                 pairs.push(name + ':' + val);
             }
             return '{' + pairs.join(',') + '}';
         }
     };
 
+    //获取 默认的编辑构造器
+    liger.getEditor = function (e)
+    {
+        var type = e.type, control = e.control, master = e.master;
+        if (!type) return null;
+        var inputTag = 0;
+        if (control) control = control.substr(0, 1).toUpperCase() + control.substr(1);
+        var defaultOp = {
+            create: function (container, editParm, controlOptions)
+            {
+                //field in form , column in grid
+                var field = editParm.field || editParm.column, options = controlOptions || {};
+                var isInGrid = editParm.column ? true : false;
+                var p = $.extend({}, e.options);
+                var inputType = "text";
+                if ($.inArray(type, ["password", "file", "checkbox", "radio"]) != -1) inputType = type;
+                if (e.password) inputType = "password";
+                var inputBody = $("<input type='" + inputType + "'/>");
+                if (e.body)
+                {
+                    inputBody = e.body.clone();
+                }
+                inputBody.appendTo(container);
+                if (editParm.field)
+                {
+                    var txtInputName = field.name;
+                    var prefixID = $.isFunction(options.prefixID) ? options.prefixID(master) : (options.prefixID || "");
+                    p.id = field.id || (prefixID + field.name);
+                    if ($.inArray(type, ["select", "combobox", "autocomplete", "popup"]) != -1)
+                    {
+                        txtInputName = field.textField || field.comboboxName;
+                        if (field.comboboxName && !field.id)
+                            p.id = (options.prefixID || "") + field.comboboxName;
+                    }
+                    if ($.inArray(type, ["select", "combobox", "autocomplete", "popup", "radiolist", "checkboxlist", "listbox"]) != -1)
+                    {
+                        p.valueFieldID = prefixID + field.name;
+                    }
+                    if (!e.body)
+                    {
+                        var inputName = prefixID + txtInputName;
+                        var inputId = new Date().getTime() + "_" + ++inputTag + "_" + field.name;
+                        inputBody.attr($.extend({
+                            id: inputId,
+                            name: inputName
+                        }, field.attr));
+                        if (field.cssClass)
+                        {
+                            inputBody.addClass(field.cssClass);
+                        }
+                        if (field.validate && !master.options.unSetValidateAttr)
+                        {
+                            inputBody.attr('validate', liger.toJSON(field.validate));
+                        }
+                    }
+                    $.extend(p, field.options);
+                }
+                if (field.dictionary) //字典字段，比如:男|女
+                {
+                    field.editor = field.editor || {};
+                    if (!field.editor.data)
+                    {
+                        var dicEditorData = [], dicItems = field.dictionary.split('|');
+                        $(dicItems).each(function (i, dicItem)
+                        {
+                            var dics = dicItem.split(',');
+                            var dicItemId = dics[0], dicItemText = dics.length >= 2 ? dics[1] : dics[0];
+                            dicEditorData.push({
+                                id: dicItemId,
+                                value: dicItemId,
+                                text: dicItemText
+                            });
+                        });
+                        field.editor.data = dicEditorData;
+                    }
+                }
+                if (field.editor)
+                {
+                    if (field.editor.options)
+                    {
+                        $.extend(p, field.editor.options);
+                        delete field.editor.options;
+                    }
+                    if (field.editor.valueColumnName)
+                    {
+                        p.valueField = field.editor.valueColumnName;
+                        delete field.editor.valueColumnName;
+                    }
+                    if (field.editor.displayColumnName)
+                    {
+                        p.textField = field.editor.displayColumnName;
+                        delete field.editor.displayColumnName;
+                    }
+                    //可扩展参数,支持动态加载
+                    var ext = field.editor.p || field.editor.ext;
+                    if (ext)
+                    {
+                        ext = typeof (ext) == 'function' ? ext(editParm) : ext;
+                        $.extend(p, ext);
+                        delete field.editor.p;
+                        delete field.editor.ext;
+                    } 
+                    $.extend(p, field.editor); 
+                }
+           
+                if (isInGrid)
+                {
+                    p.host_grid = this;
+                    p.host_grid_row = editParm.record;
+                    p.host_grid_column = editParm.column;
+                } else 
+                {
+                    p.host_form = this;
+
+                    if (field.readonly || p.host_form.get('readonly'))
+                    {
+                        p.readonly = true;
+                    }
+                } 
+                //返回的是ligerui对象
+                var lobj = inputBody['liger' + control](p);
+                if (isInGrid)
+                {
+                    setTimeout(function () { inputBody.focus(); }, 100);
+                }
+                return lobj;
+            },
+            getValue: function (editor, editParm)
+            {
+                var field = editParm.field || editParm.column; 
+                if (editor.getValue)
+                {
+                    var value = editor.getValue();
+                    var edtirType = editParm.column ? editParm.column.editor.type : editParm.field.type;
+                    //isArrayValue属性可将提交字段数据改成[id1,id2,id3]的形式
+                    if (field && field.editor && field.editor.isArrayValue && value)
+                    {
+                        value = value.split(';');
+                    }
+                    //isRef属性可将提交字段数据改成[id,value]的形式
+                    if (field && field.editor && field.editor.isRef && editor.getText)
+                    {
+                        value = [value, editor.getText()];
+                    }
+                    //isRefMul属性可将提交字段数据改成[[id1,value1],[id2,value2]]的形式
+                    if (field && field.editor && field.editor.isRefMul && editor.getText)
+                    {
+                        var vs = value.split(';');
+                        var ts = editor.getText().split(';'); 
+                        value = [];
+                        for (var i = 0; i < vs.length; i++)
+                        {
+                            value.push([vs[i], ts[i]]);
+                        }
+                    }
+                    if (edtirType == "int" || edtirType == "digits")
+                    {
+                        value = value ? parseInt(value, 10) : 0;
+                    }
+                    else if (edtirType == "float" || edtirType == "number")
+                    {
+                        value = value ? parseFloat(value) : 0;
+                    }
+                    return value;
+                }
+            },
+            setValue: function (editor, value, editParm)
+            { 
+                var field = editParm.field || editParm.column; 
+                if (editor.setValue)
+                {
+                    //设置了isArrayValue属性- 如果获取到的数据是[id1,id2,id3]的形式，需要合并为一个完整字符串
+                    if (field && field.editor && field.editor.isArrayValue && value)
+                    {
+                        value = value.join(';');
+                    }
+                    //设置了isRef属性-如果获取到的数据是[id,text]的形式，需要获取[0]
+                    if (field && field.editor && field.editor.isRef && $.isArray(value))
+                    {
+                        value = value[0];
+                    }
+                    //设置了isRefMul属性- 获取到[[id1,value1],[id2,value2]]的形式，需要合并为一个完整字符串
+                    if (field && field.editor && field.editor.isRefMul && $.isArray(value))
+                    {
+                        var vs = [];
+                        for (var i = 0; i < value.length; i++)
+                        {
+                            vs.push(value[i].length > 1 ? value[i][1] : value[i][0]);
+                        }
+                        value = vs.join(';');
+                    }
+                    editor.setValue(value);
+                } 
+            },
+            //从控件获取到文本信息
+            getText: function (editor, editParm)
+            {
+                var field = editParm.field || editParm.column;
+                if (editor.getText)
+                {
+                    var text = editor.getText();
+                    if (text) return text; 
+                }
+            },
+            //设置文本信息到控件去
+            setText: function (editor, text, editParm)
+            { 
+                if (text && editor.setText)
+                {
+                    editor.setText(text);
+                }
+                    //如果没有把数据保存到 textField 字段，那么需要获取值字段
+                else
+                {
+                    var field = editParm.field || editParm.column;
+                    text = editor.setValue() || editParm.value || "";
+                    //如果获取到的数据是[id,text]的形式，需要获取[0]
+                    if (field && field.editor && field.editor.isRef && $.isArray(text) && text.length > 1)
+                    {
+                        text = text[1];
+                    }
+                    //在grid的编辑里面 获取到[[id1,value1],[id2,value2]]的形式，需要合并为一个完整字符串
+                    if (field && field.editor && field.editor.isRefMul && $.isArray(text) && text.length > 1)
+                    {
+                        var vs = [];
+                        for (var i = 0; i < text.length; i++)
+                        {
+                            vs.push(text[1]);
+                        }
+                        text = vs.join(';');
+                    }
+                    if (editor.setText)
+                    {
+                        editor.setText(text);
+                    }
+                }
+            },
+            getSelected: function (editor, editParm)
+            {
+                if (editor.getSelected)
+                {
+                    return editor.getSelected();
+                }
+            },
+            resize: function (editor, width, height, editParm)
+            {
+                if (editParm.field) width = width - 2;
+                if (editor.resize) editor.resize(width, height);
+            },
+            setEnabled: function (editor, isEnabled)
+            {
+                if (isEnabled)
+                {
+                    if (editor.setEnabled) editor.setEnabled();
+                }
+                else
+                {
+                    if (editor.setDisabled) editor.setDisabled();
+                }
+            },
+            destroy: function (editor, editParm)
+            {
+                if (editor.destroy) editor.destroy();
+            }
+        };
+        
+        return $.extend({}, defaultOp, liger.editorCreatorDefaults || {}, e);
+    }
+
+
+    //几个默认的编辑器构造函数
+    liger.editors = {
+        "text": {
+            control: 'TextBox'
+        },
+        "date": {
+            control: 'DateEditor',
+            setValue: function (editor, value, editParm)
+            {
+                // /Date(1328423451489)/
+                if (typeof value == "string" && /^\/Date/.test(value))
+                {
+                    value = value.replace(/^\//, "new ").replace(/\/$/, "");
+                    eval("value = " + value);
+                }
+                editor.setValue(value);
+            }
+        },
+        "combobox": {
+            control: 'ComboBox'
+        },
+        "spinner": {
+            control: 'Spinner'
+        },
+        "checkbox": {
+            control: 'CheckBox'
+        },
+        "checkboxlist": {
+            control: 'CheckBoxList',
+            body: $('<div></div>'),
+            resize: function (editor, width, height, editParm)
+            {
+                editor.set('width', width - 2);
+            }
+        },
+        "radiolist": {
+            control: 'RadioList',
+            body: $('<div></div>'),
+            resize: function (editor, width, height, editParm)
+            {
+                editor.set('width', width - 2);
+            }
+        },
+        "listbox": {
+            control: 'ListBox',
+            body: $('<div></div>'),
+            resize: function (editor, width, height, editParm)
+            {
+                editor.set('width', width - 2);
+            }
+        },
+        "popup": {
+            control: 'PopupEdit'
+        },
+        "number": {
+            control: 'TextBox',
+            options: { number: true }
+        },
+        "currency": {
+            control: 'TextBox',
+            options: { currency: true }
+        },
+        "digits": {
+            control: 'TextBox',
+            options: { digits: true }
+        },
+        "password": {
+            control: 'TextBox',
+            password: true
+        }
+    };
+    liger.editors["string"] = liger.editors["text"];
+    liger.editors["select"] = liger.editors["combobox"];
+    liger.editors["int"] = liger.editors["digits"];
+    liger.editors["float"] = liger.editors["number"];
+    liger.editors["chk"] = liger.editors["checkbox"];
+    liger.editors["popupedit"] = liger.editors["popup"];
+
+    //jQuery version fix
+    $.fn.live = $.fn.on ? $.fn.on : $.fn.live;
+    if (!$.browser)
+    {
+        var userAgent = navigator.userAgent.toLowerCase();
+        $.browser = {
+            version: (userAgent.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/) || [0, '0'])[1],
+            safari: /webkit/.test(userAgent),
+            opera: /opera/.test(userAgent),
+            msie: /msie/.test(userAgent) && !/opera/.test(userAgent),
+            mozilla: /mozilla/.test(userAgent) && !/(compatible|webkit)/.test(userAgent)
+        };
+    }
 })(jQuery);

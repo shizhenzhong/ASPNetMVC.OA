@@ -1,9 +1,9 @@
 ﻿/**
-* jQuery ligerUI 1.1.9
+* jQuery ligerUI 1.3.3
 * 
 * http://ligerui.com
 *  
-* Author daomi 2012 [ gd_star@163.com ] 
+* Author daomi 2015 [ gd_star@163.com ] 
 * 
 */
 
@@ -28,11 +28,15 @@
         columnWidth: null,                      //默认列宽度
         resizable: true,                        //table是否可伸缩
         url: false,                             //ajax url
+        urlParms: null,                     //url带参数
+        data: null,                            //初始化数据
         usePager: true,                         //是否分页
+        hideLoadButton : false,                 //是否隐藏刷新按钮
+        pagerRender : null,                     //分页栏自定义渲染函数
         page: 1,                                //默认当前页 
         pageSize: 10,                           //每页默认的结果数
         pageSizeOptions: [10, 20, 30, 40, 50],  //可选择设定的每页结果数
-        parms: [],                         //提交到服务器的参数
+        parms: [],                         //提交到服务器的参数 
         columns: [],                          //数据源
         minColToggle: 1,                        //最小显示的列
         dataType: 'server',                     //数据源：本地(local)或(server),本地是将读取p.data。不需要配置，取决于设置了data或是url
@@ -41,28 +45,14 @@
         switchPageSizeApplyComboBox: false,     //切换每页记录数是否应用ligerComboBox
         allowAdjustColWidth: true,              //是否允许调整列宽     
         checkbox: false,                         //是否显示复选框
+        isSingleCheck: false,                  //复选框选择的时候是否单选模式
         allowHideColumn: true,                 //是否显示'切换列层'按钮
         enabledEdit: false,                      //是否允许编辑
-        isScroll: true,                         //是否滚动
-        onDragCol: null,                       //拖动列事件
-        onToggleCol: null,                     //切换列事件
-        onChangeSort: null,                    //改变排序事件
-        onSuccess: null,                       //成功获取服务器数据的事件
-        onDblClickRow: null,                     //双击行事件
-        onSelectRow: null,                    //选择行事件
-        onUnSelectRow: null,                   //取消选择行事件
-        onBeforeCheckRow: null,                 //选择前事件，可以通过return false阻止操作(复选框)
-        onCheckRow: null,                    //选择事件(复选框) 
-        onBeforeCheckAllRow: null,              //选择前事件，可以通过return false阻止操作(复选框 全选/全不选)
-        onCheckAllRow: null,                    //选择事件(复选框 全选/全不选)
-        onBeforeShowData: null,                  //显示数据前事件，可以通过reutrn false阻止操作
-        onAfterShowData: null,                 //显示完数据事件
-        onError: null,                         //错误事件
-        onSubmit: null,                         //提交前事件
+        isScroll: true,                         //是否滚动 
         dateFormat: 'yyyy-MM-dd',              //默认时间显示格式
-        InWindow: true,                        //是否以窗口的高度为准 height设置为百分比时可用
+        inWindow: true,                        //是否以窗口的高度为准 height设置为百分比时可用
         statusName: '__status',                    //状态名
-        method: 'post',                         //提交方式
+        method: 'post',                         //获取数据http方式
         async: true,
         fixedCellHeight: true,                       //是否固定单元格的高度
         heightDiff: 0,                         //高度补差,当设置height:100%时，可能会有高度的误差，可以通过这个属性调整
@@ -72,16 +62,12 @@
         pageParmName: 'page',               //页索引参数名，(提交给服务器)
         pagesizeParmName: 'pagesize',        //页记录数参数名，(提交给服务器)
         sortnameParmName: 'sortname',        //页排序列名(提交给服务器)
-        sortorderParmName: 'sortorder',      //页排序方向(提交给服务器)
-        onReload: null,                    //刷新事件，可以通过return false来阻止操作
-        onToFirst: null,                     //第一页，可以通过return false来阻止操作
-        onToPrev: null,                      //上一页，可以通过return false来阻止操作
-        onToNext: null,                      //下一页，可以通过return false来阻止操作
-        onToLast: null,                      //最后一页，可以通过return false来阻止操作
+        sortorderParmName: 'sortorder',      //页排序方向(提交给服务器) 
         allowUnSelectRow: false,           //是否允许反选行 
         alternatingRow: true,           //奇偶行效果
         mouseoverRowCssClass: 'l-grid-row-over',
         enabledSort: true,                      //是否允许排序
+        rowClsRender: null,                   //行自定义css class渲染器
         rowAttrRender: null,                  //行自定义属性渲染器(包括style，也可以定义)
         groupColumnName: null,                 //分组 - 列名
         groupColumnDisplay: '分组',             //分组 - 列显示名字
@@ -89,14 +75,8 @@
         totalRender: null,                       //统计行(全部数据)
         delayLoad: false,                        //初始化时是否不加载
         where: null,                           //数据过滤查询函数,(参数一 data item，参数二 data item index)
-        selectRowButtonOnly: false,            //复选框模式时，是否只允许点击复选框才能选择行
-        onAfterAddRow: null,                     //增加行后事件
-        onBeforeEdit: null,                      //编辑前事件
-        onBeforeSubmitEdit: null,               //验证编辑器结果是否通过
-        onAfterEdit: null,                       //结束编辑后事件
-        onLoading: null,                        //加载时函数
-        onLoaded: null,                          //加载完函数
-        onContextmenu: null,                   //右击事件
+        selectRowButtonOnly: false,            //复选框模式时，是否只允许点击复选框才能选择行 
+        selectable: true,
         whenRClickToSelect: false,                //右击行时是否选中
         contentType: null,                     //Ajax contentType参数
         checkboxColWidth: 27,                  //复选框列宽度
@@ -107,10 +87,13 @@
         minColumnWidth: 80,
         tree: null,                            //treeGrid模式
         isChecked: null,                       //复选框 初始化函数
+        isSelected: null,                       //选择 初始化函数
         frozen: true,                          //是否固定列
         frozenDetail: false,                    //明细按钮是否在固定列中
         frozenCheckbox: true,                  //复选框按钮是否在固定列中
+        detail: null,
         detailHeight: 260,
+        isShowDetailToggle: null,                  //是否显示展开/收缩明细的判断函数
         rownumbers: false,                         //是否显示行序号
         frozenRownumbers: true,                  //行序号是否在固定列中
         rownumbersColWidth: 26,
@@ -119,10 +102,58 @@
         rowDraggingRender: null,
         autoCheckChildren: true,                  //是否自动选中子节点
         onRowDragDrop: null,                    //行拖拽事件
-        rowHeight: 22,                           //行默认的高度
-        headerRowHeight: 23,                    //表头行的高度
-        toolbar: null,                           //工具条,参数同 ligerToolbar的
-        headerImg: null                        //表格头部图标
+        rowHeight: 28,                           //行默认的高度
+        headerRowHeight: 28,                    //表头行的高度
+        toolbar: null,                           //工具条,参数同 ligerToolbar的,额外参数有title、icon
+        toolbarShowInLeft: true,               //工具条显示在左边
+        headerImg: null,                        //表格头部图标  
+        editorTopDiff: 3,                      //编辑器top误差
+        editorLeftDiff: 1,                //编辑器left误差
+        editorHeightDiff: -1,               //编辑器高度误差
+        unSetValidateAttr: true,             //是否不设置validate属性到inuput
+        autoFilter: false,                    //自动生成高级查询, 需要filter/toolbar组件支持. 需要引用skins/ligerui-icons.css
+        rowSelectable: true,               //是否允许选择
+        scrollToPage: false,               //滚动时分页
+        scrollToAppend: true,             //滚动时分页 是否追加分页的形式
+        onDragCol: null,                       //拖动列事件
+        onToggleCol: null,                     //切换列事件
+        onChangeSort: null,                    //改变排序事件
+        onSuccess: null,                       //成功获取服务器数据的事件
+        onDblClickRow: null,                     //双击行事件
+        onSelectRow: null,                    //选择行事件
+        onBeforeSelectRow:null,             //选择前事件
+        onUnSelectRow: null,                   //取消选择行事件
+        onBeforeCheckRow: null,                 //选择前事件，可以通过return false阻止操作(复选框)
+        onCheckRow: null,                    //选择事件(复选框)  
+        onBeforeCheckAllRow: null,              //选择前事件，可以通过return false阻止操作(复选框 全选/全不选)
+        onCheckAllRow: null,                    //选择事件(复选框 全选/全不选)onextend
+        onBeforeShowData: null,                  //显示数据前事件，可以通过reutrn false阻止操作
+        onAfterShowData: null,                 //显示完数据事件
+        onError: null,                         //错误事件
+        onSubmit: null,                         //提交前事件
+        onReload: null,                    //刷新事件，可以通过return false来阻止操作
+        onToFirst: null,                     //第一页，可以通过return false来阻止操作
+        onToPrev: null,                      //上一页，可以通过return false来阻止操作
+        onToNext: null,                      //下一页，可以通过return false来阻止操作
+        onToLast: null,                      //最后一页，可以通过return false来阻止操作
+        onAfterAddRow: null,                     //增加行后事件
+        onBeforeEdit: null,                      //编辑前事件
+        onBeforeSubmitEdit: null,               //验证编辑器结果是否通过
+        onAfterEdit: null,                       //结束编辑后事件
+        onLoading: null,                        //加载时函数
+        onLoaded: null,                          //加载完函数
+        onContextmenu: null,                   //右击事件
+        onBeforeCancelEdit: null,                 //取消编辑前事件
+        onAfterSubmitEdit: null,                   //提交后事件
+        onRowDragDrop: null,                       //行拖拽后事件
+        onGroupExtend: null,                        //分组展开事件
+        onGroupCollapse: null,                     //分组收缩事件
+        onTreeExpand: null,                        //树展开事件
+        onTreeCollapse: null,                     //树收缩事件
+        onTreeExpanded: null,                        //树展开事件
+        onTreeCollapsed: null,                     //树收缩事件
+        onLoadData: null,                       //加载数据前事件 
+        onHeaderCellBulid: null
     };
     $.ligerDefaults.GridString = {
         errorMessage: '发生错误',
@@ -136,6 +167,32 @@
         saveMessage: '保存',
         applyMessage: '应用',
         draggingMessage: '{count}行'
+    };
+
+    $.ligerDefaults.Grid_columns = {
+        id: null,
+        name: null,
+        totalSummary: null,
+        display: null,
+        headerRender: null,
+        isAllowHide: true,
+        isSort: false,
+        type: null,
+        columns: null,
+        width: 120,
+        minWidth: 80,
+        format: null,
+        align: 'left',
+        hide: false,
+        editor: null,
+        render: null,
+        textField: null  //真正显示的字段名,如果设置了，在编辑状态时,会调用创建编辑器的setText和getText方法
+    };
+    $.ligerDefaults.Grid_editor = {
+        type: null,
+        ext: null,
+        onChange: null,
+        onChanged: null
     };
     //接口方法扩展
     $.ligerMethos.Grid = $.ligerMethos.Grid || {};
@@ -164,6 +221,7 @@
     };
     $.ligerDefaults.Grid.sorters['string'] = function (val1, val2)
     {
+        if (!val1) return false;
         return val1.localeCompare(val2);
     };
 
@@ -205,7 +263,7 @@
         {
             value = value.replace(/^\//, "new ").replace(/\/$/, "");
             eval("value = " + value);
-        }
+        } 
         if (value instanceof Date)
         {
             var format = column.format || this.options.dateFormat || "yyyy-MM-dd";
@@ -217,184 +275,13 @@
         }
     }
 
-
-    $.ligerDefaults.Grid.editors['date'] =
+    //引用类型,数据形式表现为[id,text] 
+    $.ligerDefaults.Grid.formatters['ref'] = function (value)
     {
-        create: function (container, editParm)
-        {
-            var column = editParm.column;
-            var input = $("<input type='text'/>");
-            container.append(input);
-            var options = {};
-            var ext = column.editor.p || column.editor.ext;
-            if (ext)
-            {
-                var tmp = typeof (ext) == 'function' ?
-                 ext(editParm.record, editParm.rowindex, editParm.value, column) : ext;
-                $.extend(options, tmp);
-            }
-            input.ligerDateEditor(options);
-            return input;
-        },
-        getValue: function (input, editParm)
-        { 
-            return input.liger('option', 'value');
-        },
-        setValue: function (input, value, editParm)
-        { 
-            input.liger('option', 'value', value);
-        },
-        resize: function (input, width, height, editParm)
-        {
-            input.liger('option', 'width', width);
-            input.liger('option', 'height', height);
-        },
-        destroy: function (input, editParm)
-        {
-            input.liger('destroy');
-        }
+        if ($.isArray(value)) return value.length > 1 ? value[1] : value[0];
+        return value;
     };
 
-    $.ligerDefaults.Grid.editors['select'] =
-     $.ligerDefaults.Grid.editors['combobox'] =
-     {
-         create: function (container, editParm)
-         {
-             var column = editParm.column;
-             var input = $("<input type='text'/>");
-             container.append(input);
-             var options = {
-                 data: column.editor.data,
-                 slide: false,
-                 valueField: column.editor.valueField || column.editor.valueColumnName,
-                 textField: column.editor.textField || column.editor.displayColumnName
-             };
-             var ext = column.editor.p || column.editor.ext;
-             if (ext)
-             {
-                 var tmp = typeof (ext) == 'function' ?
-                 ext(editParm.record, editParm.rowindex, editParm.value, column) : ext;
-                 $.extend(options, tmp);
-             }
-             input.ligerComboBox(options);
-             return input;
-         },
-         getValue: function (input, editParm)
-         {
-             return input.liger('option', 'value');
-         },
-         setValue: function (input, value, editParm)
-         {
-             input.liger('option', 'value', value);
-         },
-         resize: function (input, width, height, editParm)
-         {
-             input.liger('option', 'width', width);
-             input.liger('option', 'height', height);
-         },
-         destroy: function (input, editParm)
-         {
-             input.liger('destroy');
-         }
-     };
-
-    $.ligerDefaults.Grid.editors['int'] =
-     $.ligerDefaults.Grid.editors['float'] =
-     $.ligerDefaults.Grid.editors['spinner'] =
-     {
-         create: function (container, editParm)
-         {
-             var column = editParm.column;
-             var input = $("<input type='text'/>");
-             container.append(input);
-             input.css({ border: '#6E90BE' })
-             var options = {
-                 type: column.editor.type == 'float' ? 'float' : 'int'
-             };
-             if (column.editor.minValue != undefined) options.minValue = column.editor.minValue;
-             if (column.editor.maxValue != undefined) options.maxValue = column.editor.maxValue;
-             input.ligerSpinner(options);
-             return input;
-         },
-         getValue: function (input, editParm)
-         {
-             var column = editParm.column;
-             var isInt = column.editor.type == "int";
-             if (isInt)
-                 return parseInt(input.val(), 10);
-             else
-                 return parseFloat(input.val());
-         },
-         setValue: function (input, value, editParm)
-         {
-             input.val(value);
-         },
-         resize: function (input, width, height, editParm)
-         {
-             input.liger('option', 'width', width);
-             input.liger('option', 'height', height);
-         },
-         destroy: function (input, editParm)
-         {
-             input.liger('destroy');
-         }
-     };
-
-
-    $.ligerDefaults.Grid.editors['string'] =
-     $.ligerDefaults.Grid.editors['text'] = {
-         create: function (container, editParm)
-         {
-             var input = $("<input type='text' class='l-text-editing'/>");
-             container.append(input);
-             input.ligerTextBox();
-             return input;
-         },
-         getValue: function (input, editParm)
-         {
-             return input.val();
-         },
-         setValue: function (input, value, editParm)
-         {
-             input.val(value);
-         },
-         resize: function (input, width, height, editParm)
-         {
-             input.liger('option', 'width', width);
-             input.liger('option', 'height', height);
-         },
-         destroy: function (input, editParm)
-         {
-             input.liger('destroy');
-         }
-     };
-
-    $.ligerDefaults.Grid.editors['chk'] = $.ligerDefaults.Grid.editors['checkbox'] = {
-        create: function (container, editParm)
-        {
-            var input = $("<input type='checkbox' />");
-            container.append(input);
-            input.ligerCheckBox();
-            return input;
-        },
-        getValue: function (input, editParm)
-        {
-            return input[0].checked ? 1 : 0;
-        },
-        setValue: function (input, value, editParm)
-        {
-            input.val(value ? true : false);
-        },
-        resize: function (input, width, height, editParm)
-        {
-            input.liger('option', 'width', width);
-            input.liger('option', 'height', height);
-        },
-        destroy: function (input, editParm)
-        {
-            input.liger('destroy');
-        }
-    };
 
     $.ligerui.controls.Grid = function (element, options)
     {
@@ -488,6 +375,17 @@
                     return true;
                 };
             }
+            //编辑构造器初始化
+            for (var type in liger.editors)
+            {
+                var editor = liger.editors[type];
+                //如果没有默认的或者已经定义
+                if (!editor || type in p.editors) continue;
+                p.editors[type] = liger.getEditor($.extend({
+                    type: type,
+                    master: g
+                }, editor));
+            }
         },
         _render: function ()
         {
@@ -497,7 +395,7 @@
             var gridhtmlarr = [];
             gridhtmlarr.push("        <div class='l-panel-header'><span class='l-panel-header-text'></span></div>");
             gridhtmlarr.push("                    <div class='l-grid-loading'></div>");
-            gridhtmlarr.push("        <div class='l-panel-topbar'></div>");
+            gridhtmlarr.push("        <div class='l-panel-topbar' style='display:none'><div class='l-panel-topbarinner'></div></div><div class='l-clear'></div>");
             gridhtmlarr.push("        <div class='l-panel-bwarp'>");
             gridhtmlarr.push("            <div class='l-panel-body'>");
             gridhtmlarr.push("                <div class='l-grid'>");
@@ -563,7 +461,7 @@
             //调整列宽层 
             g.draggingline = $(".l-grid-dragging-line", g.grid);
             //顶部工具栏
-            g.topbar = $(".l-panel-topbar:first", g.grid);
+            g.topbar = $(".l-panel-topbarinner:first", g.grid);
 
             g.gridview = $(".l-grid:first", g.grid);
             g.gridview.attr("id", g.id + "grid");
@@ -573,7 +471,29 @@
             g.gridheader = $(".l-grid-header:first", g.gridview2);
             //表主体     
             g.gridbody = $(".l-grid-body:first", g.gridview2);
-
+            //处理autoFilter
+            if (p.autoFilter)
+            {
+                var item = {
+                    text: '高级查询',
+                    gridid: g.id,
+                    click: function ()
+                    {
+                        g.showFilter();
+                    },
+                    icon: 'search2'
+                };
+                if (p.toolbar && p.toolbar.items)
+                {
+                    p.toolbar.items.push(item);
+                }
+                else
+                {
+                    p.toolbar = {
+                        items: [item]
+                    };
+                }
+            }
             //frozen
             g.f = {};
             //表头     
@@ -585,6 +505,9 @@
             g.changedCells = {};
             g.editors = {};                 //多编辑器同时存在
             g.editor = { editing: false };  //单编辑器,配置clickToEdit
+
+            g.cacheData = {}; //缓存数据
+
             if (p.height == "auto")
             {
                 g.bind("SysGridHeightChanged", function ()
@@ -609,7 +532,7 @@
                     g.set({ url: p.url });
                 else if (p.data)
                     g.set({ data: p.data });
-            }
+            } 
         },
         _setFrozen: function (frozen)
         {
@@ -626,6 +549,40 @@
         {
             this.gridloading.html(value);
         },
+        _setToolbar: function (value)
+        {
+            var g = this, p = this.options;
+            if (value && $.fn.ligerToolBar)
+            {
+                g.topbar.parent().show();
+                g.toolbarManager = g.topbar.ligerToolBar(value);
+                if (value.title)
+                {
+                    var jtitle = $("<div class='l-panel-topbartitle'><span>" + value.title + "</span></div>");
+                    if (value.icon)
+                    {
+                        jtitle.append("<img class='l-panel-topbaricon' src='" + value.icon + "'></img>");
+                        jtitle.addClass("l-panel-topbartitle-hasicon");
+                    }
+                    g.topbar.parent().append(jtitle);
+                }
+                if (p.toolbarShowInLeft)
+                {
+                    g.topbar.addClass("l-panel-topbarinner-left");
+                }
+            } else
+            {
+                g.topbar.parent().remove();
+            }
+        },
+        isHorizontalScrollShowed: function ()
+        {
+            var g = this;
+            var inner = g.gridbody.find(".l-grid-body-inner:first");
+            if (!inner.length) return false;
+            //20为横向滚动条的宽度
+            return g.gridbody.width() - 20 < inner.width();
+        },
         _setHeight: function (h)
         {
             var g = this, p = this.options;
@@ -639,24 +596,58 @@
                 });
                 return;
             }
-            if (typeof h == "string" && h.indexOf('%') > 0)
-            {
-                if (p.inWindow)
-                    h = $(window).height() * parseFloat(h) * 0.01;
-                else
-                    h = g.grid.parent().height() * parseFloat(h) * 0.01;
-            }
-            if (p.title) h -= 24;
-            if (p.usePager) h -= 32;
-            if (p.totalRender) h -= 25;
-            if (p.toolbar) h -= g.topbar.outerHeight();
-            var gridHeaderHeight = p.headerRowHeight * (g._columnMaxLevel - 1) + p.headerRowHeight - 1;
-            h -= gridHeaderHeight;
+            h = g._calculateGridBodyHeight(h);
             if (h > 0)
             {
                 g.gridbody.height(h);
-                if (h > 18) g.f.gridbody.height(h - 18);
+
+                if (p.frozen)
+                { 
+                    //解决冻结列和活动列由上至下滚动错位的问题
+                    var w = g.gridbody.width(), w2 = $(":first-child", g.gridbody).width();
+                    if (w2 && (w2 + 18 > w))
+                    {
+                        if (h > 18)
+                            g.f.gridbody.height(h - 18);
+                    } else
+                    {
+                        g.f.gridbody.height(h);
+                    }
+                }
+
+                var gridHeaderHeight = p.headerRowHeight * (g._columnMaxLevel - 1) + p.headerRowHeight - 1;
                 g.gridview.height(h + gridHeaderHeight);
+            }
+            g._updateHorizontalScrollStatus.ligerDefer(g, 10);
+        },
+        _calculateGridBodyHeight: function (h)
+        {
+            var g = this, p = this.options;
+            if (typeof h == "string" && h.indexOf('%') > 0)
+            {
+                if (p.inWindow)
+                    h = $(window).height() * parseInt(h) * 0.01;
+                else
+                    h = g.grid.parent().height() * parseInt(h) * 0.01;
+            }
+            if (p.title) h -= 24;
+            if (p.usePager && p.pagerRender || !p.scrollToPage) h -= g.toolbar.outerHeight();
+            if (p.totalRender) h -= 25;
+            if (p.toolbar) h -= g.topbar.outerHeight();
+            var gridHeaderHeight = p.headerRowHeight * (g._columnMaxLevel - 1) + p.headerRowHeight - 1; 
+            h -= (gridHeaderHeight || 0);
+            return h;
+        },
+        _updateHorizontalScrollStatus: function ()
+        {
+            var g = this, p = this.options;
+            if (g.isHorizontalScrollShowed())
+            {
+                g.gridview.addClass("l-grid-hashorizontal");
+            }
+            else
+            {
+                g.gridview.removeClass("l-grid-hashorizontal");
             }
         },
         _updateFrozenWidth: function ()
@@ -688,20 +679,61 @@
                 this.options.dataType = "local";
             }
         },
+        removeParm: function (name)
+        {
+            var g = this;
+            var parms = g.get('parms');
+            if (!parms) parms = {};
+            if (parms instanceof Array)
+            {
+                removeArrItem(parms, function (p) { return p.name == name; });
+            } else
+            {
+                delete parms[name];
+            }
+            g.set('parms', parms);
+        },
+        setParm: function (name, value)
+        {
+            var g = this;
+            var parms = g.get('parms');
+            if (!parms) parms = {};
+            if (parms instanceof Array)
+            {
+                removeArrItem(parms, function (p) { return p.name == name; });
+                parms.push({ name: name, value: value });
+            } else
+            {
+                parms[name] = value;
+            }
+            g.set('parms', parms);
+        },
         _setData: function (value)
         {
             this.loadData(this.options.data);
+            this.trigger('afterSetData');
         },
         //刷新数据
-        loadData: function (loadDataParm)
+        loadData: function (loadDataParm,sourceType)
         {
             var g = this, p = this.options;
             g.loading = true;
+            g.trigger('loadData');
             var clause = null;
             var loadServer = true;
             if (typeof (loadDataParm) == "function")
             {
                 clause = loadDataParm;
+                if (g.lastData)
+                {
+                    g.data = g.lastData;
+                } else
+                {
+                    g.data = g.currentData;
+                    if (!g.data) g.data = {};
+                    if (!g.data[p.root]) g.data[p.root] = [];
+                    g.lastData = g.data;
+                }
                 loadServer = false;
             }
             else if (typeof (loadDataParm) == "boolean")
@@ -714,6 +746,10 @@
                 p.dataType = "local";
                 p.data = loadDataParm;
             }
+            else if (typeof (loadDataParm) == "number")
+            {
+                p.newPage = loadDataParm;
+            }
             //参数初始化
             if (!p.newPage) p.newPage = 1;
             if (p.dataAction == "server")
@@ -723,18 +759,24 @@
             var param = [];
             if (p.parms)
             {
-                if (p.parms.length)
+                var parms = $.isFunction(p.parms) ? p.parms() : p.parms;
+                if (parms.length)
                 {
-                    $(p.parms).each(function ()
+                    $(parms).each(function ()
                     {
                         param.push({ name: this.name, value: this.value });
                     });
-                }
-                else if (typeof p.parms == "object")
-                {
-                    for (var name in p.parms)
+                    for (var i = parms.length - 1; i >= 0; i--)
                     {
-                        param.push({ name: name, value: p.parms[name] });
+                        if (parms[i].temp)
+                            parms.splice(i, 1);
+                    }
+                }
+                else if (typeof parms == "object")
+                {
+                    for (var name in parms)
+                    {
+                        param.push({ name: name, value: parms[name] });
                     }
                 }
             }
@@ -754,7 +796,9 @@
             $(".l-bar-btnload span", g.toolbar).addClass("l-disabled");
             if (p.dataType == "local")
             {
-                g.filteredData = g.data = p.data;
+                //原语句: g.filteredData = p.data || g.currentData;
+                //该语句修改了p.data, 导致过滤数据后, 丢失了初始数据.
+                g.filteredData = $.extend(true, {}, p.data || g.currentData);
                 if (clause)
                     g.filteredData[p.root] = g._searchData(g.filteredData[p.root], clause);
                 if (p.usePager)
@@ -763,6 +807,7 @@
                 {
                     g.currentData = g.filteredData;
                 }
+                g._convertTreeData();
                 g._showData();
             }
             else if (p.dataAction == "local" && !loadServer)
@@ -773,22 +818,43 @@
                     if (clause)
                         g.filteredData[p.root] = g._searchData(g.filteredData[p.root], clause);
                     g.currentData = g._getCurrentPageData(g.filteredData);
+                    g._convertTreeData();
                     g._showData();
                 }
             }
             else
             {
-                g.loadServerData(param, clause);
+                g.loadServerData(param, clause, sourceType);
                 //g.loadServerData.ligerDefer(g, 10, [param, clause]);
             }
             g.loading = false;
         },
-        loadServerData: function (param, clause)
+        _convertTreeData: function ()
         {
             var g = this, p = this.options;
+            if (p.tree && p.tree.idField && p.tree.parentIDField)
+            {
+                g.currentData[p.root] = g.arrayToTree(g.currentData[p.root], p.tree.idField, p.tree.parentIDField);
+                g.currentData[p.record] = g.currentData[p.root].length;
+            }
+        },
+        loadServerData: function (param, clause, sourceType)
+        {
+            var g = this, p = this.options;
+            var url = p.url;
+            if ($.isFunction(url)) url = url.call(g);
+            var urlParms = $.isFunction(p.urlParms) ? p.urlParms.call(g) : p.urlParms;
+            if (urlParms)
+            {
+                for (name in urlParms)
+                {
+                    url += url.indexOf('?') == -1 ? "?" : "&";
+                    url += name + "=" + urlParms[name];
+                }
+            }
             var ajaxOptions = {
                 type: p.method,
-                url: p.url,
+                url: url,
                 data: param,
                 async: p.async,
                 dataType: 'json',
@@ -810,16 +876,33 @@
                     {
                         g.currentData = g.data = {};
                         g.currentData[p.root] = g.data[p.root] = [];
-                        g.currentData[p.record] = g.data[p.record] = 0;
-                        g._showData();
+                        if (data && data[p.record])
+                        {
+                            g.currentData[p.record] = g.data[p.record] = data[p.record];
+                        } else
+                        {
+                            g.currentData[p.record] = g.data[p.record] = 0;
+                        }
+                        g._convertTreeData();
+                        g._showData(sourceType);
                         return;
                     }
                     g.data = data;
-                    if (p.dataAction == "server")
+                    //保存缓存数据-记录总数
+                    if (g.data[p.record] != null)
+                    {
+                        g.cacheData.records = g.data[p.record];
+                    }
+                    if (p.dataAction == "server") //服务器处理好分页排序数据
                     {
                         g.currentData = g.data;
+                        //读取缓存数据-记录总数(当没有返回总记录数)
+                        if (g.currentData[p.record] == null && g.cacheData.records)
+                        {
+                            g.currentData[p.record] = g.cacheData.records;
+                        }
                     }
-                    else
+                    else  //在客户端处理分页排序数据
                     {
                         g.filteredData = g.data;
                         if (clause) g.filteredData[p.root] = g._searchData(g.filteredData[p.root], clause);
@@ -828,7 +911,8 @@
                         else
                             g.currentData = g.filteredData;
                     }
-                    g._showData.ligerDefer(g, 10, [g.currentData]);
+                    g._convertTreeData();
+                    g._showData.ligerDefer(g, 10, [sourceType]);
                 },
                 complete: function ()
                 {
@@ -853,18 +937,55 @@
                 }
             };
             if (p.contentType) ajaxOptions.contentType = p.contentType;
+            if (p.contentType == "application/json" && typeof (parms) != "string")
+            {
+                ajaxOptions.data = converParmJson(param)
+            }
             $.ajax(ajaxOptions);
+
+            function converParmJson(parm)
+            { 
+                if (!parm) return "null";
+                var o = parm, result = {};
+                if ($.isArray(o))
+                {
+                    for (var i = 0; i < o.length; i++)
+                    {
+                        result[o[i].name] = o[i].value;
+                    }
+                } else
+                {
+                    result = o;
+                }
+                return liger.toJSON(result);
+            }
         },
         toggleLoading: function (show)
-        {
+        { 
             this.gridloading[show ? 'show' : 'hide']();
         },
-        _createEditor: function (editor, container, editParm, width, height)
+        _createEditor: function (editorBuilder, container, editParm, width, height)
         {
-            var editorInput = editor.create(container, editParm);
-            if (editor.setValue) editor.setValue(editorInput, editParm.value, editParm);
-            if (editor.resize) editor.resize(editorInput, width, height, editParm);
-            return editorInput;
+            var editor = editorBuilder.create.call(this, container, editParm);
+            if (editorBuilder.setValue)
+                editorBuilder.setValue.call(this, editor, editParm.value, editParm);
+            if (editParm.column.editor && editParm.column.editor.initSelect)
+            { 
+                if (editor.element && $(editor.element).is(":text"))
+                {
+                    $(editor.element).select();
+                }
+                if (editor instanceof jQuery)
+                {
+                    if (editor.is(":text")) editor.select();
+                    else editor.find(":text").select();
+                }
+            }
+            if (editorBuilder.setText && editParm.column.textField)
+                editorBuilder.setText.call(this, editor, editParm.text, editParm);
+            if (editorBuilder.resize)
+                editorBuilder.resize.call(this, editor, width, height, editParm);
+            return editor;
         },
         /*
         @description 使一行进入编辑状态
@@ -874,7 +995,7 @@
         beginEdit: function (rowParm, containerBulider)
         {
             var g = this, p = this.options;
-            if (!p.enabledEdit || p.clickToEdit) return;
+            if (!p.enabledEdit) return;
             var rowdata = g.getRow(rowParm);
             if (rowdata._editing) return;
             if (g.trigger('beginEdit', { record: rowdata, rowindex: rowdata['__index'] }) == false) return;
@@ -893,11 +1014,22 @@
                 var column = g.columns[i];
                 if (!column.name || !column.editor || !column.editor.type || !p.editors[column.editor.type]) continue;
                 var editor = p.editors[column.editor.type];
-                var editParm = { record: rowdata, value: rowdata[column.name], column: column, rowindex: rowdata['__index'], grid: g };
+                var editParm = {
+                    record: rowdata,
+                    value: g._getValueByName(rowdata, column.name),
+                    column: column,
+                    rowindex: rowdata['__index'],
+                    grid: g
+                };
                 var container = containerBulider(rowdata, column);
                 var width = container.width(), height = container.height();
-                var editorInput = g._createEditor(editor, container, editParm, width, height);
-                g.editors[rowdata['__id']][column['__id']] = { editor: editor, input: editorInput, editParm: editParm, container: container };
+                var editorControl = g._createEditor(editor, container, editParm, width, height);
+                g.editors[rowdata['__id']][column['__id']] = {
+                    editor: editor,
+                    input: editorControl,
+                    editParm: editParm,
+                    container: container
+                };
             }
             g.trigger('afterBeginEdit', { record: rowdata, rowindex: rowdata['__index'] });
 
@@ -916,7 +1048,7 @@
             {
                 var rowdata = g.getRow(rowParm);
                 if (!g.editors[rowdata['__id']]) return;
-                if (g.trigger('cancelEdit', { record: rowdata, rowindex: rowdata['__index'] }) == false) return;
+                if (g.trigger('beforeCancelEdit', { record: rowdata, rowindex: rowdata['__index'] }) == false) return;
                 for (var columnid in g.editors[rowdata['__id']])
                 {
                     var o = g.editors[rowdata['__id']][columnid];
@@ -927,15 +1059,15 @@
                 g.reRender({ rowdata: rowdata });
             }
         },
-        addEditRow: function (rowdata)
+        addEditRow: function (rowdata, containerBulider)
         {
             this.submitEdit();
             rowdata = this.add(rowdata);
-            this.beginEdit(rowdata);
+            this.beginEdit(rowdata, containerBulider);
         },
         submitEdit: function (rowParm)
         {
-            var g = this, p = this.options;
+            var g = this, p = this.options; 
             if (rowParm == undefined)
             {
                 for (var rowid in g.editors)
@@ -947,13 +1079,19 @@
             {
                 var rowdata = g.getRow(rowParm);
                 var newdata = {};
-                if (!g.editors[rowdata['__id']]) return;
+                if (!rowdata || !g.editors[rowdata['__id']]) return;
                 for (var columnid in g.editors[rowdata['__id']])
                 {
                     var o = g.editors[rowdata['__id']][columnid];
                     var column = o.editParm.column;
                     if (column.name)
+                    {
                         newdata[column.name] = o.editor.getValue(o.input, o.editParm);
+                    }
+                    if (column.textField && o.editor.getText)
+                    {
+                        newdata[column.textField] = o.editor.getText(o.input, o.editParm);
+                    }
                 }
                 if (g.trigger('beforeSubmitEdit', { record: rowdata, rowindex: rowdata['__index'], newdata: newdata }) == false)
                     return false;
@@ -961,12 +1099,59 @@
                 g.trigger('afterSubmitEdit', { record: rowdata, rowindex: rowdata['__index'], newdata: newdata });
             }
         },
+        _enabledEditByCell : function(cell)
+        {
+            var g = this, p = this.options;
+            var column = g.getColumn(cell);
+            if (!column) return false;
+            return column.editor && column.editor.type;
+        },
+        //结束当前的编辑 并进入下一个单元格的编辑状态(如果位于最后单元格，进入下一行第一个单元格)
+        endEditToNext : function()
+        {
+            var g = this, p = this.options;
+            var editor = g.editor, jnext = null, jprev = null;
+            if (editor)
+            {
+                var editParm = editor.editParm;
+                var column = editParm.column;
+                var columnIndex = $.inArray(column, g.columns); 
+                var cell = g.getCellObj(editParm.record, editParm.column);
+                jprev = $(cell);
+                jnext = jprev.next();
+                if (!jnext.length) jnext = getNextRowCell();//已经是当前行最后一个单元格了
+                if (jnext.length)
+                {
+                    //获取到下一个可编辑的列
+                    while (!g._enabledEditByCell(jnext.get(0)))
+                    {
+                        jprev = jnext;
+                        jnext = jnext.next();
+                        if (!jnext.length)//已经是当前行最后一个单元格了
+                        {
+                            jnext = getNextRowCell();
+                        }
+                    }
+                }
+                //获取下一行第一个列对象
+                function getNextRowCell()
+                { 
+                    return jprev.parent("tr").next(".l-grid-row").find("td:first");
+                }
+            }
+           
+            g.endEdit();
+            if (jnext && jnext.length)
+            {
+                g._applyEditor(jnext.get(0));
+            }
+        },
         endEdit: function (rowParm)
         {
             var g = this, p = this.options;
             if (g.editor.editing)
             {
-                var o = g.editor; 
+                var o = g.editor;
                 g.trigger('sysEndEdit', [g.editor.editParm]);
                 g.trigger('endEdit', [g.editor.editParm]);
                 if (o.editor.destroy) o.editor.destroy(o.input, o.editParm);
@@ -996,6 +1181,7 @@
                     g.endEdit(rowid);
                 }
             }
+            g._fixHeight.ligerDefer(g, 10);
         },
         setWidth: function (w)
         {
@@ -1153,7 +1339,7 @@
             }
             if (value != null && column.name)
             {
-                rowdata[column.name] = value;
+                g._setValueByName(rowdata, column.name, value);
                 if (rowdata[p.statusName] != 'add')
                     rowdata[p.statusName] = 'update';
                 g.isDataChanged = true;
@@ -1213,8 +1399,7 @@
                 }
                 o['__hasChildren'] = o[p.tree.childrenName] ? true : false;
             }
-            if (o[p.statusName] != "add")
-                o[p.statusName] = "nochanged";
+            o[p.statusName] = o[p.statusName] || "nochanged";
             g.rows[o['__index']] = o;
             g.records[o['__id']] = o;
             return o;
@@ -1350,7 +1535,7 @@
             $.extend(rowdata, newRowData || {});
             if (rowdata[p.statusName] != 'add')
                 rowdata[p.statusName] = 'update';
-            g.reRender.ligerDefer(g, 10, [{ rowdata: rowdata}]);
+            g.reRender.ligerDefer(g, 10, [{ rowdata: rowdata }]);
             return rowdata;
         },
         setCellEditing: function (rowdata, column, editing)
@@ -1362,7 +1547,14 @@
             if (rowdata['__id'] != 0)
             {
                 var prevrowobj = $(g.getRowObj(rowdata['__id'])).prev();
-                if (!prevrowobj.length) return;
+                //当使用可编辑的grid带分组时，第一行的prev对象是分组行，不具备id等getRow方法中需要的信息
+                if (!prevrowobj.length
+                        || prevrowobj.length <= 0
+                        || prevrowobj[0].id == null
+                        || prevrowobj[0].id == "")
+                {
+                    return;
+                }
                 var prevrow = g.getRow(prevrowobj[0]);
                 var cellprev = g.getCellObj(prevrow, column);
                 if (!cellprev) return;
@@ -1378,10 +1570,20 @@
         {
             var g = this, p = this.options;
             e = e || {};
-            var rowdata = e.rowdata, column = e.column;
+            var rowdata = e.rowdata,
+                column = e.column,
+                //只重渲染统计行
+                totalOnly = e.totalOnly; 
             if (column && (column.isdetail || column.ischeckbox)) return;
             if (rowdata && rowdata[p.statusName] == "delete") return;
-            if (rowdata && column)
+            if (totalOnly)
+            {
+                $(g.columns).each(function ()
+                {
+                    reRenderTotal(this);
+                });
+            }
+            else if (rowdata && column)
             {
                 var cell = g.getCellObj(rowdata, column);
                 $(cell).html(g._getCellHtml(rowdata, column));
@@ -1390,26 +1592,39 @@
             }
             else if (rowdata)
             {
-                $(g.columns).each(function () { g.reRender({ rowdata: rowdata, column: this }); });
+                $(g.columns).each(function ()
+                {
+                    g.reRender({ rowdata: rowdata, column: this });
+                });
             }
             else if (column)
             {
-                for (var rowid in g.records) { g.reRender({ rowdata: g.records[rowid], column: column }); }
+                for (var rowid in g.records)
+                {
+                    g.reRender({ rowdata: g.records[rowid], column: column });
+                }
+                reRenderTotal(column);
+            }
+            else
+            {
+                g._showData();
+            }
+
+            function reRenderTotal(column)
+            {
+                if (!column.totalSummary) return;
                 for (var i = 0; i < g.totalNumber; i++)
                 {
                     var tobj = document.getElementById(g.id + "|total" + i + "|" + column['__id']);
                     $("div:first", tobj).html(g._getTotalCellContent(column, g.groups && g.groups[i] ? g.groups[i] : g.currentData[p.root]));
                 }
             }
-            else
-            {
-                g._showData();
-            }
         },
         getData: function (status, removeStatus)
         {
             var g = this, p = this.options;
             var data = [];
+            if (removeStatus == undefined) removeStatus = true;
             for (var rowid in g.records)
             {
                 var o = $.extend(true, {}, g.records[rowid]);
@@ -1448,6 +1663,24 @@
         {
             return this.getData('add', true);
         },
+        getChanges: function ()
+        {
+            //getChanges函数必须保留__status属性,否则根本不知道哪些是新增的,哪些是被删除的.
+            //则本函数返回的结果毫无意义.
+            var g = this, p = this.options;
+            var data = [];
+            if (this.deletedRows)
+            {
+                $(this.deletedRows).each(function ()
+                {
+                    var o = $.extend(true, {}, this);
+                    data.push(g.formatRecord(o, false));
+                });
+            }
+            $.merge(data, g.getData("update", false));
+            $.merge(data, g.getData("add", false));
+            return data;
+        },
         getColumn: function (columnParm)
         {
             var g = this, p = this.options;
@@ -1469,6 +1702,18 @@
                 return g._columns[columnid];
             }
             return columnParm;
+        },
+        getColumnByName: function (columnname)
+        {
+            var g = this, p = this.options;
+            for (i = 0; i < g.columns.length; i++)
+            {
+                if (g.columns[i].name == columnname)
+                {
+                    return g.columns[i];
+                }
+            }
+            return null;
         },
         getColumnType: function (columnname)
         {
@@ -1523,6 +1768,8 @@
                 var columnType = g.getColumnType(columnName);
                 if (!g.sortedData)
                     g.sortedData = g.filteredData;
+                if (!g.sortedData || !g.sortedData[p.root])
+                    return;
                 if (p.sortName == columnName)
                 {
                     g.sortedData[p.root].reverse();
@@ -1593,11 +1840,34 @@
             g.trigger('changePage', [p.newPage]);
             if (p.dataAction == "server")
             {
+                if (!p.parms)
+                {
+                    p.parms = [];
+                }
+                if ($.isArray(p.parms))
+                {
+                    p.parms.push({ name: "changepage", value: "1", temp: true });
+                } else
+                {
+                    p.parms["changepage"] = "1";
+                }
                 g.loadData(p.where);
             }
             else
             {
                 g.currentData = g._getCurrentPageData(g.filteredData);
+                //增加以下一句调用: 在显示数据之前, 应该先调用转换tree的函数. 
+                //否则会导致树的数据重复显示
+                if (p.tree)
+                {
+                    var childrenName = p.tree.childrenName;
+                    $(g.filteredData[p.root]).each(function (index, item)
+                    {
+                        if (item[childrenName])
+                            item[childrenName] = [];
+                    });
+                    g._convertTreeData();
+                }
                 g._showData();
             }
         },
@@ -1791,7 +2061,7 @@
                 g._setColumnVisible(column, false);
                 $(cells).show();
             }
-            //隐藏列
+                //隐藏列
             else if (!visible && !column._hide)
             {
                 if (column.frozen)
@@ -1809,7 +2079,13 @@
             else
             {
                 $("div:first", g.gridheader).width(g.gridtablewidth + 40);
-                $("div:first", g.gridbody).width(g.gridtablewidth);
+                if (g.gridtablewidth)
+                {
+                    $("div:first", g.gridbody).width(g.gridtablewidth);
+                } else
+                {
+                    $("div:first", g.gridbody).css("width", "auto");
+                }
             }
             g._updateFrozenWidth();
             if (!toggleByPopup)
@@ -1896,7 +2172,7 @@
             $(cells).css('width', newwidth).find("> div.l-grid-row-cell-inner:first").css('width', newwidth - 8);
 
             g._updateFrozenWidth();
-
+            g._updateHorizontalScrollStatus.ligerDefer(g, 10);
 
             g.trigger('afterChangeColumnWidth', [column, newwidth]);
         },
@@ -1991,7 +2267,7 @@
             var g = this, p = this.options;
             var rowdata = g.getRow(rowParm);
             if (!rowdata) return;
-            for (var i = 0, l = g.columns; i < l; i++)
+            for (var i = 0, l = g.columns.length; i < l; i++)
             {
                 if (g.columns[i].isdetail)
                 {
@@ -2027,7 +2303,7 @@
                     for (var i = 0, l = data[p.tree.childrenName].length; i < l; i++)
                     {
                         var o = data[p.tree.childrenName][i];
-                        if (o['__status'] == 'delete') continue;
+                        if (o[p.statusName] == 'delete') continue;
                         arr.push(o);
                         if (deep)
                             loadChildren(o);
@@ -2106,6 +2382,8 @@
         _addData: function (rowdata, parentdata, neardata, isBefore)
         {
             var g = this, p = this.options;
+            if (!g.currentData) g.currentData = {};
+            if (!g.currentData[p.root]) g.currentData[p.root] = [];
             var listdata = g.currentData[p.root];
             if (neardata)
             {
@@ -2129,9 +2407,9 @@
             }
         },
         //移动数据(树)
-        //@parm [parentdata] 附加到哪一个节点下级
-        //@parm [neardata] 附加到哪一个节点的上方/下方
-        //@parm [isBefore] 是否附加到上方
+        //parm [parentdata] 附加到哪一个节点下级
+        //parm [neardata] 附加到哪一个节点的上方/下方
+        //parm [isBefore] 是否附加到上方
         _appendData: function (rowdata, parentdata, neardata, isBefore)
         {
             var g = this, p = this.options;
@@ -2176,6 +2454,8 @@
             if (parentdata && g.isLeaf(parentdata)) g.upgrade(parentdata);
             g.addRow(rowdata, neardata, isBefore ? true : false, parentdata);
         },
+         
+
         upgrade: function (rowParm)
         {
             var g = this, p = this.options;
@@ -2205,6 +2485,30 @@
             }
             rowdata['__hasChildren'] = false;
         },
+
+        collapseAll: function ()
+        {
+            var g = this, p = this.options;
+            $(g.rows).each(function (rowIndex, rowParm)
+            {
+                var targetRowObj = g.getRowObj(rowParm);
+                var linkbtn = $(".l-grid-tree-link", targetRowObj);
+                if (linkbtn.hasClass("l-grid-tree-link-close")) return;
+                g.toggle(rowParm);
+            });
+        },
+        expandAll: function ()
+        {
+            var g = this, p = this.options;
+            $(g.rows).each(function (rowIndex, rowParm)
+            {
+                var targetRowObj = g.getRowObj(rowParm);
+                var linkbtn = $(".l-grid-tree-link", targetRowObj);
+                if (linkbtn.hasClass("l-grid-tree-link-open")) return;
+                g.toggle(rowParm);
+            });
+        },
+
         collapse: function (rowParm)
         {
             var g = this, p = this.options;
@@ -2232,36 +2536,106 @@
             var linkbtn = $(".l-grid-tree-link:first", targetRowObj);
             var opening = true;
             g.collapsedRows = g.collapsedRows || [];
-            if (linkbtn.hasClass("l-grid-tree-link-close")) //收缩
+            var isToExpanding = linkbtn.hasClass("l-grid-tree-link-close");
+
+            function toggleChildren(items)
             {
-                linkbtn.removeClass("l-grid-tree-link-close").addClass("l-grid-tree-link-open");
-                indexInCollapsedRows = $.inArray(rowdata, g.collapsedRows);
-                if (indexInCollapsedRows != -1) g.collapsedRows.splice(indexInCollapsedRows, 1);
+                for (var i = 0, l = items.length; i < l; i++)
+                {
+                    var o = items[i];
+                    var subchildren = g.getChildren(o, false);
+                    var haschildren = subchildren && subchildren.length ? true : false;
+                    var currentRow = $([g.getRowObj(o['__id'])]);
+                    if (g.enabledFrozen()) currentRow = currentRow.add(g.getRowObj(o['__id'], true));
+                    if (haschildren)
+                    {
+                        //如果这个子节点原来是折叠状态的,那么子节点的子节点不做处理
+                        if ($(".l-grid-tree-link", currentRow).hasClass("l-grid-tree-link-close"))
+                        {
+                            currentRow.show();
+                        }
+                            //如果是展开状态的
+                        else
+                        {
+                            currentRow.show();
+                            toggleChildren(subchildren);
+                        }
+                    }
+                    else
+                    {
+                        $(".l-grid-tree-link", currentRow).removeClass("l-grid-tree-link-close").addClass("l-grid-tree-link-open");
+                        currentRow.show();
+                    }
+
+                }
+            }
+            function update()
+            {
+                var children = [];
+                //折叠,那么直接隐藏所有子节点即可
+                if (!opening)
+                {
+                    children = g.getChildren(rowdata, true);
+                    $(children).each(function ()
+                    {
+                        $(g.getRowObj(this)).hide();
+                        if (g.enabledFrozen()) $(g.getRowObj(this, true)).hide();
+                    });
+                    g.trigger('treeCollapsed', [rowdata]);
+                    return;
+                }
+
+                //展开,下面逻辑处理(选择性递归)
+                children = g.getChildren(rowdata, false); 
+
+                toggleChildren(children);
+
+
+                g.trigger('treeExpanded', [rowdata]);
+            }
+
+          
+            if (isToExpanding) //收缩
+            {
+                function linkbtn_expand()
+                {
+                    linkbtn.removeClass("l-grid-tree-link-close").addClass("l-grid-tree-link-open");
+                    indexInCollapsedRows = $.inArray(rowdata, g.collapsedRows);
+                    if (indexInCollapsedRows != -1) g.collapsedRows.splice(indexInCollapsedRows, 1);
+                }
+                var e = {
+                    update: function ()
+                    {
+                        linkbtn_expand();
+                        update();
+                    }
+                };
+                if (g.hasBind('treeExpand') && g.trigger('treeExpand', [rowdata, e]) == false) return false;
+                linkbtn_expand();
             }
             else //折叠
             {
+                function linkbtn_collapse()
+                {
+                    linkbtn.addClass("l-grid-tree-link-close").removeClass("l-grid-tree-link-open");
+                    indexInCollapsedRows = $.inArray(rowdata, g.collapsedRows);
+                    if (indexInCollapsedRows == -1) g.collapsedRows.push(rowdata);
+                }
+                var e = {
+                    update: function ()
+                    {
+                        linkbtn_collapse();
+                        update();
+                    }
+                };
+                if (g.hasBind('treeCollapse') && g.trigger('treeCollapse', [rowdata, e]) == false) return false;
                 opening = false;
-                linkbtn.addClass("l-grid-tree-link-close").removeClass("l-grid-tree-link-open");
-                indexInCollapsedRows = $.inArray(rowdata, g.collapsedRows);
-                if (indexInCollapsedRows == -1) g.collapsedRows.push(rowdata);
-            }
-            var children = g.getChildren(rowdata, true);
-            for (var i = 0, l = children.length; i < l; i++)
-            {
-                var o = children[i];
-                var currentRow = $([g.getRowObj(o['__id'])]);
-                if (g.enabledFrozen()) currentRow = currentRow.add(g.getRowObj(o['__id'], true));
-                if (opening)
-                {
-                    $(".l-grid-tree-link", currentRow).removeClass("l-grid-tree-link-close").addClass("l-grid-tree-link-open");
-                    currentRow.show();
-                }
-                else
-                {
-                    $(".l-grid-tree-link", currentRow).removeClass("l-grid-tree-link-open").addClass("l-grid-tree-link-close");
-                    currentRow.hide();
-                }
-            }
+                linkbtn_collapse();
+            } 
+
+            update();
+              
+
         },
         _bulid: function ()
         {
@@ -2304,16 +2678,23 @@
             if (p.toolbar)
             {
                 if ($.fn.ligerToolBar)
+                {
                     g.toolbarManager = g.topbar.ligerToolBar(p.toolbar);
+                    //原语句不知道为什么, toolbar的父div高度为0. 导致样式有问题. 
+                    if (g.topbar.height() == 0)
+                        g.topbar.parent().height(25);
+                    else
+                        g.topbar.parent().height(g.topbar.height());
+                }
             }
             else
             {
-                g.topbar.remove();
+                g.topbar.parent().remove();
             }
         },
         _createColumnId: function (column)
         {
-            if (column.id != null) return column.id.toString();
+            if (column.id != null && column.id != "") return column.id.toString();
             return "c" + (100 + this._columnCount);
         },
         _isColumnId: function (str)
@@ -2339,6 +2720,11 @@
             //设置id、pid、level、leaf，返回叶节点数,如果是叶节点，返回1
             function setColumn(column, level, pid, previd)
             {
+                if (column.editorType)
+                {
+                    column.editor = column.editor || {};
+                    column.editor.type = column.editorType;
+                }
                 removeProp(column, ['__id', '__pid', '__previd', '__nextid', '__domid', '__leaf', '__leafindex', '__level', '__colSpan', '__rowSpan']);
                 if (level > g._columnMaxLevel) g._columnMaxLevel = level;
                 g._columnCount++;
@@ -2394,6 +2780,9 @@
             for (var i = 0, l = p.columns.length; i < l; i++)
             {
                 var col = p.columns[i];
+                //增加以下一句. 因为在低版本IE中, 可能因为修改了prototype, 
+                //导致这里取出undefined, 并进一步导致后续的函数调用出错. 
+                if (!col) continue;
                 setColumn(col, 1, -1, lastid);
                 lastid = col['__id'];
             }
@@ -2428,29 +2817,41 @@
         {
             var g = this, p = this.options;
             if (column._width) return column._width;
-            var colwidth;
-            if (column.width)
+            var colwidth = column.width || p.columnWidth;
+            if (!colwidth || colwidth == "auto")
             {
-                colwidth = column.width;
-            }
-            else if (p.columnWidth)
-            {
-                colwidth = p.columnWidth;
-            }
-            if (!colwidth)
-            {
-                var lwidth = 4;
-                if (g.enabledCheckbox()) lwidth += p.checkboxColWidth;
-                if (g.enabledDetail()) lwidth += p.detailColWidth;
-                colwidth = parseInt((g.grid.width() - lwidth) / g.columns.length);
+                var autoColumnNumber = 0, noAutoColumnWidth = 0;
+                $(g.columns).each(function (i, col)
+                {
+                    var colwidth = col.width || p.columnWidth;
+                    var isAuto = (!colwidth || colwidth == "auto") ? true : false;
+                    if (isAuto) autoColumnNumber++;
+                    else noAutoColumnWidth += (parseInt(g._getColumnWidth(col)) + 1);
+                });
+                colwidth = parseInt((g.grid.width() - noAutoColumnWidth) / autoColumnNumber) - 1;
             }
             if (typeof (colwidth) == "string" && colwidth.indexOf('%') > 0)
             {
-                column._width = colwidth = parseInt(parseInt(colwidth) * 0.01 * (g.grid.width() - g.columns.length));
+                /*
+                 * 修复行控件宽度被忽略的bug
+                 */
+                var lwidth = 0;
+                if (g.enabledDetail())
+                {
+                    lwidth += p.detailColWidth;
+                }
+                if (g.enabledCheckbox())
+                {
+                    lwidth += p.checkboxColWidth;
+                }
+                if (g.options.rownumbers)
+                {
+                    lwidth += g.options.rownumbersColWidth;
+                }
+                column._width = colwidth = parseInt(parseInt(colwidth) * 0.01 * (g.grid.width() - lwidth - (g.columns.length / 2) - 1));
             }
             if (column.minWidth && colwidth < column.minWidth) colwidth = column.minWidth;
             if (column.maxWidth && colwidth > column.maxWidth) colwidth = column.maxWidth;
-            column._width = colwidth;
             return colwidth;
         },
         _createHeaderCell: function (column)
@@ -2488,6 +2889,8 @@
             {
                 jcell.attr("rowSpan", column['__rowSpan']);
                 jcell.height(p.headerRowHeight * column['__rowSpan']);
+                var paddingTop = (p.headerRowHeight * column['__rowSpan'] - p.headerRowHeight) / 2 - 5;
+                $(".l-grid-hd-cell-inner:first", jcell).css("paddingTop", paddingTop);
             } else
             {
                 jcell.height(p.headerRowHeight);
@@ -2497,6 +2900,8 @@
                 jcell.width(column['_width']);
                 jcell.attr("columnindex", column['__leafindex']);
             }
+            var cellHeight = jcell.height();
+            if (!column['__rowSpan'] && cellHeight > 10) $(">div:first", jcell).height(cellHeight);
             if (column._hide) jcell.hide();
             if (column.name) jcell.attr({ columnname: column.name });
             var headerText = "";
@@ -2507,9 +2912,10 @@
             else
                 headerText = "&nbsp;";
             $(".l-grid-hd-cell-text:first", jcell).html(headerText);
-            if (!column.issystem && column['__leaf'] && column.resizable !== false && $.fn.ligerResizable)
+            if (!column.issystem && column['__leaf'] && column.resizable !== false && $.fn.ligerResizable && p.allowAdjustColWidth)
             {
-                g.colResizable[column['__id']] = jcell.ligerResizable({ handles: 'e',
+                g.colResizable[column['__id']] = jcell.ligerResizable({
+                    handles: 'e',
                     onStartResize: function (e, ev)
                     {
                         this.proxy.hide();
@@ -2526,11 +2932,12 @@
                         g.colresizing = false;
                         $('body').add(jcell).css('cursor', 'default');
                         g.draggingline.hide();
-                        g.setColumnWidth(column, column._width + e.diffX);
+                        g.setColumnWidth(column, parseInt(column._width) + e.diffX);
                         return false;
                     }
                 });
-            }
+            } 
+            g.trigger('headerCellBulid', [jcell, column]);
             return jcell;
         },
         _initBuildGridHeader: function ()
@@ -2651,6 +3058,16 @@
             var g = this, p = this.options;
             if (p.usePager)
             {
+                if (p.pagerRender)
+                {
+                    g.toolbar.html(p.pagerRender.call(g));
+                    return;
+                }
+                if (p.scrollToPage)
+                {
+                    g.toolbar.hide();
+                    return;
+                }
                 //创建底部工具条 - 选择每页显示记录数
                 var optStr = "";
                 var selectedIndex = -1;
@@ -2698,6 +3115,7 @@
         _clearGrid: function ()
         {
             var g = this, p = this.options;
+            g._fixRows();
             for (var i in g.rows)
             {
                 var rowobj = $(g.getRowObj(g.rows[i]));
@@ -2711,17 +3129,31 @@
             g.recordNumber = 0;
             g.records = {};
             g.rows = [];
+            g._fixRows();
             //清空选择的行
             g.selected = [];
             g.totalNumber = 0;
             //编辑器计算器
             g.editorcounter = 0;
         },
-        _fillGridBody: function (data, frozen)
+        _fixRows : function()
+        {
+            var g = this, p = this.options;
+            if (!g.rows) return;
+            for (var i in g.rows)
+            {
+                if ($.isFunction(g.rows[i]))
+                {
+                    delete g.rows[i];
+                }
+            }
+        }, 
+
+        _fillGridBody: function (data, frozen,sourceType)
         {
             var g = this, p = this.options;
             //加载数据 
-            var gridhtmlarr = ['<div class="l-grid-body-inner"><table class="l-grid-body-table" cellpadding=0 cellspacing=0><tbody>'];
+            var gridhtmlarr = sourceType == "scrollappend" ? [] : ['<div class="l-grid-body-inner"><table class="l-grid-body-table" cellpadding=0 cellspacing=0><tbody>'];
             if (g.enabledGroup()) //启用分组模式
             {
                 var groups = []; //分组列名数组
@@ -2772,8 +3204,37 @@
             {
                 gridhtmlarr.push(g._getHtmlFromData(data, frozen));
             }
-            gridhtmlarr.push('</tbody></table></div>');
-            (frozen ? g.f.gridbody : g.gridbody).html(gridhtmlarr.join(''));
+            if (!sourceType == "scrollappend")
+            {
+                gridhtmlarr.push('</tbody></table></div>'); 
+            }
+         
+            if (sourceType == "scrollappend")
+            {
+                (frozen ? g.f.gridbody : g.gridbody).find("tbody:first").append(gridhtmlarr.join(''));
+            }
+            else
+            {
+                (frozen ? g.f.gridbody : g.gridbody).html(gridhtmlarr.join(''));
+            }
+
+            if (frozen)
+            {
+                g.f.gridbody.find(">l-jplace").remove();
+                g.f.gridbody.append('<div class="l-jplace"></div>');
+            }
+
+            if (p.usePager && p.scrollToPage && !p.scrollToAppend)
+            {
+                var jgridbodyinner = frozen ? g.f.gridbody.find("> .l-grid-body-inner") : g.gridbody.find("> .l-grid-body-inner");
+                var jreplace = jgridbodyinner.find("> .l-scrollreplacetop");
+                jreplace = jreplace.length ? jreplace : $('<div class="l-scrollreplacetop"></div>').prependTo(jgridbodyinner);
+                jreplace.css("width", "80%").height(g.lastScrollTop);
+
+                jreplace = jgridbodyinner.find("> .l-scrollreplacebottom");
+                jreplace = jreplace.length ? jreplace : $('<div class="l-scrollreplacebottom"></div>').appendTo(jgridbodyinner);
+                jreplace.css("width", "80%").height((p.pageCount - p.newPage) * g._getOnePageHeight());
+            }
             //分组时不需要            
             if (!g.enabledGroup())
             {
@@ -2783,9 +3244,10 @@
             $("> div:first", g.gridbody).width(g.gridtablewidth);
             g._onResize();
         },
-        _showData: function ()
+        _showData: function (sourceType)
         {
             var g = this, p = this.options;
+            g.changedCells = {};
             var data = g.currentData[p.root];
             if (p.usePager)
             {
@@ -2804,21 +3266,51 @@
                 if (!p.page) p.page = 1;
                 p.pageCount = Math.ceil(p.total / p.pageSize);
                 if (!p.pageCount) p.pageCount = 1;
-                //更新分页
-                g._buildPager();
+                if (!p.scrollToPage)
+                {
+                    //更新分页
+                    g._buildPager();
+                }
             }
             //加载中
             $('.l-bar-btnloading:first', g.toolbar).removeClass('l-bar-btnloading');
             if (g.trigger('beforeShowData', [g.currentData]) == false) return;
-            g._clearGrid();
+            if (sourceType != "scrollappend")
+            {
+                g._clearGrid();
+            }
             g.isDataChanged = false;
-            if (!data) return;
+            if (!data || !data.length)
+            {
+                g.gridview.addClass("l-grid-empty");
+                $(g.element).addClass("l-empty");
+                $("<div></div>").addClass("l-grid-body-inner").appendTo(g.gridbody).css({
+                    width: g.gridheader.find(">div:first").width(),
+                    height: g.gridbody.height()
+                });
+                if (p.pagerRender)
+                {
+                    g.toolbar.html(p.pagerRender.call(g));
+                    return;
+                }
+                g._onResize.ligerDefer(g, 50);
+                return;
+            }
+            else
+            {
+                g.gridview.removeClass("l-grid-empty");
+                $(g.element).removeClass("l-empty");
+            }
             $(".l-bar-btnload:first span", g.toolbar).removeClass("l-disabled");
             g._updateGridData();
             if (g.enabledFrozen())
-                g._fillGridBody(g.rows, true);
-            g._fillGridBody(g.rows, false);
+                g._fillGridBody(g.rows, true, sourceType);
+            g._fillGridBody(g.rows, false, sourceType);
             g.trigger('SysGridHeightChanged');
+            if (sourceType == "scroll")
+            {
+                g.trigger('sysScrollLoaded');
+            }
             if (p.totalRender)
             {
                 $(".l-panel-bar-total", g.element).remove();
@@ -2840,8 +3332,42 @@
                     });
                 }
             }
+            g._fixHeight();
+            if (p.pagerRender)
+            {
+                g.toolbar.html(p.pagerRender.call(g));
+                return;
+            }
             g.gridbody.trigger('scroll.grid');
             g.trigger('afterShowData', [g.currentData]);
+        },
+        _fixHeight: function ()
+        {
+            var g = this, p = this.options;
+            if (p.fixedCellHeight || !p.frozen) return;
+            var column1, column2;
+            for (var i in g.columns)
+            {
+                var column = g.columns[i];
+                if (column1 && column2) break;
+                if (column.frozen && !column1)
+                {
+                    column1 = column;
+                    continue;
+                }
+                if (!column.frozen && !column2)
+                {
+                    column2 = column;
+                    continue;
+                }
+            }
+            if (!column1 || !column2) return;
+            for (var rowid in g.records)
+            {
+                var cell1 = g.getCellObj(rowid, column1), cell2 = g.getCellObj(rowid, column2);
+                var height = Math.max($(cell1).height(), ($(cell2).height()));
+                $(cell1).add(cell2).height(height);
+            }
         },
         _getRowDomId: function (rowdata, frozen)
         {
@@ -2856,9 +3382,9 @@
             if (!data) return "";
             var g = this, p = this.options;
             var gridhtmlarr = [];
-            for (var rowparm in data)
+            for (var i = 0, l = data.length; i < l; i++)
             {
-                var item = data[rowparm];
+                var item = data[i];
                 var rowid = item['__id'];
                 if (!item) continue;
                 gridhtmlarr.push('<tr');
@@ -2873,8 +3399,19 @@
                 {
                     gridhtmlarr.push(' l-selected');
                 }
+                else if (p.isSelected && p.isSelected(item))
+                {
+                    g.select(item);
+                    gridhtmlarr.push(' l-selected');
+                }
                 if (item['__index'] % 2 == 1 && p.alternatingRow)
                     gridhtmlarr.push(' l-grid-row-alt');
+                //自定义css class
+                if (p.rowClsRender)
+                {
+                    var rowcls = p.rowClsRender(item, rowid);
+                    rowcls && gridhtmlarr.push(' ' + rowcls);
+                }
                 gridhtmlarr.push('" ');  //class end
                 if (p.rowAttrRender) gridhtmlarr.push(p.rowAttrRender(item, rowid));
                 if (p.tree && g.collapsedRows && g.collapsedRows.length)
@@ -2885,6 +3422,20 @@
                         while (pitem)
                         {
                             if ($.inArray(pitem, g.collapsedRows) != -1) return true;
+                            pitem = g.getParent(pitem);
+                        }
+                        return false;
+                    };
+                    if (isHide()) gridhtmlarr.push(' style="display:none;" ');
+                }
+                else if (p.tree && p.tree.isExtend)
+                {
+                    var isHide = function ()
+                    {
+                        var pitem = g.getParent(item);
+                        while (pitem)
+                        {
+                            if (p.tree.isExtend(pitem) == false) return true;
                             pitem = g.getParent(pitem);
                         }
                         return false;
@@ -2903,6 +3454,8 @@
                         gridhtmlarr.push(' class="l-grid-row-cell l-grid-row-cell-rownumbers" style="width:' + this.width + 'px"><div class="l-grid-row-cell-inner"');
                         if (p.fixedCellHeight)
                             gridhtmlarr.push(' style = "height:' + p.rowHeight + 'px;" ');
+                        else
+                            gridhtmlarr.push(' style = "min-height:' + p.rowHeight + 'px;" ');
                         gridhtmlarr.push('>' + (parseInt(item['__index']) + 1) + '</div></td>');
                         return;
                     }
@@ -2912,16 +3465,27 @@
                         gridhtmlarr.push(' class="l-grid-row-cell l-grid-row-cell-checkbox" style="width:' + this.width + 'px"><div class="l-grid-row-cell-inner"');
                         if (p.fixedCellHeight)
                             gridhtmlarr.push(' style = "height:' + p.rowHeight + 'px;" ');
-                        gridhtmlarr.push('><span class="l-grid-row-cell-btn-checkbox"></span></div></td>');
+                        else
+                            gridhtmlarr.push(' style = "min-height:' + p.rowHeight + 'px;" ');
+                        gridhtmlarr.push('>');
+                        gridhtmlarr.push('<span class="l-grid-row-cell-btn-checkbox"></span>');
+                        gridhtmlarr.push('</div></td>');
                         return;
                     }
-                    //如果是明细列(系统列)
+                        //如果是明细列(系统列)
                     else if (this.isdetail)
                     {
                         gridhtmlarr.push(' class="l-grid-row-cell l-grid-row-cell-detail" style="width:' + this.width + 'px"><div class="l-grid-row-cell-inner"');
                         if (p.fixedCellHeight)
                             gridhtmlarr.push(' style = "height:' + p.rowHeight + 'px;" ');
-                        gridhtmlarr.push('><span class="l-grid-row-cell-detailbtn"></span></div></td>');
+                        else
+                            gridhtmlarr.push(' style = "min-height:' + p.rowHeight + 'px;" ');
+                        gridhtmlarr.push('>');
+                        if (!p.isShowDetailToggle || p.isShowDetailToggle(item))
+                        {
+                            gridhtmlarr.push('<span class="l-grid-row-cell-detailbtn"></span>');
+                        }
+                        gridhtmlarr.push('</div></td>');
                         return;
                     }
                     var colwidth = this._width;
@@ -2954,20 +3518,59 @@
             htmlarr.push('<div class="l-grid-row-cell-inner"');
             //htmlarr.push('<div');
             htmlarr.push(' style = "width:' + parseInt(column._width - 8) + 'px;');
-            if (p.fixedCellHeight) htmlarr.push('height:' + p.rowHeight + 'px;min-height:' + p.rowHeight + 'px; ');
+            if (p.fixedCellHeight) htmlarr.push('height:' + p.rowHeight + 'px;');
+            htmlarr.push('min-height:' + p.rowHeight + 'px; ');
             if (column.align) htmlarr.push('text-align:' + column.align + ';');
             var content = g._getCellContent(rowdata, column);
             htmlarr.push('">' + content + '</div>');
             return htmlarr.join('');
         },
+        _setValueByName: function (data, name, value)
+        {
+            if (!data || !name) return null;
+            if (name.indexOf('.') == -1)
+            {
+                data[name] = value;
+            }
+            else
+            {
+                try
+                {
+                    new Function("data,value", "data." + name + "=value;")(data, value);
+                }
+                catch (e)
+                {
+                }
+            }
+        },
+        _getValueByName: function (data, name)
+        {
+            if (!data || !name) return null;
+            if (name.indexOf('.') == -1)
+            {
+                return data[name];
+            }
+            else
+            {
+                try
+                {
+                    return new Function("data", "return data." + name + ";")(data);
+                }
+                catch (e)
+                {
+                    return null;
+                }
+            }
+        },
         _getCellContent: function (rowdata, column)
         {
+            var g = this, p = this.options;
             if (!rowdata || !column) return "";
             if (column.isrownumber) return parseInt(rowdata['__index']) + 1;
             var rowid = rowdata['__id'];
             var rowindex = rowdata['__index'];
-            var value = column.name ? rowdata[column.name] : null;
-            var g = this, p = this.options;
+            var value = g._getValueByName(rowdata, column.name);
+            var text = g._getValueByName(rowdata, column.textField);
             var content = "";
             if (column.render)
             {
@@ -2976,6 +3579,10 @@
             else if (p.formatters[column.type])
             {
                 content = p.formatters[column.type].call(g, value, column);
+            }
+            else if (text != null)
+            {
+                content = text.toString();
             }
             else if (value != null)
             {
@@ -2992,14 +3599,15 @@
             var level = rowdata['__level'];
             var g = this, p = this.options;
             //var isExtend = p.tree.isExtend(rowdata);
-            var isExtend = $.inArray(rowdata, g.collapsedRows || []) == -1;
+            var isExtend =  g.collapsedRows == null ? p.tree.isExtend(rowdata) : $.inArray(rowdata, g.collapsedRows || []) == -1;
             var isParent = p.tree.isParent(rowdata);
             var content = "";
             level = parseInt(level) || 1;
             for (var i = 1; i < level; i++)
             {
                 content += "<div class='l-grid-tree-space'></div>";
-            }
+            } 
+
             if (isExtend && isParent)
                 content += "<div class='l-grid-tree-space l-grid-tree-link l-grid-tree-link-open'></div>";
             else if (isParent)
@@ -3012,48 +3620,89 @@
         _applyEditor: function (obj)
         {
             var g = this, p = this.options;
-            var rowcell = obj;
-            var ids = rowcell.id.split('|');
-            var columnid = ids[ids.length - 1];
-            var column = g._columns[columnid];
-            var row = $(rowcell).parent();
-            var rowdata = g.getRow(row[0]);
-            var rowid = rowdata['__id'];
-            var rowindex = rowdata['__index'];
+            var rowcell = obj, ids = rowcell.id.split('|');
+            var columnid = ids[ids.length - 1], column = g._columns[columnid];
+            var row = $(rowcell).parent(), rowdata = g.getRow(row[0]), rowid = rowdata['__id'], rowindex = rowdata['__index'];
             if (!column || !column.editor) return;
-            var columnname = column.name;
-            var columnindex = column.columnindex;
+            var columnname = column.name, columnindex = column.columnindex;
             if (column.editor.type && p.editors[column.editor.type])
             {
-                var currentdata = rowdata[columnname];
+                var currentdata = g._getValueByName(rowdata, columnname);
                 var editParm = { record: rowdata, value: currentdata, column: column, rowindex: rowindex };
+                if (column.textField) editParm.text = g._getValueByName(rowdata, column.textField);
                 if (g.trigger('beforeEdit', [editParm]) == false) return false;
-                var editor = p.editors[column.editor.type];
-                var jcell = $(rowcell), offset = $(rowcell).offset();
+                g.lastEditRow = rowdata;
+                liger.lastEditGrid = g;
+                var editor = p.editors[column.editor.type],
+                    jcell = $(rowcell), offset = $(rowcell).offset(),
+                    width = $(rowcell).width(), height = $(rowcell).height(),
+                    container = $("<div class='l-grid-editor'></div>").appendTo(g.grid),
+                    left = 0,
+                    top = 0,
+                    pc = jcell.position(),
+                    pb = g.gridbody.position(),
+                    pv = g.gridview2.position(),
+                    //加上括号解决不能正常判定topBar的高度。不加括号会忽略后面运算出来的值
+                    topbarHeight = (p.toolbar ? g.topbar.parent().outerHeight() : 0) + (p.title ? g.header.outerHeight() : 0),
+                    left = pc.left + pb.left + pv.left,
+                    top = pc.top + pb.top + pv.top + topbarHeight;
+
                 jcell.html("");
                 g.setCellEditing(rowdata, column, true);
-                var width = $(rowcell).width(), height = $(rowcell).height();
-                var container = $("<div class='l-grid-editor'></div>").appendTo('body');
-                if ($.browser.mozilla)
-                    container.css({ left: offset.left, top: offset.top }).show();
-                else
-                    container.css({ left: offset.left + 1, top: offset.top + 1 }).show();
-                var editorInput = g._createEditor(editor, container, editParm, width, height);
+
+                var isIE = (!!window.ActiveXObject || "ActiveXObject" in window) ? true : false,
+                isIE8 = $.browser.version.indexOf('8') == 0;
+                if (isIE)
+                {
+                    height -= isIE8 ? 1 : 2;
+                    top -= 1;
+                    left -= 1;
+                }
+                else if ($.browser.mozilla)
+                {
+                    height -= 1;
+                    top -= 1;
+                    left -= 1;
+                }
+                else if ($.browser.safari)
+                {
+                    top -= 1;
+                } else
+                {
+                    height -= 1;
+                }
+                left += p.editorLeftDiff || 0;
+                top += p.editorTopDiff || 0;
+                height += p.editorHeightDiff || 0;
+
+                container
+                    .css({ left: left, top: top })
+                    .show();
+                if (column.textField) editParm.text = g._getValueByName(rowdata, column.textField);
+                var editorInput = g._createEditor(editor, container, editParm, width, height - 1);
                 g.editor = { editing: true, editor: editor, input: editorInput, editParm: editParm, container: container };
                 g.unbind('sysEndEdit');
                 g.bind('sysEndEdit', function ()
                 {
                     var newValue = editor.getValue(editorInput, editParm);
+                    if (column.textField && editor.getText)
+                    {
+                        editParm.text = editor.getText(editorInput, editParm);
+                    }
+                    if (editor.getSelected)
+                    {
+                        editParm.selected = editor.getSelected(editorInput, editParm);
+                    }
                     if (newValue != currentdata)
                     {
                         $(rowcell).addClass("l-grid-row-cell-edited");
                         g.changedCells[rowid + "_" + column['__id']] = true;
-                        if (column.editor.onChange) column.editor.onChange(rowcell, newValue);
                         editParm.value = newValue;
-                        if (g._checkEditAndUpdateCell(editParm))
-                        {
-                            if (column.editor.onChanged) column.editor.onChanged(rowcell, newValue);
-                        }
+                    }
+                    if (column.editor.onChange) column.editor.onChange.call(editorInput, editParm);
+                    if (g._checkEditAndUpdateCell(editParm))
+                    {
+                        if (column.editor.onChanged) column.editor.onChanged.call(editorInput, editParm);
                     }
                 });
             }
@@ -3061,9 +3710,11 @@
         _checkEditAndUpdateCell: function (editParm)
         {
             var g = this, p = this.options;
-            if (g.trigger('beforeSubmitEdit', [editParm]) == false) return false; 
-            g.updateCell(editParm.column, editParm.value, editParm.record);
-            if (editParm.column.render || g.enabledTotal()) g.reRender({ column: editParm.column });
+            if (g.trigger('beforeSubmitEdit', [editParm]) == false) return false;
+            var column = editParm.column;
+            if (editParm.text && column.textField) g._setValueByName(editParm.record, column.textField, editParm.text);
+            g.updateCell(column, editParm.value, editParm.record);
+            if (column.render || g.enabledTotal()) g.reRender({ column: column });
             g.reRender({ rowdata: editParm.record });
             return true;
         },
@@ -3098,10 +3749,47 @@
             else
                 return val1 < val2 ? -1 : val1 > val2 ? 1 : 0;
         },
+        _getTotalInfo : function(column, data)
+        {
+            var g = this, p = this.options;
+            try{
+                var totalsummaryArr = [];
+                if (!column.totalSummary) return null; 
+                var sum = 0, count = 0, avg = 0, min = 0, max = 0;
+                if (data && data.length)
+                {
+                    max = parseFloat(data[0][column.name]);
+                    min = parseFloat(data[0][column.name]);
+                    for (var i = 0; i < data.length; i++)
+                    {
+                        if (data[i][p.statusName] == 'delete') continue;
+                        count += 1;
+                        var value = data[i][column.name];
+                        if (typeof (value) == "string") value = value.replace(/\$|\,/g, '');
+                        value = parseFloat(value);
+                        if (!value) continue;
+                        sum += value;
+                        if (value > max) max = value;
+                        if (value < min) min = value;
+                    }
+                    avg = sum * 1.0 / data.length;
+                } 
+                return {
+                    sum: sum,
+                    count: count,
+                    avg: avg,
+                    min: min,
+                    max: max
+                };
+            } catch (e)
+            {
+                return {};
+            }
+        },
         _getTotalCellContent: function (column, data)
         {
             var g = this, p = this.options;
-            var totalsummaryArr = [];
+            var totalsummaryArr = []; 
             if (column.totalSummary)
             {
                 var isExist = function (type)
@@ -3110,43 +3798,27 @@
                         if (types[i].toLowerCase() == type.toLowerCase()) return true;
                     return false;
                 };
-                var sum = 0, count = 0, avg = 0;
-                var max = parseFloat(data[0][column.name]);
-                var min = parseFloat(data[0][column.name]);
-                for (var i = 0; i < data.length; i++)
-                {
-                    count += 1;
-                    var value = parseFloat(data[i][column.name]);
-                    if (!value) continue;
-                    sum += value;
-                    if (value > max) max = value;
-                    if (value < min) min = value;
-                }
-                avg = sum * 1.0 / data.length;
+                var info = g._getTotalInfo(column, data);
                 if (column.totalSummary.render)
                 {
-                    var renderhtml = column.totalSummary.render({
-                        sum: sum,
-                        count: count,
-                        avg: avg,
-                        min: min,
-                        max: max
-                    }, column, g.data);
+                    var renderhtml = column.totalSummary.render(info, column, g.data);
                     totalsummaryArr.push(renderhtml);
                 }
-                else if (column.totalSummary.type)
+                else if (column.totalSummary.type && info)
                 {
                     var types = column.totalSummary.type.split(',');
                     if (isExist('sum'))
-                        totalsummaryArr.push("<div>Sum=" + sum.toFixed(2) + "</div>");
+                        totalsummaryArr.push("<div>Sum=" + info.sum.toFixed(2) + "</div>");
+                    if (isExist('tsum'))
+                        totalsummaryArr.push("<div>" + sum.toFixed(0) + "</div>");
                     if (isExist('count'))
-                        totalsummaryArr.push("<div>Count=" + count + "</div>");
+                        totalsummaryArr.push("<div>Count=" + info.count + "</div>");
                     if (isExist('max'))
-                        totalsummaryArr.push("<div>Max=" + max.toFixed(2) + "</div>");
+                        totalsummaryArr.push("<div>Max=" + info.max.toFixed(2) + "</div>");
                     if (isExist('min'))
-                        totalsummaryArr.push("<div>Min=" + min.toFixed(2) + "</div>");
+                        totalsummaryArr.push("<div>Min=" + info.min.toFixed(2) + "</div>");
                     if (isExist('avg'))
-                        totalsummaryArr.push("<div>Avg=" + avg.toFixed(2) + "</div>");
+                        totalsummaryArr.push("<div>Avg=" + info.avg.toFixed(2) + "</div>");
                 }
             }
             return totalsummaryArr.join('');
@@ -3174,7 +3846,7 @@
                     totalsummaryArr.push('<td class="l-grid-totalsummary-cell l-grid-totalsummary-cell-checkbox" style="width:' + this.width + 'px"><div>&nbsp;</div></td>');
                     return;
                 }
-                //如果是明细列(系统列)
+                    //如果是明细列(系统列)
                 else if (this.isdetail)
                 {
                     totalsummaryArr.push('<td class="l-grid-totalsummary-cell l-grid-totalsummary-cell-detail" style="width:' + this.width + 'px"><div>&nbsp;</div></td>');
@@ -3210,10 +3882,21 @@
             if (!g.currentData || g.currentData[p.root].length == 0) return false;
             var totalRow = $(g._getTotalSummaryHtml(g.currentData[p.root], null, frozen));
             $("tbody:first", frozen ? g.f.gridbody : g.gridbody).append(totalRow);
+            if (frozen) g.totalRow1 = totalRow;
+            else g.totalRow2 = totalRow;
+        },
+        updateTotalSummary: function ()
+        {
+            var g = this, p = this.options;
+            g.reRender({ totalOnly: true });
         },
         _buildPager: function ()
         {
-            var g = this, p = this.options;
+            var g = this, p = this.options; 
+            if (p.pagerRender)
+            { 
+                return;
+            }
             $('.pcontrol input', g.toolbar).val(p.page);
             if (!p.pageCount) p.pageCount = 1;
             $('.pcontrol span', g.toolbar).html(p.pageCount);
@@ -3234,6 +3917,11 @@
             {
                 $(".l-bar-btnfirst span,.l-bar-btnprev span,.l-bar-btnnext span,.l-bar-btnlast span", g.toolbar)
                     .addClass("l-disabled");
+            }
+            if (p.hideLoadButton)
+            {
+                $('.l-bar-btnload:first', g.toolbar).parent().hide();
+                $('.l-bar-btnload:first', g.toolbar).parent().next().hide();
             }
             if (p.page == 1)
             {
@@ -3266,6 +3954,32 @@
         {
             return this.records[this._getRowIdByDomId(domid)];
         },
+        //在外部点击的时候，判断是否在编辑状态，比如弹出的层点击的，如果自定义了编辑器，而且生成的层没有包括在grid内部，建议重载
+        _isEditing: function (jobjs)
+        {
+            var g = this;
+            if (jobjs.hasClass("l-box-dateeditor") || jobjs.hasClass("l-box-select")) return true;
+
+            //判断是否位于编辑器弹出的框
+            if (jobjs.hasClass("l-dialog"))
+            {
+                var ids = [];
+                jobjs.find(".l-dialog").each(function ()
+                {
+                    var curId = $(this).attr("ligeruiid");
+                    if (curId)
+                    {
+                        ids.push(curId);
+                    }
+                });
+                if (g._editorIncludeCotrols(ids))
+                {
+                    return true;
+                }
+            }
+            return false;
+
+        },
         _getSrcElementByEvent: function (e)
         {
             var g = this;
@@ -3287,7 +4001,11 @@
                 return null;
             };
             if (fn("l-grid-editor")) return { editing: true, editor: fn("l-grid-editor") };
-            if (jobjs.index(this.element) == -1) return { out: true };
+            if (jobjs.index(this.element) == -1)
+            {
+                if (g._isEditing(jobjs)) return { editing: true };
+                else return { out: true };
+            }
             var indetail = false;
             if (jobjs.hasClass("l-grid-detailpanel") && g.detailrows)
             {
@@ -3339,9 +4057,11 @@
                 r.checkboxcell = $(r.cell).hasClass("l-grid-row-cell-checkbox") ? r.cell : null;
                 r.treelink = fn("l-grid-tree-link");
                 r.editor = fn("l-grid-editor");
+
+
                 if (r.row) r.data = this._getRowByDomId(r.row.id);
                 if (r.cell) r.editing = $(r.cell).hasClass("l-grid-row-cell-editing");
-                if (r.editor) r.editing = true;
+                if (r.editor) r.editing = true;  
                 if (r.editing) r.out = false;
             }
             if (r.toolbar)
@@ -3356,6 +4076,50 @@
 
             return r;
         },
+
+        _editorIncludeCotrols : function(ids){
+            var g = this, p = this.options;
+            if (!ids || !ids.length) return false;
+            if (g.editor && g.editor.input)
+            {
+                if (g._controlIncludeCotrols(g.editor.input, ids)) return true;
+            }
+            else if (g.editors)
+            {
+                for (var a in g.editors)
+                {
+                    if(!g.editors[a]) continue;
+                    for (var b in g.editors[a])
+                    {
+                        var editor = g.editors[a][b];
+                        if (editor && editor.input)
+                        {
+                            if (g._controlIncludeCotrols(editor.input, ids)) return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        },
+
+        _controlIncludeCotrols: function (control,ids)
+        {
+            var g = this, p = this.options; 
+            if (!control || !control.includeControls || !control.includeControls.length) return false;
+
+            for(var i = 0;i< control.includeControls.length;i++){
+                var sub = control.includeControls[i];
+                if ($.inArray(sub.id, ids) != -1) return true;
+            }
+            return false;
+        },
+
+        _getOnePageHeight : function()
+        {
+            var g = this, p = this.options;
+            return (parseFloat(p.rowHeight || 24) + 1)*parseInt(p.pageSize);
+        },
+
         _setEvent: function ()
         {
             var g = this, p = this.options;
@@ -3393,24 +4157,60 @@
             });
             //表体 - 滚动联动事件 
             g.gridbody.bind('scroll.grid', function ()
-            {
+            { 
                 var scrollLeft = g.gridbody.scrollLeft();
                 var scrollTop = g.gridbody.scrollTop();
                 if (scrollLeft != null)
                     g.gridheader[0].scrollLeft = scrollLeft;
                 if (scrollTop != null)
                     g.f.gridbody[0].scrollTop = scrollTop;
-                g.endEdit();
+
+                if (p.scrollToPage && p.usePager && !g.loading)
+                {
+                    var innerHeight = g.gridbody.find(".l-grid-body-inner:first").height();
+                    var toHeight = scrollTop + g.gridbody.height();
+                    if (p.scrollToAppend)
+                    {
+                        if (p.newPage != p.pageCount)
+                        {
+                            if (toHeight >= innerHeight)
+                            {
+                                g.reload(p.newPage + 1, "scrollappend");
+                            }
+                        }
+                    } else
+                    { 
+                        var topage = toHeight >= innerHeight ? p.pageCount : Math.ceil(toHeight / g._getOnePageHeight());
+                        if (!g.scrollLoading)
+                        {
+                            g.scrollLoading = true;
+                            g.lastScrollTop = scrollTop;
+                            g.unbind("sysScrollLoaded");
+                            g.bind("sysScrollLoaded", function ()
+                            {  
+                                g.gridbody.scrollTop(scrollTop);
+                                setTimeout(function ()
+                                {
+                                    g.scrollLoading = false;
+                                }, 500);
+                            });
+                            g.scrollLoading = true;
+
+                            g.reload(topage, "scroll");
+                             
+                        }
+                    }
+                }
                 g.trigger('SysGridHeightChanged');
             });
             //工具条 - 切换每页记录数事件
             $('select', g.toolbar).change(function ()
             {
-                if (g.isDataChanged && !confirm(p.isContinueByDataChanged))
+                if (g.isDataChanged && p.dataAction != "local" && !confirm(p.isContinueByDataChanged))
                     return false;
                 p.newPage = 1;
                 p.pageSize = this.value;
-                g.loadData(p.where);
+                g.loadData(p.dataAction != "local" ? p.where : false);
             });
             //工具条 - 切换当前页事件
             $('span.pcontrol :text', g.toolbar).blur(function (e)
@@ -3428,7 +4228,8 @@
             if ($.fn.ligerDrag && p.colDraggable)
             {
                 g.colDroptip = $("<div class='l-drag-coldroptip' style='display:none'><div class='l-drop-move-up'></div><div class='l-drop-move-down'></div></div>").appendTo('body');
-                g.gridheader.add(g.f.gridheader).ligerDrag({ revert: true, animate: false,
+                g.gridheader.add(g.f.gridheader).ligerDrag({
+                    revert: true, animate: false,
                     proxyX: 0, proxyY: 0,
                     proxy: function (draggable, e)
                     {
@@ -3554,7 +4355,8 @@
             if ($.fn.ligerDrag && p.rowDraggable)
             {
                 g.rowDroptip = $("<div class='l-drag-rowdroptip' style='display:none'></div>").appendTo('body');
-                g.gridbody.add(g.f.gridbody).ligerDrag({ revert: true, animate: false,
+                g.gridbody.add(g.f.gridbody).ligerDrag({
+                    revert: true, animate: false,
                     proxyX: 0, proxyY: 0,
                     proxy: function (draggable, e)
                     {
@@ -3744,6 +4546,10 @@
             var g = this, p = this.options;
             var rowdata = g.getRow(rowParm);
             var methodName = over ? "addClass" : "removeClass";
+            if (over && g.editor.editing)
+            {
+                $("tr." + p.mouseoverRowCssClass, g.gridview).removeClass(p.mouseoverRowCssClass);
+            }
             if (g.enabledFrozen())
                 $(g.getRowObj(rowdata, true))[methodName](p.mouseoverRowCssClass);
             $(g.getRowObj(rowdata, false))[methodName](p.mouseoverRowCssClass);
@@ -3858,7 +4664,7 @@
                 var hcell = $(src.hcelltext).parent().parent();
                 if (!p.enabledSort || !src.column) return;
                 if (src.column.isSort == false) return;
-                if (p.url && g.isDataChanged && !confirm(p.isContinueByDataChanged)) return;
+                if (p.url && p.dataAction != "local" && g.isDataChanged && !confirm(p.isContinueByDataChanged)) return;
                 var sort = $(".l-grid-hd-cell-sort:first", hcell);
                 var columnName = src.column.name;
                 if (!columnName) return;
@@ -3868,12 +4674,14 @@
                     {
                         sort.removeClass("l-grid-hd-cell-sort-asc").addClass("l-grid-hd-cell-sort-desc");
                         hcell.removeClass("l-grid-hd-cell-asc").addClass("l-grid-hd-cell-desc");
+                        g.trigger('ChangeSort', [columnName, 'desc']);
                         g.changeSort(columnName, 'desc');
                     }
                     else if (sort.hasClass("l-grid-hd-cell-sort-desc"))
                     {
                         sort.removeClass("l-grid-hd-cell-sort-desc").addClass("l-grid-hd-cell-sort-asc");
                         hcell.removeClass("l-grid-hd-cell-desc").addClass("l-grid-hd-cell-asc");
+                        g.trigger('ChangeSort', [columnName, 'asc']);
                         g.changeSort(columnName, 'asc');
                     }
                 }
@@ -3881,11 +4689,12 @@
                 {
                     hcell.removeClass("l-grid-hd-cell-desc").addClass("l-grid-hd-cell-asc");
                     $(src.hcelltext).after("<span class='l-grid-hd-cell-sort l-grid-hd-cell-sort-asc'>&nbsp;&nbsp;</span>");
+                    g.trigger('ChangeSort', [columnName, 'asc']);
                     g.changeSort(columnName, 'asc');
                 }
                 $(".l-grid-hd-cell-sort", g.gridheader).add($(".l-grid-hd-cell-sort", g.f.gridheader)).not($(".l-grid-hd-cell-sort:first", hcell)).remove();
             }
-            //明细
+                //明细
             else if (src.detailbtn && p.detail)
             {
                 var item = src.data;
@@ -3917,6 +4726,7 @@
                         if (g.columns[i].frozen) frozenColNum++;
                     var detailRow = $("<tr class='l-grid-detailpanel'><td><div class='l-grid-detailpanel-inner' style='display:none'></div></td></tr>");
                     var detailFrozenRow = $("<tr class='l-grid-detailpanel'><td><div class='l-grid-detailpanel-inner' style='display:none'></div></td></tr>");
+                    detailRow.find("div:first").width(g.gridheader.find("div:first").width() - 50);
                     detailRow.attr("id", g.id + "|detail|" + rowid);
                     g.detailrows = g.detailrows || [];
                     g.detailrows.push(detailRow[0]);
@@ -3986,9 +4796,10 @@
                     }
                     currentRow = currentRow.next(".l-grid-row,.l-grid-totalsummary-group,.l-grid-detailpanel");
                 }
+                g.trigger(opening ? 'groupExtend' : 'groupCollapse');
                 g.trigger('SysGridHeightChanged');
             }
-            //树 - 伸展/收缩节点
+                //树 - 伸展/收缩节点
             else if (src.treelink)
             {
                 g.toggle(src.data);
@@ -3998,7 +4809,8 @@
                 //复选框
                 var selectRowButtonOnly = p.selectRowButtonOnly ? true : false;
                 if (p.enabledEdit) selectRowButtonOnly = true;
-                if (src.checkbox || !selectRowButtonOnly)
+                if (obj.tagName.toLowerCase() == "a") return;
+                if ((src.checkbox || !selectRowButtonOnly) && p.selectable != false)
                 {
                     var row = $(src.row);
                     var uncheck = row.hasClass("l-selected");
@@ -4021,7 +4833,7 @@
                     g._applyEditor(src.cell);
                 }
             }
-            else if (src.row && !g.enabledCheckbox())
+            else if (src.row && !g.enabledCheckbox() && p.selectable != false)
             {
                 if (src.cell && p.enabledEdit && p.clickToEdit)
                 {
@@ -4080,9 +4892,10 @@
             var g = this, p = this.options;
             var rowdata = g.getRow(rowParm);
             var rowid = rowdata['__id'];
-            var rowobj = g.getRowObj(rowid);
+            var rowobj = g.getRowObj(rowid); 
+            if (!p.rowSelectable || g.trigger('beforeSelectRow', [rowdata, rowid, rowobj]) == false) return; 
             var rowobj1 = g.getRowObj(rowid, true);
-            if (!g.enabledCheckbox() && !g.ctrlKey) //单选
+            if ((!g.enabledCheckbox() && !g.ctrlKey) || p.isSingleCheck) //单选
             {
                 for (var i in g.selected)
                 {
@@ -4124,6 +4937,42 @@
             }
             return false;
         },
+        arrayToTree: function (data, id, pid)      //将ID、ParentID这种数据格式转换为树格式
+        {
+            var g = this, p = this.options;
+            var childrenName = "children";
+            if (p.tree) childrenName = p.tree.childrenName;
+            if (!data || !data.length) return [];
+            var targetData = [];                    //存储数据的容器(返回) 
+            var records = {};
+            var itemLength = data.length;           //数据集合的个数
+            for (var i = 0; i < itemLength; i++)
+            {
+                var o = data[i];
+                var key = getKey(o[id]);
+                records[key] = o;
+            }
+            for (var i = 0; i < itemLength; i++)
+            {
+                var currentData = data[i];
+                var key = getKey(currentData[pid]);
+                var parentData = records[key];
+                if (!parentData)
+                {
+                    targetData.push(currentData);
+                    continue;
+                }
+                parentData[childrenName] = parentData[childrenName] || [];
+                parentData[childrenName].push(currentData);
+            }
+            return targetData;
+
+            function getKey(key)
+            {
+                if (typeof (key) == "string") key = key.replace(/[.]/g, '').toLowerCase();
+                return key;
+            }
+        },
         _onResize: function ()
         {
             var g = this, p = this.options;
@@ -4137,7 +4986,7 @@
                 if (typeof (p.height) == "string" && p.height.indexOf('%') > 0)
                 {
                     var gridparent = g.grid.parent();
-                    if (p.InWindow)
+                    if (p.inWindow)
                     {
                         parentHeight = windowHeight;
                         parentHeight -= parseInt($('body').css('paddingTop'));
@@ -4147,8 +4996,8 @@
                     {
                         parentHeight = gridparent.height();
                     }
-                    h = parentHeight * parseFloat(p.height) * 0.01;
-                    if (p.InWindow || gridparent[0].tagName.toLowerCase() == "body")
+                    h = parentHeight * parseInt(p.height) * 0.01;
+                    if (p.inWindow || gridparent[0].tagName.toLowerCase() == "body")
                         h -= (g.grid.offset().top - parseInt($('body').css('paddingTop')));
                 }
                 else
@@ -4160,15 +5009,100 @@
                 g.windowHeight = windowHeight;
                 g._setHeight(h);
             }
+            else
+            {
+                g._updateHorizontalScrollStatus.ligerDefer(g, 10);
+            }
             if (g.enabledFrozen())
             {
                 var gridView1Width = g.gridview1.width();
-                var gridViewWidth = g.gridview.width()
-                g.gridview2.css({
-                    width: gridViewWidth - gridView1Width
-                });
+                var gridViewWidth = g.gridview.width();
+                if (gridViewWidth - gridView1Width <= 0)
+                {
+                    g.gridview2.css({
+                        width: 'auto'
+                    });
+                } else
+                {
+                    g.gridview2.css({
+                        width: gridViewWidth - gridView1Width
+                    });
+                }
             }
+
             g.trigger('SysGridHeightChanged');
+        },
+        showFilter: function ()
+        {
+            var g = this, p = this.options;
+            if (g.winfilter)
+            {
+                g.winfilter.show();
+                return;
+            }
+            var filtercontainer = $('<div id="' + g.id + '_filtercontainer"></div>').width(380).height(120).hide();
+            var filter = filtercontainer.ligerFilter({ fields: getFields() });
+            filter.addRule($(filter.element.firstChild));
+            return g.winfilter = $.ligerDialog.open({
+                width: 420, height: 208,
+                target: filtercontainer, isResize: true, top: 50,
+                buttons: [
+					{ text: '确定', onclick: function (item, dialog) { loadData(); dialog.hide(); } },
+					{ text: '取消', onclick: function (item, dialog) { dialog.hide(); } }
+                ]
+            });
+
+            //将grid的columns转换为filter的fields
+            function getFields()
+            {
+                var fields = [];
+                //如果是多表头，那么g.columns为最低级的列
+                $(g.columns).each(function ()
+                {
+                    var o = { name: this.name, display: this.display };
+                    var isNumber = this.type == "int" || this.type == "number" || this.type == "float";
+                    var isDate = this.type == "date";
+                    if (isNumber) o.type = "number";
+                    if (isDate) o.type = "date";
+                    if (this.editor)
+                    {
+                        o.editor = this.editor;
+                    }
+                    fields.push(o);
+                });
+                return fields;
+            }
+
+            function loadData()
+            {
+                var data = filter.getData();
+                if (g.options.dataType == "server")
+                {
+                    //服务器过滤数据
+                    loadServerData(data);
+                }
+                else
+                {
+                    //本地过滤数据
+                    loadClientData(data);
+                }
+            }
+
+            function loadServerData(data)
+            {
+                if (data && data.rules && data.rules.length)
+                {
+                    g.setParm("where", JSON.stringify(data));
+                } else
+                {
+                    g.removeParm("where");
+                }
+                g.loadData();
+            }
+            function loadClientData(data)
+            {
+                g.loadData($.ligerFilter.getFilterFunction(data));
+            }
         }
     });
 
@@ -4181,5 +5115,20 @@
     $.ligerui.controls.Grid.prototype.getCheckedRows = $.ligerui.controls.Grid.prototype.getSelectedRows;
     $.ligerui.controls.Grid.prototype.getCheckedRowObjs = $.ligerui.controls.Grid.prototype.getSelectedRowObjs;
     $.ligerui.controls.Grid.prototype.setOptions = $.ligerui.controls.Grid.prototype.set;
+    $.ligerui.controls.Grid.prototype.reload = $.ligerui.controls.Grid.prototype.loadData;
+    $.ligerui.controls.Grid.prototype.refreshSize = $.ligerui.controls.Grid.prototype._onResize;
+    $.ligerui.controls.Grid.prototype.append = $.ligerui.controls.Grid.prototype.appendRange;
 
+    
+
+    function removeArrItem(arr, filterFn)
+    {
+        for (var i = arr.length - 1; i >= 0; i--)
+        {
+            if (filterFn(arr[i]))
+            {
+                arr.splice(i, 1);
+            }
+        }
+    }
 })(jQuery);

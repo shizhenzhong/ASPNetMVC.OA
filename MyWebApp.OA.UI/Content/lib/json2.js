@@ -161,7 +161,7 @@
 
 if (!this.JSON2)
 {
-    this.JSON2 = {};
+    this.JSON = this.JSON2 = {};
 }
 
 (function () {

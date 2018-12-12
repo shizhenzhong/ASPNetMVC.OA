@@ -1,9 +1,9 @@
 ﻿/**
-* jQuery ligerUI 1.1.9
+* jQuery ligerUI 1.3.2
 * 
 * http://ligerui.com
 *  
-* Author daomi 2012 [ gd_star@163.com ] 
+* Author daomi 2015 [ gd_star@163.com ] 
 * 
 */
 (function ($)
@@ -64,7 +64,15 @@
                 }
                 $(box).before(header);
                 if (!$(box).hasClass("l-accordion-content")) $(box).addClass("l-accordion-content");
+
+                if ($(box).attr("data-icon"))
+                {
+                    header.addClass("l-accordion-header-hasicon");
+                    header.append('<i><img src="' + $(box).attr("data-icon") + '" /></i>');
+                }
             });
+            $(".l-accordion-header", g.accordion).removeClass("l-accordion-header-downfirst");
+            $(".l-accordion-content:visible", g.accordion).next(".l-accordion-header:first").addClass("l-accordion-header-downfirst");
 
             //add Even
             $(".l-accordion-toggle", g.accordion).each(function ()
@@ -118,6 +126,8 @@
                     .addClass("l-accordion-toggle-close");
                     $(this).next(".l-accordion-content").hide(p.speed);
                 }
+                $(".l-accordion-header", g.accordion).removeClass("l-accordion-header-downfirst");
+                $(".l-accordion-content:visible", g.accordion).next(".l-accordion-header:first").addClass("l-accordion-header-downfirst");
             });
             //init
             g.headerHoldHeight = 0;

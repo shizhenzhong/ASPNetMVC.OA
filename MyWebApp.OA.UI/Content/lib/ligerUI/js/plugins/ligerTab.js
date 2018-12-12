@@ -1,9 +1,9 @@
 ﻿/**
-* jQuery ligerUI 1.1.9
+* jQuery ligerUI 1.3.3
 * 
 * http://ligerui.com
 *  
-* Author daomi 2012 [ gd_star@163.com ] 
+* Author daomi 2015 [ gd_star@163.com ] 
 * 
 */
 (function ($)
@@ -26,6 +26,9 @@
         contextmenu: true,
         dblClickToClose: false, //是否双击时关闭
         dragToMove: false,    //是否允许拖动时改变tab项的位置
+        showSwitch: false,       //显示切换窗口按钮
+        showSwitchInTab: false, //切换窗口按钮显示在最后一项
+        data: null, //传递数据容器
         onBeforeOverrideTabItem: null,
         onAfterOverrideTabItem: null,
         onBeforeRemoveTabItem: null,
@@ -33,7 +36,12 @@
         onBeforeAddTabItem: null,
         onAfterAddTabItem: null,
         onBeforeSelectTabItem: null,
-        onAfterSelectTabItem: null
+        onAfterSelectTabItem: null,
+        onCloseOther: null,
+        onCloseAll: null,
+        onClose: null,
+        onReload: null,
+        onSwitchRender : null      //当切换窗口层构件时的事件
     };
     $.ligerDefaults.TabString = {
         closeMessage: "关闭当前页",
@@ -96,7 +104,7 @@
             g.tab.content = $('<div class="l-tab-content"></div>');
             $("> div", g.tab).appendTo(g.tab.content);
             g.tab.content.appendTo(g.tab);
-            g.tab.links = $('<div class="l-tab-links"><ul style="left: 0px; "></ul></div>');
+            g.tab.links = $('<div class="l-tab-links"><ul style="left: 0px; "></ul><div class="l-tab-switch"></div></div>');
             g.tab.links.prependTo(g.tab);
             g.tab.links.ul = $("ul", g.tab.links);
             var lselecteds = $("> div[lselected=true]", g.tab.content);
@@ -191,6 +199,101 @@
             });
 
             g.set(p);
+            //set tab links width
+            setTimeout(setLinksWidth, 100);
+            $(window).resize(function ()
+            {
+                setLinksWidth.call(g);
+            });
+
+            function setLinksWidth()
+            {
+                var w = g.tab.width() - parseInt(g.tab.links.css("marginLeft"), 10) - parseInt(g.tab.links.css("marginRight"), 10); 
+                g.tab.links.width(w);
+            }
+
+            g.bind('sysWidthChange', function ()
+            {
+                setLinksWidth.call(g);
+            });
+        },
+        _setShowSwitch: function (value)
+        {
+            var g = this, p = this.options;
+            if (value)
+            {
+                if (!$(".l-tab-switch", g.tab.links).length)
+                {
+                    $("<div class='l-tab-switch'></div>").appendTo(g.tab.links); 
+                }
+                $(g.tab).addClass("l-tab-switchable");
+                $(".l-tab-switch", g.tab).click(function ()
+                {
+                    g.toggleSwitch(this);
+                }); 
+            }
+            else
+            {
+                $(g.tab).removeClass("l-tab-switchable");
+                $("body > .l-tab-windowsswitch").remove();
+            }
+        },
+        _setShowSwitchInTab:function(value)
+        {
+            var g = this, p = this.options;
+            if (p.showSwitch && value)
+            {
+                $(g.tab).removeClass("l-tab-switchable");
+                $(".l-tab-switch", g.tab).remove();
+                var tabitem = $("<li class='l-tab-itemswitch'><a></a><div class='l-tab-links-item-left'></div><div class='l-tab-links-item-right'></div></li>");
+                tabitem.appendTo(g.tab.links.ul);
+                tabitem.click(function ()
+                {
+                    g.toggleSwitch(this);
+                });
+            } else
+            {
+                $(".l-tab-itemswitch", g.tab.ul).remove(); 
+            }
+        },
+        toggleSwitch: function (btn)
+        {
+            var g = this, p = this.options; 
+            if ($("body > .l-tab-windowsswitch").length)
+            {
+                $("body > .l-tab-windowsswitch").remove();
+                return;
+            }
+            if (btn == null) return;
+            var windowsswitch = $("<div class='l-tab-windowsswitch'></div>").appendTo('body');
+            var tabItems = g.tab.links.ul.find('>li');
+            var selectedTabItemID = g.getSelectedTabItemID();
+            tabItems.each(function (i, item)
+            {
+                var jlink = $("<a href='javascript:void(0)'></a>");
+                jlink.text($(item).find("a").text());
+                var tabid = $(item).attr("tabid");
+                if (tabid == null) return;
+                if (tabid == selectedTabItemID)
+                {
+                    jlink.addClass("selected");
+                }
+                jlink.attr("tabid", tabid);
+                windowsswitch.append(jlink);
+            });
+            windowsswitch.css({
+                top: $(btn).offset().top + $(btn).height(),
+                left: $(btn).offset().left - windowsswitch.width()  
+            });
+            windowsswitch.find("a").bind("click", function (e)
+            {
+                var tabid = $(this).attr("tabid");
+                if (tabid == undefined) return;
+                g.selectTabItem(tabid);
+                g.moveToTabItem(tabid);
+                $("body > .l-tab-windowsswitch").remove();
+            });
+            g.trigger('switchRender', [windowsswitch]);
         },
         _applyDrag: function (tabItemDom)
         {
@@ -323,8 +426,11 @@
             var mainwidth = g.tab.width();
             if (sumwidth > mainwidth)
             {
-                g.tab.links.append('<div class="l-tab-links-left"></div><div class="l-tab-links-right"></div>');
-                g.setTabButtonEven();
+                if (!$(".l-tab-links-left", g.tab).length)
+                {
+                    g.tab.links.append('<div class="l-tab-links-left"><span></span></div><div class="l-tab-links-right"><span></span></div>');
+                    g.setTabButtonEven();
+                }
                 return true;
             } else
             {
@@ -359,60 +465,91 @@
             });
         },
         //切换到上一个tab
-        moveToPrevTabItem: function ()
+        moveToPrevTabItem: function (tabid)
         {
             var g = this, p = this.options;
-            var btnWitdth = $(".l-tab-links-left", g.tab.links).width();
-            var leftList = new Array(); //记录每个tab的left,由左到右
-            $("li", g.tab.links).each(function (i, item)
+            var tabItems = $("> li", g.tab.links.ul),
+                 nextBtn = $(".l-tab-links-right", g.tab),
+                 prevBtn = $(".l-tab-links-left", g.tab);
+            if (!nextBtn.length || !prevBtn.length) return false;
+            var nextBtnOffset = nextBtn.offset(), prevBtnOffset = prevBtn.offset();
+            //计算应该移动到的标签项,并计算从第一项到这个标签项的上一项的宽度总和
+            var moveToTabItem = null, currentWidth = 0;
+            var prevBtnLeft = prevBtnOffset.left + prevBtn.outerWidth();
+            for (var i = 0, l = tabItems.length; i < l; i++)
             {
-                var currentItemLeft = -1 * btnWitdth;
-                if (i > 0)
+                var tabitem = $(tabItems[i]);  
+                var offset = tabitem.offset();
+                var start = offset.left, end = offset.left + tabitem.outerWidth();
+                if (tabid != null)
                 {
-                    currentItemLeft = parseInt(leftList[i - 1]) + $(this).prev().width() + 2;
+                    if (start < prevBtnLeft && tabitem.attr("tabid") == tabid)
+                    {
+                        moveToTabItem = tabitem;
+                        break;
+                    }
                 }
-                leftList.push(currentItemLeft);
-            });
-            var currentLeft = -1 * parseInt(g.tab.links.ul.css("left"));
-            for (var i = 0; i < leftList.length - 1; i++)
-            {
-                if (leftList[i] < currentLeft && leftList[i + 1] >= currentLeft)
+                else if (start < prevBtnLeft && end >= prevBtnLeft)
                 {
-                    g.tab.links.ul.animate({ left: -1 * parseInt(leftList[i]) });
-                    return;
+                    moveToTabItem = tabitem;
+                    break;
                 }
+                currentWidth += tabitem.outerWidth() + parseInt(tabitem.css("marginLeft"))
+                    + parseInt(tabitem.css("marginRight"));
             }
+            if (moveToTabItem == null) return false;
+            //计算出正确的移动位置
+            var left = currentWidth - prevBtn.outerWidth();
+            g.tab.links.ul.animate({ left: -1 * left });
+            return true;
         },
         //切换到下一个tab
-        moveToNextTabItem: function ()
+        moveToNextTabItem: function (tabid)
         {
             var g = this, p = this.options;
-            var btnWitdth = $(".l-tab-links-right", g.tab).width();
-            var sumwidth = 0;
-            var tabItems = $("li", g.tab.links.ul);
-            tabItems.each(function ()
-            {
-                sumwidth += $(this).width() + 2;
-            });
-            var mainwidth = g.tab.width();
-            var leftList = new Array(); //记录每个tab的left,由右到左 
-            for (var i = tabItems.length - 1; i >= 0; i--)
-            {
-                var currentItemLeft = sumwidth - mainwidth + btnWitdth + 2;
-                if (i != tabItems.length - 1)
+            var tabItems = $("> li", g.tab.links.ul),
+                nextBtn = $(".l-tab-links-right", g.tab),
+                prevBtn = $(".l-tab-links-left", g.tab);
+            if (!nextBtn.length || !prevBtn.length) return false;
+            var nextBtnOffset = nextBtn.offset(), prevBtnOffset = prevBtn.offset();
+            //计算应该移动到的标签项,并计算从第一项到这个标签项的宽度总和
+            var moveToTabItem = null, currentWidth = 0;
+            for (var i = 0, l = tabItems.length; i < l; i++)
+            { 
+                var tabitem = $(tabItems[i]);
+                currentWidth += tabitem.outerWidth()
+                    + parseInt(tabitem.css("marginLeft"))
+                    + parseInt(tabitem.css("marginRight"));
+                var offset = tabitem.offset();
+                var start = offset.left, end = offset.left + tabitem.outerWidth();
+                if (tabid != null)
                 {
-                    currentItemLeft = parseInt(leftList[tabItems.length - 2 - i]) - $(tabItems[i + 1]).width() - 2;
+                    if (end > nextBtnOffset.left && tabitem.attr("tabid") == tabid)
+                    {
+                        moveToTabItem = tabitem;
+                        break;
+                    }
                 }
-                leftList.push(currentItemLeft);
+                else if (start <= nextBtnOffset.left && end > nextBtnOffset.left)
+                {
+                    moveToTabItem = tabitem;
+                    break;
+                }
             }
-            var currentLeft = -1 * parseInt(g.tab.links.ul.css("left"));
-            for (var j = 1; j < leftList.length; j++)
+            if (moveToTabItem == null) return false;
+            //计算出正确的移动位置
+            var left = currentWidth - (nextBtnOffset.left - prevBtnOffset.left)
+                + parseInt(moveToTabItem.css("marginLeft")) + parseInt(moveToTabItem.css("marginRight"));
+            g.tab.links.ul.animate({ left: -1 * left });
+            return true;
+        },
+        //切换到指定的项目项
+        moveToTabItem: function (tabid)
+        {
+            var g = this, p = this.options;
+            if (!g.moveToPrevTabItem(tabid))
             {
-                if (leftList[j] <= currentLeft && leftList[j - 1] > currentLeft)
-                {
-                    g.tab.links.ul.animate({ left: -1 * parseInt(leftList[j - 1]) });
-                    return;
-                }
+                g.moveToNextTabItem(tabid);
             }
         },
         getTabItemCount: function ()
@@ -484,6 +621,11 @@
 
             g.trigger('afterOverrideTabItem', [targettabid]);
         },
+        //设置页签项标题
+        setHeader: function(tabid,header)
+        { 
+            $("li[tabid=" + tabid + "] a", this.tab.links.ul).text(header);
+        },
         //选中tab项
         selectTabItem: function (tabid)
         {
@@ -511,25 +653,51 @@
                 g.tab.links.ul.animate({ left: -1 * (sumwidth - mainwidth + btnWitdth + 2) });
             }
         },
+        getTabItemTitle: function (tabid)
+        {
+            var g = this, p = this.options;
+            return $("li[tabid=" + tabid + "] a", g.tab.links.ul).text();
+        },
+        setTabItemTitle: function (tabid, title)
+        {
+            var g = this, p = this.options;
+            $("li[tabid=" + tabid + "] a", g.tab.links.ul).text(title);
+        },
+        getTabItemSrc: function (tabid)
+        {
+            var g = this, p = this.options;
+            return $(".l-tab-content-item[tabid=" + tabid + "] iframe", g.tab.content).attr("src");
+        },
+        setTabItemSrc: function (tabid, url)
+        {
+            var g = this, p = this.options;
+            var contentitem = $(".l-tab-content-item[tabid=" + tabid + "]", g.tab.content);
+            var iframeloading = $(".l-tab-loading:first", contentitem);
+            var iframe = $(".l-tab-content-item[tabid=" + tabid + "] iframe", g.tab.content); 
+            iframeloading.show();
+            iframe.attr("src", url).unbind('load.tab').bind('load.tab', function ()
+            {
+                iframeloading.hide();
+            }); 
+        },
+
+       
+
         //判断tab是否存在
         isTabItemExist: function (tabid)
         {
             var g = this, p = this.options;
-            return $("li[tabid=" + tabid + "]", g.tab.links.ul).length > 0;
-        },
+            return $("li[tabid=" + tabid + "] a", g.tab.links.ul).length > 0;
+        }, 
         //增加一个tab
         addTabItem: function (options)
         {
-            var g = this, p = this.options;
-            if (g.trigger('beforeAddTabItem', [tabid]) == false)
+            var g = this, p = this.options; 
+            if (g.trigger('beforeAddTabItem', [options]) == false)
                 return false;
             var tabid = options.tabid;
             if (tabid == undefined) tabid = g.getNewTabid();
-            var url = options.url;
-            var content = options.content;
-            var text = options.text;
-            var showClose = options.showClose;
-            var height = options.height;
+            var url = options.url, content = options.content, text = options.text, showClose = options.showClose, height = options.height;
             //如果已经存在
             if (g.isTabItemExist(tabid))
             {
@@ -546,9 +714,14 @@
                 contentitem.height(newheight);
             }
             tabitem.attr("tabid", tabid);
-            contentitem.attr("tabid", tabid);
+            contentitem.attr("tabid", tabid); 
             if (url)
             {
+                iframe[0].tab = g;//增加iframe对tab对象的引用  
+                if (options.data)
+                {
+                    iframe[0].openerData = options.data;
+                }
                 iframe.attr("name", tabid)
                  .attr("id", tabid)
                  .attr("src", url)
@@ -567,24 +740,33 @@
             if (content)
             {
                 contentitem.html(content);
+                if (options.callback)
+                    options.callback();
             }
             else if (options.target)
             {
                 contentitem.append(options.target);
+                if (options.callback)
+                    options.callback();
             }
             if (showClose == undefined) showClose = true;
             if (showClose == false) $(".l-tab-links-item-close", tabitem).remove();
             if (text == undefined) text = tabid;
             if (height) contentitem.height(height);
             $("a", tabitem).text(text);
-
-            g.tab.links.ul.append(tabitem);
-            g.tab.content.append(contentitem);
-            g.selectTabItem(tabid);
-            if (g.setTabButton())
+            if ($(".l-tab-itemswitch", g.tab.links.ul).length)
             {
-                g.moveToLastTabItem();
+                tabitem.insertBefore($(".l-tab-itemswitch", g.tab.links.ul));
+            } else
+            {
+                g.tab.links.ul.append(tabitem);
             }
+            g.tab.content.append(contentitem);
+            g.selectTabItem(tabid); 
+            if (g.setTabButton())
+            { 
+                g.moveToTabItem(tabid);
+            } 
             //增加事件
             g._addTabItemEvent(tabitem);
             if (p.dragToMove && $.fn.ligerDrag)
@@ -595,7 +777,8 @@
                     g.drags.push(g._applyDrag(this));
                 });
             }
-            g.trigger('afterAddTabItem', [tabid]);
+            g.toggleSwitch();
+            g.trigger('afterAddTabItem', [options]);
         },
         _addTabItemEvent: function (tabitem)
         {
@@ -623,7 +806,7 @@
         //移除tab项
         removeTabItem: function (tabid)
         {
-            var g = this, p = this.options;
+            var g = this, p = this.options; 
             if (g.trigger('beforeRemoveTabItem', [tabid]) == false)
                 return false;
             var currentIsSelected = $("li[tabid=" + tabid + "]", g.tab.links.ul).hasClass("l-selected");
@@ -632,11 +815,48 @@
                 $(".l-tab-content-item[tabid=" + tabid + "]", g.tab.content).prev().show();
                 $("li[tabid=" + tabid + "]", g.tab.links.ul).prev().addClass("l-selected").siblings().removeClass("l-selected");
             }
-            $(".l-tab-content-item[tabid=" + tabid + "]", g.tab.content).remove();
+            var contentItem = $(".l-tab-content-item[tabid=" + tabid + "]", g.tab.content); 
+            var jframe = $('iframe', contentItem); 
+            if (jframe.length)
+            {
+                var frame = jframe[0];
+                frame.src = "about:blank";
+                try
+                {
+                    frame.contentWindow.document.write('');
+                } catch (e)
+                {
+                }
+                $.browser.msie && CollectGarbage();
+                jframe.remove();
+            } 
+            contentItem.remove();
             $("li[tabid=" + tabid + "]", g.tab.links.ul).remove();
             g.setTabButton();
             g.trigger('afterRemoveTabItem', [tabid]);
         },
+
+        hideTabItem: function (tabid)
+        {
+            var g = this, p = this.options;
+            var currentIsSelected = $("li[tabid=" + tabid + "]", g.tab.links.ul).hasClass("l-selected");
+            if (currentIsSelected)
+            {
+                $(".l-tab-content-item[tabid=" + tabid + "]", g.tab.content).prev().show();
+                $("li[tabid=" + tabid + "]", g.tab.links.ul).prev().addClass("l-selected").siblings().removeClass("l-selected");
+            }
+            $("li[tabid=" + tabid + "]", g.tab.links.ul).hide();
+            $(".l-tab-content-item[tabid=" + tabid + "]", g.tab.content).hide();
+
+
+        },
+        showTabItem: function (tabid)
+        {
+            var g = this, p = this.options; 
+            $("li[tabid=" + tabid + "]", g.tab.links.ul).show(); 
+        },
+
+
         addHeight: function (heightDiff)
         {
             var g = this, p = this.options;
@@ -736,17 +956,21 @@
             switch (item.id)
             {
                 case "close":
+                    if (g.trigger('close') == false) return;
                     g.removeTabItem(g.actionTabid);
                     g.actionTabid = null;
                     break;
                 case "closeother":
+                    if (g.trigger('closeother') == false) return;
                     g.removeOther(g.actionTabid);
                     break;
                 case "closeall":
+                    if (g.trigger('closeall') == false) return;
                     g.removeAll();
                     g.actionTabid = null;
                     break;
                 case "reload":
+                    if (g.trigger('reload', [{ tabid: g.actionTabid }]) == false) return;
                     g.selectTabItem(g.actionTabid);
                     g.reload(g.actionTabid);
                     break;

@@ -6,11 +6,8 @@
 	position:absolute;left:0;top:0;width:100%;height:100%; 
 	display1:none;font-size:1px; *zoom:1;overflow:hidden; display:none;z-index: 9000;
 }
-.l-panel
-{
-    border:1px solid #84A0C4;
-    position:relative;
-    text-align:left;
+.l-selectorwin .l-panel {
+ 
 }
 .l-panel table{ width:auto;}
 .l-panel table,.l-panel td{ margin:0; padding:0;}
@@ -18,8 +15,7 @@
 {
     display:block; 
      height:22px; overflow:hidden; line-height:22px; position:relative; 
-     padding-left:15px; padding-right:15px; cursor:pointer;
-   
+     padding-left:15px; padding-right:15px; cursor:pointer; 
      text-align:center;color: #2C4D79;  text-decoration:none; cursor:pointer;
 }
 .l-panel-btn .l-panel-btn-l,.l-panel-btn .l-panel-btn-r{ display:none;}
@@ -45,9 +41,33 @@ background: url('../images/panel/header-bg.gif') repeat-x left -1px; position:re
 .l-panel-header-hasicon{ padding-left:13px;}
 .l-panel-header img{ position:absolute; left:6px; top:5px; width:16px; height:16px; border:0px;}
 .l-panel-header-text{ line-height:22px;padding-left:10px;}
+
 .l-panel-body
 {
   position:relative; overflow:hidden; width:100%;
+}
+
+.l-panel .l-toolbar {
+	background:none;border:0;
+}
+.l-panel-topbar {
+	padding:0;
+}
+.l-panel-topbarinner {
+	float:right;
+}
+.l-panel-topbarinner-left
+{
+    float:left;
+}
+.l-panel-topbartitle {
+	font-weight:bold; padding:0;margin:0;margin-left:9px; 
+}
+.l-panel-topbartitle-hasicon {
+	 padding-left:24px;position:relative;
+}
+.l-panel-topbaricon {
+	width:16px; height:16px; position:absolute; left:0px; top:6px;
 }
 .l-panel-body .l-grid
 {
@@ -57,16 +77,28 @@ background: url('../images/panel/header-bg.gif') repeat-x left -1px; position:re
 {
     position:relative;text-align:left;
 }
+.l-grid-empty .l-grid-body-inner {
+	width:100%;
+}
+.l-grid-empty .l-grid-body {
+	overflow:hidden;
+}
+.l-grid-hashorizontal .l-grid-body1 .l-jplace {
+	height:19px;
+} 
 .l-grid td div
 {
     font-size:12px;
 }
- .l-grid table{border-spacing:0 0;} 
-.l-grid-header
-{
-    border-bottom:1px solid #A3C0E8;
-   height:22px; line-height:22px;background:#E2F0FF url('../images/grid/header-bg.gif') repeat-x left bottom; overflow:hidden; width:100%;
-}
+ .l-grid table{border-spacing:0 0;}
+.l-grid-header {
+	border-bottom: 1px solid #A3C0E8;
+	height: 22px;
+	line-height: 22px;
+	background: #E2F0FF url('../images/grid/header-bg.gif') repeat-x left bottom;
+	overflow: hidden;
+	width: 100%;
+} 
 .l-grid-scroller {
 position: relative;
     top: 0px;
@@ -211,7 +243,9 @@ padding-right: 10px;
 } 
 .l-grid-hd-cell-text
 {
-    text-align:center; cursor:pointer;
+    text-align:center; 
+	cursor:pointer; 
+	overflow:hidden;
 }  
 .l-grid-hd-cell
 {   
@@ -319,6 +353,9 @@ padding-right: 10px;
 {
       background-position:0px -13px;
 }
+.l-grid-hd-cell-inner {
+	overflow: hidden;
+}
 .l-grid-hd-cell-checkbox
 {
    padding:0; margin:0;
@@ -341,7 +378,7 @@ padding-right: 10px;
 }
 .l-panel-bar
 {
-    height:32px;background:#C9DFFF url('../images/panel/bar-bg.gif') repeat-x left bottom;overflow:hidden;
+    height:32px;background:#C9DFFF url('../images/panel/bar-bg.gif') repeat-x left bottom;overflow:hidden;border:0;
     border-top:1px solid #84A0C4;
 }
 .l-panel-bbar-inner
@@ -378,6 +415,7 @@ height: 22px;
 border: 0px;
 cursor: pointer;
 overflow: hidden;
+margin-top: 4px;
 }
 .l-bar-button-over
 {
@@ -451,7 +489,7 @@ background: url(../images/icon/icon-loading.gif) no-repeat; background-position:
 .l-grid1 .l-grid-body{overflow:hidden;}
 .l-grid1 .l-grid-detailpanel{border-right:1px solid white;}
 .l-frozen .l-grid2{position:absolute; top:0px; left:0px; width:100%; }
-.l-frozen .l-grid2 .l-grid-body{overflow-x:scroll;}
+.l-frozen .l-grid2 .l-grid-body{overflow-x:auto;}
 .l-frozen .l-grid1{position:absolute; top:0px; left:0px;display:block;}
 
 
@@ -506,6 +544,9 @@ background: url(../images/icon/icon-loading.gif) no-repeat; background-position:
 .l-toolbar-item .l-icon,.l-toolbar-item img{ position:absolute; left:2px; top:2px; display:block;}
 .l-toolbar-item img{ width:16px; height:16px; border:0px;}
 .l-toolbar-item-hasicon{ padding-left:22px;}
+.l-toolbar-item-disable{cursor:default;}
+.l-toolbar-item-disable span{color: #A1A1A1;}
+.l-toolbar-item-color{border: 1px solid #ccc;position: absolute;width: 14px;height: 14px;left: 3px;top: 3px;}
 /*
     搜索栏
 */
