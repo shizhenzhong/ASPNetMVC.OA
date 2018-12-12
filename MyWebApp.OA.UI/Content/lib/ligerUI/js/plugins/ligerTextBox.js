@@ -1,9 +1,9 @@
 ﻿/**
-* jQuery ligerUI 1.3.3
+* jQuery ligerUI 1.1.9
 * 
 * http://ligerui.com
 *  
-* Author daomi 2015 [ gd_star@163.com ] 
+* Author daomi 2012 [ gd_star@163.com ] 
 * 
 */
 (function ($)
@@ -20,20 +20,12 @@
 
     $.ligerDefaults.TextBox = {
         onChangeValue: null,
-        onMouseOver: null,
-        onMouseOut: null,
-        onBlur: null,
-        onFocus: null,
         width: null,
         disabled: false,
-        initSelect : false,
         value: null,     //初始化值 
-        precision: 2,    //保留小数位(仅currency时有效)
         nullText: null,   //不能为空时的提示
         digits: false,     //是否限定为数字输入框
-        number: false,    //是否限定为浮点数格式输入框
-        currency: false,     //是否显示为货币形式
-        readonly: false              //是否只读
+        number: false    //是否限定为浮点数格式输入框
     };
 
 
@@ -61,10 +53,7 @@
             }
             if ($(this.element).attr("readonly"))
             {
-                p.readonly = true;
-            } else if (p.readonly)
-            {
-                $(this.element).attr("readonly", true);
+                p.disabled = true;
             }
         },
         _render: function ()
@@ -77,103 +66,50 @@
             if (!g.inputText.hasClass("l-text-field"))
                 g.inputText.addClass("l-text-field");
             this._setEvent();
-            if (p.digits || p.number || p.currency)
-            {
-                g.inputText.addClass("l-text-field-number");
-            }
-           
             g.set(p);
-            g.formatValue();
-        },
-        destroy: function ()
-        {
-            var g = this;
-            if (g.wrapper)
-            {
-                g.wrapper.remove();
-            }
-            g.options = null;
-            liger.remove(this);
+            g.checkValue();
         },
         _getValue: function ()
         {
-            var g = this, p = this.options;
-            
-            if (g.inputText.hasClass("l-text-field-null"))
-            {
-                return "";
-            } 
-            if (p.digits || p.number || p.currency)
-            {
-                return g.parseNumber();
-            }
-            return g.inputText.val();
+            return this.inputText.val();
         },
         _setNullText: function ()
         {
             this.checkNotNull();
         },
-        formatValue: function ()
+        checkValue: function ()
         {
             var g = this, p = this.options;
-            var v = g.inputText.val() || "";
-            if (v == "") return "";
-            if (p.currency)
+            var v = g.inputText.val();
+            if (p.number && !/^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(v) || p.digits && !/^\d+$/.test(v))
             {
-                g.inputText.val(currencyFormatter(v, p.precision));
-            } else if(p.number && p.precision && v)
-            {
-                var value = parseFloat(g.inputText.val()).toFixed(p.precision);
-                g.inputText.val(value);
+                g.inputText.val(g.value || 0);
+                return;
             } 
+            g.value = v;
         },
         checkNotNull: function ()
         {
             var g = this, p = this.options;
-             
-            if (p.nullText && p.nullText != "null" && !p.disabled && !p.readonly)
+            if (p.nullText && !p.disabled)
             {
                 if (!g.inputText.val())
                 {
                     g.inputText.addClass("l-text-field-null").val(p.nullText);
-                    return;
                 }
-            } else
-            {
-                g.inputText.removeClass("l-text-field-null");
             }
         },
         _setEvent: function ()
         {
             var g = this, p = this.options;
-            function validate()
-            {
-                var value = g.inputText.val();
-                if (!value || value == "-") return true;
-
-                var r = (p.digits ? /^-?\d+$/ : /^(-?\d+)(\.)?(\d+)?$/).test(value);
-                return r;
-            }
-            function keyCheck()
-            {
-                if (!validate())
-                {
-                    g.inputText.val(g.parseNumber());
-                }
-            }
-            if (p.digits || p.number || p.currency)
-            { 
-                g.inputText.keyup(keyCheck).bind("paste", keyCheck); 
-            } 
             g.inputText.bind('blur.textBox', function ()
             {
                 g.trigger('blur');
                 g.checkNotNull();
-                g.formatValue();
+                g.checkValue();
                 g.wrapper.removeClass("l-text-focus");
             }).bind('focus.textBox', function ()
-            { 
-                if (p.readonly) return; 
+            {
                 g.trigger('focus');
                 if (p.nullText)
                 {
@@ -183,21 +119,9 @@
                     }
                 }
                 g.wrapper.addClass("l-text-focus");
-
-                if (p.digits || p.number || p.currency)
-                {
-                    $(this).val(g.parseNumber());
-                    if (p.initSelect)
-                    {
-                        setTimeout(function ()
-                        {
-                            g.inputText.select();
-                        }, 150);
-                    } 
-                }
             })
             .change(function ()
-            {
+            { 
                 g.trigger('changeValue', [this.value]);
             });
             g.wrapper.hover(function ()
@@ -210,48 +134,14 @@
                 g.wrapper.removeClass("l-text-over");
             });
         },
-
-        //将value转换为有效的数值
-        //1,去除无效字符 2,小数点保留
-        parseNumber : function(value)
-        {
-            var g = this, p = this.options; 
-            var isInt = p.digits ? true : false;
-            value = value || g.inputText.val();
-            if (value == null || value == "") return "";
-            if (!(p.digits || p.number || p.currency)) return value;
-            if (typeof (value) != "string") value = (value || "").toString(); 
-            var sign = /^\-/.test(value);
-            if (isInt)
-            {
-                if (value == "0") return value;
-                value = value.replace(/\D+|^[0]+/g, ''); 
-            } else
-            {
-                value = value.replace(/[^0-9.]/g, '');
-                if (/^[0]+[1-9]+/.test(value))
-                {
-                    value = value.replace(/^[0]+/, '');
-                } 
-            } 
-            if (!isInt && p.precision)
-            {
-                value = parseFloat(value).toFixed(p.precision);
-                if (value == "NaN") return "0";
-            }
-            if (sign) value = "-" + value;
-            return value;
-        },
-
         _setDisabled: function (value)
         {
-            var g = this, p = this.options;
             if (value)
             {
                 this.inputText.attr("readonly", "readonly");
                 this.wrapper.addClass("l-text-disabled");
             }
-            else if (!p.readonly)
+            else
             {
                 this.inputText.removeAttr("readonly");
                 this.wrapper.removeClass('l-text-disabled');
@@ -276,8 +166,7 @@
         _setValue: function (value)
         {
             if (value != null)
-                this.inputText.val(value); 
-            this.checkNotNull();
+                this.inputText.val(value);
         },
         _setLabel: function (value)
         {
@@ -324,77 +213,21 @@
         updateStyle: function ()
         {
             var g = this, p = this.options;
-            if (g.inputText.attr('readonly'))
-            {
-                g.wrapper.addClass("l-text-readonly");
-                p.disabled = true;
-            }
-            else
-            {
-                g.wrapper.removeClass("l-text-readonly");
-                p.disabled = false;
-            }
-            if (g.inputText.attr('disabled'))
+            if (g.inputText.attr('disabled') || g.inputText.attr('readonly'))
             {
                 g.wrapper.addClass("l-text-disabled");
-                p.disabled = true;
+                g.options.disabled = true;
             }
             else
             {
                 g.wrapper.removeClass("l-text-disabled");
-                p.disabled = false;
+                g.options.disabled = false;
             }
             if (g.inputText.hasClass("l-text-field-null") && g.inputText.val() != p.nullText)
             {
                 g.inputText.removeClass("l-text-field-null");
             }
-            g.formatValue();
-        },
-        setValue: function (value)
-        {
-            this._setValue(value);
-            this.trigger('changeValue', [value]);
+            g.checkValue();
         }
     });
-
-    function currencyFormatter(num, precision)
-    { 
-        var cents, sign;
-        if (!num) num = 0;
-        num = num.toString().replace(/\$|\,/g, '').replace(/[a-zA-Z]+/g, '');
-        if (num.indexOf('.') > -1) num = num.replace(/[0]+$/g, '');
-        if (isNaN(num))
-            num = 0;
-        sign = (num == (num = Math.abs(num)));
-       
-        if (precision == null)
-        {
-            num = num.toString();
-            cents = num.indexOf('.') != -1 ? num.substr(num.indexOf('.') + 1) : ''; 
-            if (cents)
-            {
-                num = Math.floor(num * 1);
-                num = num.toString();
-            }
-        }
-        else
-        {
-            precision = parseInt(precision);
-            var r = Math.pow(10, precision);
-            num = Math.floor(num * r + 0.50000000001);
-            cents = num % 100;
-            num = Math.floor(num / r).toString();
-            while (cents.toString().length < precision)
-            {
-                cents = "0" + cents;
-            }  
-        } 
-        for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3) ; i++)
-            num = num.substring(0, num.length - (4 * i + 3)) + ',' +
-            num.substring(num.length - (4 * i + 3));
-        var numStr = "" + (((sign) ? '' : '-') + '' + num);
-        if (cents) numStr += ('.' + cents);
-        return numStr;
-    }
-
 })(jQuery);

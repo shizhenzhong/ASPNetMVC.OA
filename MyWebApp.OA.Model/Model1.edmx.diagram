@@ -22,6 +22,7 @@
         <AssociationConnector Association="OAModel.DepartmentActionInfo" ManuallyRouted="false" />
         <AssociationConnector Association="OAModel.RoleInfoActionInfo" ManuallyRouted="false" />
         <AssociationConnector Association="OAModel.UserInfoDepartment" ManuallyRouted="false" />
+        <AssociationConnector Association="OAModel.UserInfoRoleInfo" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1,9 +1,9 @@
 ﻿/**
-* jQuery ligerUI 1.3.3
+* jQuery ligerUI 1.1.9
 * 
 * http://ligerui.com
 *  
-* Author daomi 2015 [ gd_star@163.com ] 
+* Author daomi 2012 [ gd_star@163.com ] 
 * 
 */
 (function ($)
@@ -20,11 +20,9 @@
 
     $.ligerDefaults.Tree = {
         url: null,
-        urlParms: null,                     //url带参数
         data: null,
         checkbox: true,
         autoCheckboxEven: true,
-        enabledCompleteCheckbox : true,     //是否启用半选择
         parentIcon: 'folder',
         childIcon: 'leaf',
         textFieldName: 'text',
@@ -34,7 +32,6 @@
         statusName: '__status',
         isLeaf: null,              //是否子节点的判断函数
         single: false,               //是否单选
-        needCancel: true,			//已选的是否需要取消操作
         onBeforeExpand: function () { },
         onContextmenu: function () { },
         onExpand: function () { },
@@ -58,37 +55,7 @@
         iconFieldName: 'icon',
         nodeDraggable: false,             //是否允许拖拽
         nodeDraggingRender: null,
-        btnClickToToggleOnly: true,     //是否点击展开/收缩 按钮时才有效
-        ajaxType: 'post',
-        ajaxContentType : null,
-        render: null,               //自定义函数
-        selectable: null,           //可选择判断函数
-        /*
-        是否展开 
-            1,可以是true/false 
-            2,也可以是数字(层次)N 代表第1层到第N层都是展开的，其他收缩
-            3,或者是判断函数 函数参数e(data,level) 返回true/false
-
-        优先级没有节点数据的isexpand属性高,并没有delay属性高
-        */
-        isExpand: null,
-        /*
-        是否延迟加载 
-            1,可以是true/false 
-            2,也可以是数字(层次)N 代表第N层延迟加载 
-            3,或者是字符串(Url) 加载数据的远程地址
-            4,如果是数组,代表这些层都延迟加载,如[1,2]代表第1、2层延迟加载
-            5,再是函数(运行时动态获取延迟加载参数) 函数参数e(data,level),返回true/false或者{url:...,parms:...}
-
-        优先级没有节点数据的delay属性高
-        */
-        delay: null,
-
-        //id字段
-        idField: null,
-        //parent id字段，可用于线性数据转换为tree数据
-        parentIDField: null,
-	    iconClsFieldName : null 
+        btnClickToToggleOnly: true     //是否点击展开/收缩 按钮时才有效
     };
 
     $.ligerui.controls.Tree = function (element, options)
@@ -109,8 +76,7 @@
             g.set(p, true);
             g.tree = $(g.element);
             g.tree.addClass('l-tree');
-            g.toggleNodeCallbacks = [];
-            g.sysAttribute = ['isexpand', 'ischecked', 'href', 'style', 'delay'];
+            g.sysAttribute = ['isexpand', 'ischecked', 'href', 'style'];
             g.loading = $("<div class='l-tree-loading'></div>");
             g.tree.after(g.loading);
             g.data = [];
@@ -118,6 +84,7 @@
             g.treedataindex = 0;
             g._applyTree();
             g._setTreeEven();
+
             g.set(p, false);
         },
         _setTreeLine: function (value)
@@ -125,56 +92,13 @@
             if (value) this.tree.removeClass("l-tree-noline");
             else this.tree.addClass("l-tree-noline");
         },
-        _setParms: function ()
-        {
-            var g = this, p = this.options;
-            if ($.isFunction(p.parms)) p.parms = p.parms();
-        },
-        reload: function (callback)
-        {
-            var g = this, p = this.options;
-            g.clear();
-            g.loadData(null, p.url, null, {
-                success: callback
-            });
-        },
-
-        //刷新节点
-        reloadNode: function (node, data, callback)
-        {
-            var g = this, p = this.options; 
-            g.clear(node); 
-            if (typeof (data) == "string")
-            {
-                g.loadData(node, data, null, {
-                    success: callback
-                });
-            } else
-            { 
-                if (!data) return;
-                if (p.idField && p.parentIDField)
-                {
-                    data = g.arrayToTree(data, p.idField, p.parentIDField);
-                } 
-                g.append(node, data);
-            }
-        },
         _setUrl: function (url)
         {
-            var g = this, p = this.options;
-            if (url)
-            {
-                g.clear();
-                g.loadData(null, url);
-            }
+            if (url) this.loadData(null, url);
         },
         _setData: function (data)
         {
-            if (data)
-            {
-                this.clear();
-                this.append(null, data);
-            }
+            if (data) this.append(null, data);
         },
         setData: function (data)
         {
@@ -187,7 +111,7 @@
         //是否包含子节点
         hasChildren: function (treenodedata)
         {
-            if (this.options.isLeaf) return !this.options.isLeaf(treenodedata);
+            if (this.options.isLeaf) return this.options.isLeaf(treenodedata);
             return treenodedata.children ? true : false;
         },
         //获取父节点 数据
@@ -198,7 +122,7 @@
             var parentTreeNode = g.getParentTreeItem(treenode, level);
             if (!parentTreeNode) return null;
             var parentIndex = $(parentTreeNode).attr("treedataindex");
-            return g._getDataNodeByTreeDataIndex(g.data,parentIndex);
+            return g._getDataNodeByTreeDataIndex(parentIndex);
         },
         //获取父节点
         getParentTreeItem: function (treenode, level)
@@ -233,30 +157,6 @@
                 nodes.push({ target: this, data: g._getDataNodeByTreeDataIndex(g.data, treedataindex) });
             });
             return nodes;
-        },
-        getCheckedData: function ()
-        {
-            var g = this, p = this.options;
-            if (!this.options.checkbox) return null;
-            var nodes = [];
-            $(".l-checkbox-checked", g.tree).parent().parent("li").each(function ()
-            {
-                var treedataindex = parseInt($(this).attr("treedataindex"));
-                nodes.push(g._getDataNodeByTreeDataIndex(g.data, treedataindex));
-            });
-            return nodes;
-        },
-
-
-
-        //add by superzoc 12/24/2012 
-        refreshTree: function ()
-        {
-            var g = this, p = this.options;
-            $.each(this.getChecked(), function (k, v)
-            {
-                g._setParentCheckboxStatus($(v.target));
-            });
         },
         getSelected: function ()
         {
@@ -322,137 +222,48 @@
         {
             var g = this, p = this.options;
             $(".l-expandable-close", g.tree).click();
-        }, 
-        arrayToTree: function (data, id, pid)      //将ID、ParentID这种数据格式转换为树格式
-        {
-            var g = this, p = this.options;
-            var childrenName = "children"; 
-            if (!data || !data.length) return [];
-            var targetData = [];                    //存储数据的容器(返回) 
-            var records = {};
-            var itemLength = data.length;           //数据集合的个数
-            for (var i = 0; i < itemLength; i++)
-            {
-                var o = data[i];
-                var key = getKey(o[id]);
-                records[key] = o;
-            }
-            for (var i = 0; i < itemLength; i++)
-            {
-                var currentData = data[i];
-                var key = getKey(currentData[pid]);
-                var parentData = records[key];
-                if (!parentData)
-                {
-                    targetData.push(currentData);
-                    continue;
-                }
-                parentData[childrenName] = parentData[childrenName] || [];
-                parentData[childrenName].push(currentData);
-            }
-            return targetData;
-
-            function getKey(key)
-            {
-                if (typeof (key) == "string") key = key.replace(/[.]/g, '').toLowerCase();
-                return key;
-            }
         },
-        loadData: function (node, url, param, e)
+        loadData: function (node, url, param)
         {
             var g = this, p = this.options;
-            e = $.extend({
-                showLoading: function ()
-                {
-                    g.loading.show();
-                },
-                success: function () { },
-                error: function () { },
-                hideLoading: function ()
-                {
-                    g.loading.hide();
-                }
-            }, e || {});
-            var ajaxtype = p.ajaxType;
-            //解决树无法设置parms的问题
-            param = $.extend(($.isFunction(p.parms) ? p.parms() : p.parms), param);
-            if (p.ajaxContentType == "application/json" && typeof (param) != "string")
-            {
-                param = liger.toJSON(param);
-            } 
-            var urlParms = $.isFunction(p.urlParms) ? p.urlParms.call(g) : p.urlParms;
-            if (urlParms)
-            {
-                for (name in urlParms)
-                {
-                    url += url.indexOf('?') == -1 ? "?" : "&";
-                    url += name + "=" + urlParms[name];
-                }
-            }
-            var ajaxOp = {
+            g.loading.show();
+            var ajaxtype = param ? "post" : "get";
+            param = param || [];
+            //请求服务器
+            $.ajax({
                 type: ajaxtype,
                 url: url,
                 data: param,
-                dataType: 'json', 
-                beforeSend: function ()
-                {
-                    e.showLoading();
-                },
+                dataType: 'json',
                 success: function (data)
                 {
                     if (!data) return;
-                    if (p.idField && p.parentIDField)
-                    {
-                        data = g.arrayToTree(data, p.idField, p.parentIDField);
-                    }
-                    e.hideLoading();
+                    g.loading.hide();
                     g.append(node, data);
                     g.trigger('success', [data]);
-                    e.success(data);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown)
                 {
                     try
                     {
-                        e.hideLoading();
+                        g.loading.hide();
                         g.trigger('error', [XMLHttpRequest, textStatus, errorThrown]);
-                        e.error(XMLHttpRequest, textStatus, errorThrown);
                     }
                     catch (e)
                     {
 
                     }
                 }
-            };
-            if (p.ajaxContentType)
-            {
-                ajaxOp.contentType = p.ajaxContentType;
-            }
-            $.ajax(ajaxOp);
+            });
         },
-
         //清空
-        clear: function (node)
+        clear: function ()
         {
             var g = this, p = this.options;
-            if (!node)
-            {
-                g.toggleNodeCallbacks = [];
-                g.data = null;
-                g.data = [];
-                g.nodes = null;
-                g.tree.html("");
-            } else
-            {
-               
-                var nodeDom = g.getNodeDom(node);
-                var nodeData = g._getDataNodeByTreeDataIndex(g.data, $(nodeDom).attr("treedataindex"));
-                $(nodeDom).find("ul.l-children").remove();
-                if (nodeData) nodeData.children = [];
-            }
+            //g.tree.html("");
+            $("> li", g.tree).each(function () { g.remove(this); });
         },
-
-        //parm [treeNode] dom节点(li)、节点数据 或者节点 dataindex
+        //@parm [treeNode] dom节点(li)、节点数据 或者节点 dataindex
         getNodeDom: function (nodeParm)
         {
             var g = this, p = this.options;
@@ -464,25 +275,10 @@
             else if (typeof (nodeParm) == "object" && 'treedataindex' in nodeParm) //nodedata
             {
                 return g.getNodeDom(nodeParm['treedataindex']);
-            } else if(nodeParm.target && nodeParm.data)
-            {
-                return nodeParm.target;
             }
             return nodeParm;
         },
-        hide: function (treeNode)
-        {
-            var g = this, p = this.options;
-            treeNode = g.getNodeDom(treeNode);
-            if (treeNode) $(treeNode).hide();
-        },
-        show: function (treeNode)
-        {
-            var g = this, p = this.options;
-            treeNode = g.getNodeDom(treeNode);
-            if (treeNode) $(treeNode).show();
-        },
-        //parm [treeNode] dom节点(li)、节点数据 或者节点 dataindex
+        //@parm [treeNode] dom节点(li)、节点数据 或者节点 dataindex
         remove: function (treeNode)
         {
             var g = this, p = this.options;
@@ -520,7 +316,7 @@
                 g._setTreeItem(this, { isLast: i == treeitemlength - 1 });
             });
         },
-        //parm [domnode] dom节点(li)、节点数据 或者节点 dataindex
+        //@parm [domnode] dom节点(li)、节点数据 或者节点 dataindex
         update: function (domnode, newnodedata)
         {
             var g = this, p = this.options;
@@ -537,10 +333,10 @@
             }
         },
         //增加节点集合
-        //parm [newdata] 数据集合 Array
-        //parm [parentNode] dom节点(li)、节点数据 或者节点 dataindex
-        //parm [nearNode] 附加到节点的上方/下方(非必填)
-        //parm [isAfter] 附加到节点的下方(非必填)
+        //@parm [newdata] 数据集合 Array
+        //@parm [parentNode] dom节点(li)、节点数据 或者节点 dataindex
+        //@parm [nearNode] 附加到节点的上方/下方(非必填)
+        //@parm [isAfter] 附加到节点的下方(非必填)
         append: function (parentNode, newdata, nearNode, isAfter)
         {
             var g = this, p = this.options;
@@ -580,6 +376,7 @@
                 {
                     $(this).removeClass("l-over");
                 });
+
                 g._upadteTreeWidth();
                 g.trigger('afterAppend', [parentNode, newdata])
                 return;
@@ -625,8 +422,8 @@
             });
             g.trigger('afterAppend', [parentNode, newdata]);
         },
-        //parm [nodeParm] dom节点(li)、节点数据 或者节点 dataindex
-        cancelSelect: function (nodeParm, isTriggerEvent)
+        //@parm [nodeParm] dom节点(li)、节点数据 或者节点 dataindex
+        cancelSelect: function (nodeParm)
         {
             var g = this, p = this.options;
             var domNode = g.getNodeDom(nodeParm);
@@ -638,13 +435,10 @@
                 $(".l-checkbox", treeitembody).removeClass("l-checkbox-checked").addClass("l-checkbox-unchecked");
             else
                 treeitembody.removeClass("l-selected");
-            if (isTriggerEvent != false)
-            {
-                g.trigger('cancelSelect', [{ data: treenodedata, target: treeitem[0] }]);
-            }
+            g.trigger('cancelSelect', [{ data: treenodedata, target: treeitem[0]}]);
         },
         //选择节点(参数：条件函数、Dom节点或ID值)
-        selectNode: function (selectNodeParm,isTriggerEvent)
+        selectNode: function (selectNodeParm)
         {
             var g = this, p = this.options;
             var clause = null;
@@ -658,31 +452,20 @@
                 var treedataindex = parseInt(treeitem.attr("treedataindex"));
                 var treenodedata = g._getDataNodeByTreeDataIndex(g.data, treedataindex);
                 var treeitembody = $(">div:first", treeitem);
-                if (!treeitembody.length)
-                {
-                    treeitembody = $("li[treedataindex=" + treedataindex + "] >div:first", g.tree);
-                }
                 if (p.checkbox)
-                {
                     $(".l-checkbox", treeitembody).removeClass("l-checkbox-unchecked").addClass("l-checkbox-checked");
-                }
                 else
-                {
-                    $("div.l-selected", g.tree).removeClass("l-selected");
                     treeitembody.addClass("l-selected");
-                }
-                if (isTriggerEvent != false)
-                {
-                    g.trigger('select', [{ data: treenodedata, target: treeitembody.parent().get(0) }]);
-                }
+
+                g.trigger('select', [{ data: treenodedata, target: treeitem[0]}]);
                 return;
             }
             else
             {
                 clause = function (data)
                 {
-                    if (!data[p.idFieldName] && data[p.idFieldName] != 0) return false;
-                    return strTrim(data[p.idFieldName].toString()) == strTrim(selectNodeParm.toString());
+                    if (!data[p.idFieldName]) return false;
+                    return data[p.idFieldName].toString() == selectNodeParm.toString();
                 };
             }
             $("li", g.tree).each(function ()
@@ -692,15 +475,11 @@
                 var treenodedata = g._getDataNodeByTreeDataIndex(g.data, treedataindex);
                 if (clause(treenodedata, treedataindex))
                 {
-                    g.selectNode(this, isTriggerEvent);
+                    g.selectNode(this);
                 }
                 else
                 {
-                    //修复多选checkbox为true时调用该方法会取消已经选中节点的问题
-                    if (!g.options.checkbox)
-                    {
-                        g.cancelSelect(this, isTriggerEvent);
-                    }
+                    g.cancelSelect(this);
                 }
             });
         },
@@ -715,28 +494,6 @@
         {
             var g = this, p = this.options;
             var data = null;
-
-            if (g.data && g.data.length)
-            {
-                return find(g.data);
-            }
-
-            function find(items)
-            {
-                for (var i = 0; i < items.length; i++)
-                {
-                    var dataItem = items[i];
-                    if (dataItem[p.idFieldName] == id) return dataItem;
-                    if (dataItem.children && dataItem.children.length)
-                    {
-                        var o = find(dataItem.children);
-                        if (o) return o;
-                    } 
-                }
-                return null;
-            }
-
-
             $("li", g.tree).each(function ()
             {
                 if (data) return;
@@ -775,10 +532,6 @@
             }
             return targetData;
         },
-
-
-
-
         //根据数据索引获取数据
         _getDataNodeByTreeDataIndex: function (data, treedataindex)
         {
@@ -826,17 +579,21 @@
         {
             var g = this, p = this.options;
             g.nodes = g.nodes || [];
-            g.nodes.push(data);
-            if (!data.children) return;
-            $(data.children).each(function (i, item)
+            if ($.inArray(data, g.nodes) == -1)
+                g.nodes.push(data);
+            if (data.children)
             {
-                g._addToNodes(item);
-            });
+                $(data.children).each(function (i, item)
+                {
+                    g._addToNodes(item);
+                });
+            }
         },
         //添加项到g.data
         _appendData: function (treeNode, data)
         {
             var g = this, p = this.options;
+
             var treedataindex = parseInt($(treeNode).attr("treedataindex"));
             var treenodedata = g._getDataNodeByTreeDataIndex(g.data, treedataindex);
             if (g.treedataindex == undefined) g.treedataindex = 0;
@@ -900,32 +657,6 @@
             if (isOpen) nodeclassname += '-open';
             return nodeclassname;
         },
-        //判断节点是否展开状态,返回true/false
-        _isExpand: function (o, level)
-        {
-            var g = this, p = this.options;
-            var isExpand = o.isExpand != null ? o.isExpand : (o.isexpand != null ? o.isexpand : p.isExpand);
-            if (isExpand == null) return true;
-            if (typeof (isExpand) == "function") isExpand = p.isExpand({ data: o, level: level });
-            if (typeof (isExpand) == "boolean") return isExpand;
-            if (typeof (isExpand) == "string") return isExpand == "true";
-            if (typeof (isExpand) == "number") return isExpand > level;
-            return true;
-        },
-        //获取节点的延迟加载状态,返回true/false (本地模式) 或者是object({url :'...',parms:null})(远程模式)
-        _getDelay: function (o, level)
-        {
-            var g = this, p = this.options;
-            var delay = o.delay != null ? o.delay : p.delay;
-            if (delay == null) return false;
-            if (typeof (delay) == "function") delay = delay({ data: o, level: level });
-            if (typeof (delay) == "boolean") return delay;
-            if (typeof (delay) == "string") return { url: delay };
-            if (typeof (delay) == "number") delay = [delay];
-            if ($.isArray(delay)) return $.inArray(level, delay) != -1;
-            if (typeof (delay) == "object" && delay.url) return delay;
-            return false;
-        },
         //根据data生成最终完整的tree html
         _getTreeHTMLByData: function (data, outlineLevel, isLast, isExpand)
         {
@@ -939,11 +670,11 @@
             else treehtmlarr.push("<ul class='l-children'>");
             for (var i = 0; i < data.length; i++)
             {
-                var o = data[i];
                 var isFirst = i == 0;
                 var isLastCurrent = i == data.length - 1;
-                var delay = g._getDelay(o, outlineLevel);
-                var isExpandCurrent = delay ? false : g._isExpand(o, outlineLevel);
+                var isExpandCurrent = true;
+                var o = data[i];
+                if (o.isexpand == false || o.isexpand == "false") isExpandCurrent = false;
 
                 treehtmlarr.push('<li ');
                 if (o.treedataindex != undefined)
@@ -970,12 +701,7 @@
                 isFirst && isLastCurrent && treehtmlarr.push('l-onlychild ');
                 treehtmlarr.push('"');
                 treehtmlarr.push('>');
-                treehtmlarr.push('<div class="l-body');
-                if (p.selectable && p.selectable(o) == false)
-                {
-                    treehtmlarr.push(' l-unselectable');
-                }
-                treehtmlarr.push('">');
+                treehtmlarr.push('<div class="l-body">');
                 for (var k = 0; k <= outlineLevel - 2; k++)
                 {
                     if (isLast[k]) treehtmlarr.push('<div class="l-box"></div>');
@@ -996,11 +722,9 @@
                     {
                         //node icon
                         treehtmlarr.push('<div class="l-box l-tree-icon ');
-                        treehtmlarr.push(g._getParentNodeClassName(isExpandCurrent ? true : false) + " ");
+                        treehtmlarr.push(g._getParentNodeClassName(p.parentIcon ? true : false) + " ");
                         if (p.iconFieldName && o[p.iconFieldName])
                             treehtmlarr.push('l-tree-icon-none');
-                        else if (p.iconClsFieldName && o[p.iconClsFieldName])
-                            treehtmlarr.push('l-tree-icon-' + o[p.iconClsFieldName] + " ");
                         treehtmlarr.push('">');
                         if (p.iconFieldName && o[p.iconFieldName])
                             treehtmlarr.push('<img src="' + o[p.iconFieldName] + '" />');
@@ -1025,23 +749,14 @@
                         treehtmlarr.push(g._getChildNodeClassName() + " ");
                         if (p.iconFieldName && o[p.iconFieldName])
                             treehtmlarr.push('l-tree-icon-none');
-                        else if (p.iconClsFieldName && o[p.iconClsFieldName])
-                            treehtmlarr.push('l-tree-icon-' + o[p.iconClsFieldName] + " ");
-
                         treehtmlarr.push('">');
                         if (p.iconFieldName && o[p.iconFieldName])
                             treehtmlarr.push('<img src="' + o[p.iconFieldName] + '" />');
                         treehtmlarr.push('</div>');
                     }
                 }
-                if (p.render)
-                {
-                    treehtmlarr.push('<span>' + p.render(o, o[p.textFieldName]) + '</span>');
-                } else
-                {
-                    treehtmlarr.push('<span>' + o[p.textFieldName] + '</span>');
-                }
-                treehtmlarr.push('</div>');
+
+                treehtmlarr.push('<span>' + o[p.textFieldName] + '</span></div>');
                 if (g.hasChildren(o))
                 {
                     var isLastNew = [];
@@ -1050,74 +765,13 @@
                         isLastNew.push(isLast[k]);
                     }
                     isLastNew.push(isLastCurrent);
-                    if (delay)
-                    {
-                        if (delay == true)
-                        {
-                            g.toggleNodeCallbacks.push({
-                                data: o,
-                                callback: function (dom, o)
-                                {
-                                    var content = g._getTreeHTMLByData(o.children, outlineLevel + 1, isLastNew, isExpandCurrent).join('');
-                                    $(dom).append(content);
-                                    $(">.l-children .l-body", dom).hover(function ()
-                                    {
-                                        $(this).addClass("l-over");
-                                    }, function ()
-                                    {
-                                        $(this).removeClass("l-over");
-                                    });
-                                    g._removeToggleNodeCallback(o);
-                                }
-                            });
-                        }
-                        else if (delay.url)
-                        {
-                            (function (o, url, parms)
-                            {
-                                g.toggleNodeCallbacks.push({
-                                    data: o,
-                                    callback: function (dom, o)
-                                    {
-                                        g.loadData(dom, url, parms, {
-                                            showLoading: function ()
-                                            {
-                                                $("div.l-expandable-close:first", dom).addClass("l-box-loading");
-                                            },
-                                            hideLoading: function ()
-                                            {
-                                                $("div.l-box-loading:first", dom).removeClass("l-box-loading");
-                                            }
-                                        });
-                                        g._removeToggleNodeCallback(o);
-                                    }
-                                });
-                            })(o, delay.url, delay.parms);
-                        }
-                    }
-                    else
-                    {
-                        treehtmlarr.push(g._getTreeHTMLByData(o.children, outlineLevel + 1, isLastNew, isExpandCurrent).join(''));
-                    }
-
+                    treehtmlarr.push(g._getTreeHTMLByData(o.children, outlineLevel + 1, isLastNew, isExpandCurrent).join(''));
                 }
                 treehtmlarr.push('</li>');
             }
             treehtmlarr.push("</ul>");
             return treehtmlarr;
 
-        },
-        _removeToggleNodeCallback: function (nodeData)
-        {
-            var g = this, p = this.options;
-            for (var i = 0; i <= g.toggleNodeCallbacks.length; i++)
-            {
-                if (g.toggleNodeCallbacks[i] && g.toggleNodeCallbacks[i].data == nodeData)
-                {
-                    g.toggleNodeCallbacks.splice(i, 1);
-                    break;
-                }
-            }
         },
         //根据简洁的html获取data
         _getDataByTreeHTML: function (treeDom)
@@ -1158,6 +812,17 @@
             g.tree.html(gridhtmlarr.join(''));
             g._upadteTreeWidth();
             $(".l-body", g.tree).hover(function ()
+            {
+                $(this).addClass("l-over");
+            }, function ()
+            {
+                $(this).removeClass("l-over");
+            });
+        },
+        _applyTreeEven: function (treeNode)
+        {
+            var g = this, p = this.options;
+            $("> .l-body", treeNode).hover(function ()
             {
                 $(this).addClass("l-over");
             }, function ()
@@ -1216,7 +881,7 @@
                 });
             }
             g.tree.click(function (e)
-            {
+            { 
                 var obj = (e.target || e.srcElement);
                 var treeitem = null;
                 if (obj.tagName.toLowerCase() == "a" || obj.tagName.toLowerCase() == "span" || $(obj).hasClass("l-box"))
@@ -1232,24 +897,21 @@
                 var clickOnTreeItemBtn = $(obj).hasClass("l-expandable-open") || $(obj).hasClass("l-expandable-close");
                 if (!$(obj).hasClass("l-checkbox") && !clickOnTreeItemBtn)
                 {
-                    if (!treeitem.hasClass("l-unselectable"))
+                    if ($(">div:first", treeitem).hasClass("l-selected"))
                     {
-                        if ($(">div:first", treeitem).hasClass("l-selected") && p.needCancel)
-                        {
-                            if (g.trigger('beforeCancelSelect', [{ data: treenodedata, target: treeitem[0] }]) == false)
-                                return false;
+                        if (g.trigger('beforeCancelSelect', [{ data: treenodedata, target: treeitem[0]}]) == false)
+                            return false;
 
-                            $(">div:first", treeitem).removeClass("l-selected");
-                            g.trigger('cancelSelect', [{ data: treenodedata, target: treeitem[0] }]);
-                        }
-                        else
-                        {
-                            if (g.trigger('beforeSelect', [{ data: treenodedata, target: treeitem[0] }]) == false)
-                                return false;
-                            $(".l-body", g.tree).removeClass("l-selected");
-                            $(">div:first", treeitem).addClass("l-selected");
-                            g.trigger('select', [{ data: treenodedata, target: treeitem[0] }])
-                        }
+                        $(">div:first", treeitem).removeClass("l-selected");
+                        g.trigger('cancelSelect', [{ data: treenodedata, target: treeitem[0]}]);
+                    }
+                    else
+                    {
+                        if (g.trigger('beforeSelect', [{ data: treenodedata, target: treeitem[0]}]) == false)
+                            return false;
+                        $(".l-body", g.tree).removeClass("l-selected");
+                        $(">div:first", treeitem).addClass("l-selected");
+                        g.trigger('select', [{ data: treenodedata, target: treeitem[0]}])
                     }
                 }
                 //chekcbox even
@@ -1266,7 +928,7 @@
                                     .addClass("l-checkbox-checked");
                             g.trigger('check', [{ data: treenodedata, target: treeitem[0] }, true]);
                         }
-                            //状态：选中
+                        //状态：选中
                         else if ($(obj).hasClass("l-checkbox-checked"))
                         {
                             $(obj).removeClass("l-checkbox-checked").addClass("l-checkbox-unchecked");
@@ -1275,7 +937,7 @@
                                     .addClass("l-checkbox-unchecked");
                             g.trigger('check', [{ data: treenodedata, target: treeitem[0] }, false]);
                         }
-                            //状态：未完全选中
+                        //状态：未完全选中
                         else if ($(obj).hasClass("l-checkbox-incomplete"))
                         {
                             $(obj).removeClass("l-checkbox-incomplete").addClass("l-checkbox-checked");
@@ -1299,7 +961,7 @@
                             }
                             g.trigger('check', [{ data: treenodedata, target: treeitem[0] }, true]);
                         }
-                            //状态：选中
+                        //状态：选中
                         else if ($(obj).hasClass("l-checkbox-checked"))
                         {
                             $(obj).removeClass("l-checkbox-checked").addClass("l-checkbox-unchecked");
@@ -1307,38 +969,30 @@
                         }
                     }
                 }
-                    //状态：已经张开
+                //状态：已经张开
                 else if (treeitembtn.hasClass("l-expandable-open") && (!p.btnClickToToggleOnly || clickOnTreeItemBtn))
                 {
-                    if (g.trigger('beforeCollapse', [{ data: treenodedata, target: treeitem[0] }]) == false)
+                    if (g.trigger('beforeCollapse', [{ data: treenodedata, target: treeitem[0]}]) == false)
                         return false;
                     treeitembtn.removeClass("l-expandable-open").addClass("l-expandable-close");
                     if (p.slide)
                         $("> .l-children", treeitem).slideToggle('fast');
                     else
-                        $("> .l-children", treeitem).hide();
+                        $("> .l-children", treeitem).toggle();
                     $("> div ." + g._getParentNodeClassName(true), treeitem)
                             .removeClass(g._getParentNodeClassName(true))
                             .addClass(g._getParentNodeClassName());
-                    g.trigger('collapse', [{ data: treenodedata, target: treeitem[0] }]);
+                    g.trigger('collapse', [{ data: treenodedata, target: treeitem[0]}]);
                 }
-                    //状态：没有张开
+                //状态：没有张开
                 else if (treeitembtn.hasClass("l-expandable-close") && (!p.btnClickToToggleOnly || clickOnTreeItemBtn))
                 {
-                    if (g.trigger('beforeExpand', [{ data: treenodedata, target: treeitem[0] }]) == false)
+                    if (g.trigger('beforeExpand', [{ data: treenodedata, target: treeitem[0]}]) == false)
                         return false;
-
-                    $(g.toggleNodeCallbacks).each(function ()
-                    {
-                        if (this.data == treenodedata)
-                        {
-                            this.callback(treeitem[0], treenodedata);
-                        }
-                    });
                     treeitembtn.removeClass("l-expandable-close").addClass("l-expandable-open");
                     var callback = function ()
                     {
-                        g.trigger('expand', [{ data: treenodedata, target: treeitem[0] }]);
+                        g.trigger('expand', [{ data: treenodedata, target: treeitem[0]}]);
                     };
                     if (p.slide)
                     {
@@ -1346,22 +1000,21 @@
                     }
                     else
                     {
-                        $("> .l-children", treeitem).show();
+                        $("> .l-children", treeitem).toggle();
                         callback();
                     }
                     $("> div ." + g._getParentNodeClassName(), treeitem)
                             .removeClass(g._getParentNodeClassName())
                             .addClass(g._getParentNodeClassName(true));
                 }
-                g.trigger('click', [{ data: treenodedata, target: treeitem[0] }]);
+                g.trigger('click', [{ data: treenodedata, target: treeitem[0]}]);
             });
 
             //节点拖拽支持
             if ($.fn.ligerDrag && p.nodeDraggable)
             {
                 g.nodeDroptip = $("<div class='l-drag-nodedroptip' style='display:none'></div>").appendTo('body');
-                g.tree.ligerDrag({
-                    revert: true, animate: false,
+                g.tree.ligerDrag({ revert: true, animate: false,
                     proxyX: 20, proxyY: 20,
                     proxy: function (draggable, e)
                     {
@@ -1542,8 +1195,13 @@
             var isCheckedComplete = $(".l-checkbox-unchecked", treeitem.parent()).length == 0;
             //当前同级别或低级别的节点是否都没有选中
             var isCheckedNull = $(".l-checkbox-checked", treeitem.parent()).length == 0;
-             
-            if (isCheckedNull)
+            if (isCheckedComplete)
+            {
+                treeitem.parent().prev().find(".l-checkbox")
+                                    .removeClass("l-checkbox-unchecked l-checkbox-incomplete")
+                                    .addClass("l-checkbox-checked");
+            }
+            else if (isCheckedNull)
             {
                 treeitem.parent().prev().find("> .l-checkbox")
                                     .removeClass("l-checkbox-checked l-checkbox-incomplete")
@@ -1551,30 +1209,14 @@
             }
             else
             {
-                if (isCheckedComplete || !p.enabledCompleteCheckbox)
-                {
-                    treeitem.parent().prev().find(".l-checkbox")
-                                        .removeClass("l-checkbox-unchecked l-checkbox-incomplete")
-                                        .addClass("l-checkbox-checked");
-                }
-                else
-                {
-                    treeitem.parent().prev().find("> .l-checkbox")
-                                        .removeClass("l-checkbox-unchecked l-checkbox-checked")
-                                        .addClass("l-checkbox-incomplete");
-                }
+                treeitem.parent().prev().find("> .l-checkbox")
+                                    .removeClass("l-checkbox-unchecked l-checkbox-checked")
+                                    .addClass("l-checkbox-incomplete");
             }
             if (treeitem.parent().parent("li").length > 0)
                 g._setParentCheckboxStatus(treeitem.parent().parent("li"));
         }
     });
 
-
-
-    function strTrim(str)
-    {
-        if (!str) return str;
-        return str.replace(/(^\s*)|(\s*$)/g, '');
-    };
 
 })(jQuery);

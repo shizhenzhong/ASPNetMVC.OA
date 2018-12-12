@@ -1,9 +1,9 @@
 ﻿/**
-* jQuery ligerUI 1.3.2
+* jQuery ligerUI 1.1.9
 * 
 * http://ligerui.com
 *  
-* Author daomi 2015 [ gd_star@163.com ] 
+* Author daomi 2012 [ gd_star@163.com ] 
 * 
 */
 (function ($)
@@ -23,12 +23,10 @@
         decimalplace: 2,   //小数位 type=float时起作用
         step: 0.1,         //每次增加的值
         interval: 50,      //间隔，毫秒
-        value : null,
         onChangeValue: false,    //改变值事件
         minValue: null,        //最小值
         maxValue: null,         //最大值
-        disabled: false,
-        readonly: false              //是否只读
+        disabled: false
     };
 
     $.ligerMethos.Spinner = {};
@@ -64,11 +62,6 @@
                 p.interval = 100;
             } else if (p.type == 'time')
             {
-                p.step = 1;
-                p.interval = 100;
-            } else
-            {
-                p.type = "int";
                 p.step = 1;
                 p.interval = 100;
             }
@@ -110,7 +103,7 @@
             if (!g._isVerify(g.inputText.val()))
             {
                 g.value = g._getDefaultValue();
-                g._showValue(g.value);
+                g.inputText.val(g.value);
             }
             //事件
             g.link.up.hover(function ()
@@ -123,7 +116,7 @@
                 $(document).unbind("selectstart.spinner");
                 $(this).removeClass("l-spinner-up-over");
             }).mousedown(function ()
-            { 
+            {
                 if (!p.disabled)
                 {
                     g._uping.call(g);
@@ -170,7 +163,7 @@
                 var value = g.inputText.val();
                 g.value = g._getVerifyValue(value);
                 g.trigger('changeValue', [g.value]);
-                g._showValue(g.value);
+                g.inputText.val(g.value);
             }).blur(function ()
             {
                 g.wrapper.removeClass("l-text-focus");
@@ -187,11 +180,6 @@
                 g.wrapper.removeClass("l-text-over");
             });
             g.set(p);
-        },
-        _setValue: function (value)
-        {
-            if (value != null)
-                this.inputText.val(value);
         },
         _setWidth: function (value)
         {
@@ -223,23 +211,9 @@
                 this.wrapper.removeClass("l-text-disabled");
             }
         },
-        _showValue: function (value)
-        {
-            var g = this, p = this.options;
-            if (!value || value == "NaN") value = 0;
-            if (p.type == 'float')
-            {
-                value = parseFloat(value).toFixed(p.decimalplace);
-            }
-            this.inputText.val(value)
-        },
-        _setValue: function (value)
-        {
-            this._showValue(value);
-        },
         setValue: function (value)
         {
-            this._showValue(value);
+            this.inputText.val(value);
         },
         getValue: function ()
         {
@@ -249,8 +223,8 @@
         {
             var g = this, p = this.options;
             var t = 1;
-            for (; e > 0; t *= 10, e--) { }
-            for (; e < 0; t /= 10, e++) { }
+            for (; e > 0; t *= 10, e--);
+            for (; e < 0; t /= 10, e++);
             return Math.round(v * t) / t;
         },
         _isInt: function (str)
@@ -308,8 +282,7 @@
             if (p.type == 'float')
             {
                 newvalue = g._round(value, p.decimalplace);
-            }
-            else if (p.type == 'int')
+            } else if (p.type == 'int')
             {
                 newvalue = parseInt(value);
             } else if (p.type == 'time')
@@ -339,11 +312,11 @@
         },
         _addValue: function (num)
         {
-            var g = this, p = this.options; 
+            var g = this, p = this.options;
             var value = g.inputText.val();
             value = parseFloat(value) + num;
             if (g._isOverValue(value)) return;
-            g._showValue(value);
+            g.inputText.val(value);
             g.inputText.trigger("change");
         },
         _addTime: function (minute)
@@ -355,7 +328,7 @@
             if (newminute < 10) newminute = "0" + newminute;
             value = a[1] + ":" + newminute;
             if (g._isOverValue(value)) return;
-            g._showValue(value);
+            g.inputText.val(value);
             g.inputText.trigger("change");
         },
         _uping: function ()

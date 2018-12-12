@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -15,7 +16,17 @@ namespace MyWebApp.OA.Common
         /// <returns></returns>
         public static string SerializerToString(object obj)
         {
-            return JsonConvert.SerializeObject(obj);
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            JsonSerializer ser = JsonSerializer.Create(settings);
+            using (StringWriter sw = new StringWriter())
+            {
+                ser.Serialize(sw,obj );
+
+                return sw.ToString();
+                
+            }
+            
         }
 
 

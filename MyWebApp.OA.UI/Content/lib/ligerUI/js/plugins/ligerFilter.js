@@ -1,9 +1,9 @@
 ﻿/**
-* jQuery ligerUI 1.3.3
+* jQuery ligerUI 1.1.9
 * 
 * http://ligerui.com
 *  
-* Author daomi 2015 [ gd_star@163.com ] 
+* Author daomi 2012 [ gd_star@163.com ] 
 * 
 */
 (function ($)
@@ -24,8 +24,7 @@
         //字段类型 - 运算符 的对应关系
         operators: {},
         //自定义输入框(如下拉框、日期)
-        editors: {},
-        buttonCls : null
+        editors: {}
     };
     $.ligerDefaults.FilterString = {
         strings: {
@@ -182,51 +181,37 @@
         },
         _init: function ()
         {
-            var g = this, p = this.options;
             $.ligerui.controls.Filter.base._init.call(this);
-            //编辑构造器初始化
-            for (var type in liger.editors)
-            {
-                var editor = liger.editors[type];
-                //如果没有默认的或者已经定义
-                if (!editor || type in p.editors) continue;
-                p.editors[type] = liger.getEditor($.extend({
-                    type: type,
-                    master: g
-                }, editor));
-            }
         },
         _render: function ()
         {
             var g = this, p = this.options;
-             
-            g.set(p); 
+
+            g.set(p);
+
             //事件：增加分组
-                      $(g.element).bind("click", function (e)
+            $("#" + g.id + " .addgroup").live('click', function ()
             {
-                e.preventDefault(); 
-                var jthis = $((e.target || e.srcElement));
-                var cn = jthis.get(0).className;
-                if (cn.indexOf("addgroup") >= 0)
-                {
-                    var jtable = jthis.parent().parent().parent().parent();
-                    g.addGroup(jtable);
-                }
-                else if (cn.indexOf("deletegroup") >= 0)
-                {
-                    var jtable = jthis.parent().parent().parent().parent();
-                    g.deleteGroup(jtable);
-                }
-                else if (cn.indexOf("addrule") >= 0)
-                {
-                    var jtable = jthis.parent().parent().parent().parent();
-                    g.addRule(jtable);
-                }
-                else if (cn.indexOf("deleterole") >= 0)
-                { 
-                    var rulerow = jthis.parent().parent();
-                    g.deleteRule(rulerow);
-                }
+                var jtable = $(this).parent().parent().parent().parent();
+                g.addGroup(jtable);
+            });
+            //事件：删除分组
+            $("#" + g.id + " .deletegroup").live('click', function ()
+            {
+                var jtable = $(this).parent().parent().parent().parent();
+                g.deleteGroup(jtable);
+            });
+            //事件：增加条件
+            $("#" + g.id + " .addrule").live('click', function ()
+            {
+                var jtable = $(this).parent().parent().parent().parent();
+                g.addRule(jtable);
+            });
+            //事件：删除条件
+            $("#" + g.id + " .deleterole").live('click', function ()
+            {
+                var rulerow = $(this).parent().parent();
+                g.deleteRule(rulerow);
             });
 
         },
@@ -237,7 +222,6 @@
             var g = this, p = this.options;
             if (g.group) g.group.remove();
             g.group = $(g._bulidGroupTableHtml()).appendTo(g.element);
-            p.buttonCls && g.group.find(".addgroup,.addrule,.deletegroup").addClass(p.buttonCls);
         },
 
         //输入框列表
@@ -247,7 +231,7 @@
         editorCounter: 0,
 
         //增加分组
-        //parm [jgroup] jQuery对象(主分组的table dom元素)
+        //@parm [jgroup] jQuery对象(主分组的table dom元素)
         addGroup: function (jgroup)
         {
             var g = this, p = this.options;
@@ -259,14 +243,8 @@
             groupHtmlArr.push(g._bulidGroupTableHtml(altering, true));
             groupHtmlArr.push('</td></tr>');
             var row = $(groupHtmlArr.join(''));
-            p.buttonCls && row.find(".addgroup,.addrule,.deletegroup").addClass(p.buttonCls);
-            lastrow.before(row); 
-            var jtable = row.find("table:first");
-            if (p.addDefult)
-            {
-                g.addRule(jtable);
-            }
-            return jtable;
+            lastrow.before(row);
+            return row.find("table:first");
         },
 
         //删除分组 
@@ -290,45 +268,25 @@
             var type = $(rulerow).attr("editortype");
             var id = $(rulerow).attr("editorid");
             var editor = g.editors[id];
-            if (editor && p.editors[type].destroy)
-            {
-                p.editors[type].destroy(editor);
-            }
+            if (editor) p.editors[type].destroy(editor);
             $("td.l-filter-value:first", rulerow).html("");
         },
 
         //设置规则
-        //parm [group] 分组数据
-        //parm [jgruop] 分组table dom jQuery对象
+        //@parm [group] 分组数据
+        //@parm [jgruop] 分组table dom jQuery对象
         setData: function (group, jgroup)
         {
             var g = this, p = this.options;
             jgroup = jgroup || g.group;
             var lastrow = $(">tbody:first > tr:last", jgroup);
-            if (jgroup)
-            {
-                jgroup.find(">tbody:first > tr").not(lastrow).remove();
-            }
+            jgroup.find(">tbody:first > tr").not(lastrow).remove();
             $("select:first", lastrow).val(group.op);
             if (group.rules)
             {
                 $(group.rules).each(function ()
                 {
-                    var rulerow = g.addRule(jgroup); 
-                    var fieldName = this.field;
-
-                    var field = (function ()
-                    {
-                        for (var i = 0; i < p.fields.length; i++)
-                        {
-                            if (p.fields[i].name == fieldName)
-                            {
-                                return p.fields[i];
-                            } 
-                        }
-                        return null;
-                    })();
-                    $("select.opsel", rulerow).html(g._bulidOpSelectOptionsHtml(this.type || "string", field.operator ));
+                    var rulerow = g.addRule(jgroup);
                     rulerow.attr("fieldtype", this.type || "string");
                     $("select.opsel", rulerow).val(this.op);
                     $("select.fieldsel", rulerow).val(this.field).trigger('change');
@@ -336,14 +294,7 @@
                     if (editorid && g.editors[editorid])
                     {
                         var field = g.getField(this.field);
-                        if (field && field.editor)
-                        {
-                            var editParm = {
-                                field: field,
-                                filter: g
-                            };
-                            p.editors[field.editor.type].setValue.call(g, g.editors[editorid], this.value, editParm);
-                        }
+                        p.editors[field.editor.type].setValue(g.editors[editorid], this.value, field);
                     }
                     else
                     {
@@ -362,7 +313,7 @@
         },
 
         //增加一个条件
-        //parm [jgroup] 分组的jQuery对象
+        //@parm [jgroup] 分组的jQuery对象
         addRule: function (jgroup)
         {
             var g = this, p = this.options;
@@ -381,14 +332,13 @@
             {
                 var jopsel = $(this).parent().next().find("select:first");
                 var fieldName = $(this).val();
-                if (!fieldName) return;
                 var field = g.getField(fieldName);
                 //字段类型处理
                 var fieldType = field.type || "string";
                 var oldFieldtype = rulerow.attr("fieldtype");
                 if (fieldType != oldFieldtype)
                 {
-                    jopsel.html(g._bulidOpSelectOptionsHtml(fieldType,field.operator ));
+                    jopsel.html(g._bulidOpSelectOptionsHtml(fieldType));
                     rulerow.attr("fieldtype", fieldType);
                 }
                 //当前的编辑器
@@ -408,7 +358,7 @@
                 } else
                 {
                     rulerow.removeAttr("editortype").removeAttr("editorid");
-                    $("td.l-filter-value:first", rulerow).html('<input type="text" class="valtxt l-text" />');
+                    $("td.l-filter-value:first", rulerow).html('<input type="text" class="valtxt" />');
                 }
             });
             return rulerow;
@@ -428,18 +378,10 @@
             var g = this, p = this.options;
             if (g.enabledEditor(field))
             {
-                var container = $("td.l-filter-value:first", rulerow).html("");
+                var cell = $("td.l-filter-value:first", rulerow).html("");
                 var editor = p.editors[field.editor.type];
-
-                var editorTag = ++g.editorCounter;
-
-                var editParm = {  
-                    filter: g
-                };
-                editParm.field = $.extend(true, {}, field);
-                editParm.field.name = field.name + "_" + editorTag;
-                g.editors[editorTag] = editor.create.call(this, container, editParm);
-                rulerow.attr("editortype", field.editor.type).attr("editorid", editorTag);
+                g.editors[++g.editorCounter] = editor.create(cell, field);
+                rulerow.attr("editortype", field.editor.type).attr("editorid", g.editorCounter);
             }
         },
 
@@ -475,13 +417,10 @@
                     var op = $(".opsel:first", row).val();
                     var value = g._getRuleValue(row, field);
                     var type = $(row).attr("fieldtype") || "string";
-                    if (!groupData.rules) groupData.rules = []; 
-                    if (value != null)
-                    {
-                        groupData.rules.push({
-                            field: fieldName, op: op, value: value, type: type
-                        });
-                    }
+                    if (!groupData.rules) groupData.rules = [];
+                    groupData.rules.push({
+                        field: fieldName, op: op, value: value, type: type
+                    });
                 }
             });
 
@@ -494,14 +433,8 @@
             var editorid = $(rulerow).attr("editorid");
             var editortype = $(rulerow).attr("editortype");
             var editor = g.editors[editorid];
-            var editParm = {
-                field: field,
-                filter: g
-            };
             if (editor)
-            {
-                return p.editors[editortype].getValue.call(g, editor, editParm);
-            }
+                return p.editors[editortype].getValue(editor, field);
             return $(".valtxt:first", rulerow).val();
         },
 
@@ -560,7 +493,7 @@
             var g = this, p = this.options;
             fields = fields || p.fields;
             var rowHtmlArr = [];
-            var fieldType = fields && fields.length && fields[0].type ? fields[0].type : "string";
+            var fieldType = fields[0].type || "string";
             rowHtmlArr.push('<tr fieldtype="' + fieldType + '"><td class="l-filter-column">');
             rowHtmlArr.push('<select class="fieldsel">');
             for (var i = 0, l = fields.length; i < l; i++)
@@ -576,8 +509,8 @@
             rowHtmlArr.push('</td>');
 
             rowHtmlArr.push('<td class="l-filter-op">');
-            rowHtmlArr.push('<select class="opsel">'); 
-            rowHtmlArr.push(g._bulidOpSelectOptionsHtml(fieldType, fields && fields.length ? fields[0].operator : null));
+            rowHtmlArr.push('<select class="opsel">');
+            rowHtmlArr.push(g._bulidOpSelectOptionsHtml(fieldType));
             rowHtmlArr.push('</select>');
             rowHtmlArr.push('</td>');
             rowHtmlArr.push('<td class="l-filter-value">');
@@ -591,19 +524,11 @@
         },
 
         //获取一个运算符选择框的html
-        _bulidOpSelectOptionsHtml: function (fieldType, operator)
+        _bulidOpSelectOptionsHtml: function (fieldType)
         {
             var g = this, p = this.options;
             var ops = p.operators[fieldType];
             var opHtmlArr = [];
-            if (operator && operator.length)
-            {
-                ops = operator.split(',');
-            }
-            if (!ops || !ops.length)
-            {
-                ops = ["equal", "notequal"];
-            }
             for (var i = 0, l = ops.length; i < l; i++)
             {
                 var op = ops[i];
@@ -616,106 +541,5 @@
 
 
     });
-
-    $.ligerFilter = function () { };
-    $.ligerFilter.filterTranslator = {
-        translateGroup: function (group)
-        {
-            var out = [];
-            if (group == null) return " 1==1 ";
-            var appended = false;
-            out.push('(');
-            if (group.rules != null)
-            {
-                for (var i in group.rules)
-                {
-                    if (i == "indexOf")
-                        continue;
-                    var rule = group.rules[i];
-                    if (appended)
-                        out.push(this.getOperatorQueryText(group.op));
-                    out.push(this.translateRule(rule));
-                    appended = true;
-                }
-            }
-            if (group.groups != null)
-            {
-                for (var j in group.groups)
-                {
-                    var subgroup = group.groups[j];
-                    if (appended)
-                        out.push(this.getOperatorQueryText(group.op));
-                    out.push(this.translateGroup(subgroup));
-                    appended = true;
-                }
-            }
-            out.push(')');
-            if (appended == false) return " 1==1 ";
-            return out.join('');
-        },
-
-        translateRule: function (rule)
-        {
-            var out = [];
-            if (rule == null) return " 1==1 ";
-            if (rule.op == "like" || rule.op == "startwith" || rule.op == "endwith")
-            {
-                out.push('/');
-                if (rule.op == "startwith")
-                    out.push('^');
-                out.push(rule.value);
-                if (rule.op == "endwith")
-                    out.push('$');
-                out.push('/i.test(');
-                out.push('o["');
-                out.push(rule.field);
-                out.push('"]');
-                out.push(')');
-                return out.join('');
-            }
-            out.push('o["');
-            out.push(rule.field);
-            out.push('"]');
-            out.push(this.getOperatorQueryText(rule.op));
-            out.push('"');
-            out.push(rule.value);
-            out.push('"');
-            return out.join('');
-        },
-
-        getOperatorQueryText: function (op)
-        {
-            switch (op)
-            {
-                case "equal":
-                    return " == ";
-                case "notequal":
-                    return " != ";
-                case "greater":
-                    return " > ";
-                case "greaterorequal":
-                    return " >= ";
-                case "less":
-                    return " < ";
-                case "lessorequal":
-                    return " <= ";
-                case "and":
-                    return " && ";
-                case "or":
-                    return " || ";
-                default:
-                    return " == ";
-            }
-        }
-
-    };
-    $.ligerFilter.getFilterFunction = function (condition)
-    {
-        if ($.isArray(condition))
-            condition = { op: "and", rules: condition };
-        var fnbody = ' return  ' + $.ligerFilter.filterTranslator.translateGroup(condition);
-        return new Function("o", fnbody);
-    };
-
 
 })(jQuery);

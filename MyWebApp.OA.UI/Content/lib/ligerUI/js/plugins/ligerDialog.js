@@ -1,9 +1,9 @@
 ﻿/**
-* jQuery ligerUI 1.3.3
+* jQuery ligerUI 1.1.9
 * 
 * http://ligerui.com
 *  
-* Author daomi 2015 [ gd_star@163.com ] 
+* Author daomi 2012 [ gd_star@163.com ] 
 * 
 */
 
@@ -47,7 +47,6 @@
 
     $.ligerDefaults.Dialog = {
         cls: null,       //给dialog附加css class
-        contentCls: null,
         id: null,        //给dialog附加id
         buttons: null, //按钮集合 
         isDrag: true,   //是否拖动
@@ -56,13 +55,12 @@
         content: '',    //内容
         target: null,   //目标对象，指定它将以appendTo()的方式载入
         url: null,      //目标页url，默认以iframe的方式载入
-        urlParms: null,     //传参
-        load: false,     //是否以load()的方式加载目标页的内容 
+        load: false,     //是否以load()的方式加载目标页的内容
+        onLoaded: null,
         type: 'none',   //类型 warn、success、error、question
         left: null,     //位置left
         top: null,      //位置top
         modal: true,    //是否模态对话框
-        data: null,     //传递数据容器
         name: null,     //创建iframe时 作为iframe的name和id 
         isResize: false, // 是否调整大小
         allowClose: true, //允许关闭
@@ -77,18 +75,7 @@
         showMin: false,                             //是否显示最小化按钮
         slide: $.browser.msie ? false : true,        //是否以动画的形式显示 
         fixedType: null,            //在固定的位置显示, 可以设置的值有n, e, s, w, ne, se, sw, nw
-        showType: null,             //显示类型,可以设置为slide(固定显示时有效) 
-        layoutMode : 1,         //1 九宫布局, 2 上中下布局
-        onLoaded: null,
-        onExtend: null,
-        onExtended: null,
-        onCollapse: null,
-        onCollapseed: null,
-        onContentHeightChange: null,
-        onClose: null,
-        onClosed: null,
-        onStopResize: null,
-        minIsHide : false   //最小化仅隐藏
+        showType: null             //显示类型,可以设置为slide(固定显示时有效)
     };
     $.ligerDefaults.DialogString = {
         titleMessage: '提示',                     //提示文本标题
@@ -122,15 +109,10 @@
         _render: function ()
         {
             var g = this, p = this.options;
-            var tmpId = "";
             g.set(p, true);
             var dialog = $('<div class="l-dialog"><table class="l-dialog-table" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td class="l-dialog-tl"></td><td class="l-dialog-tc"><div class="l-dialog-tc-inner"><div class="l-dialog-icon"></div><div class="l-dialog-title"></div><div class="l-dialog-winbtns"><div class="l-dialog-winbtn l-dialog-close"></div></div></div></td><td class="l-dialog-tr"></td></tr><tr><td class="l-dialog-cl"></td><td class="l-dialog-cc"><div class="l-dialog-body"><div class="l-dialog-image"></div> <div class="l-dialog-content"></div><div class="l-dialog-buttons"><div class="l-dialog-buttons-inner"></div></td><td class="l-dialog-cr"></td></tr><tr><td class="l-dialog-bl"></td><td class="l-dialog-bc"></td><td class="l-dialog-br"></td></tr></tbody></table></div>');
             $('body').append(dialog);
             g.dialog = dialog;
-            if (p.layoutMode == 2) //上中下布局，不再需要这左右的单元格了
-            {
-                dialog.find("td.l-dialog-tl,td.l-dialog-cl,td.l-dialog-bl,td.l-dialog-tr,td.l-dialog-cr,td.l-dialog-br").remove();
-            }
             g.element = dialog[0];
             g.dialog.body = $(".l-dialog-body:first", g.dialog);
             g.dialog.header = $(".l-dialog-tc-inner:first", g.dialog);
@@ -144,11 +126,9 @@
             {
                 p.type = null;
                 g.dialog.addClass("l-dialog-win");
-
             }
             if (p.cls) g.dialog.addClass(p.cls);
-            if (p.id) g.dialog.attr("id", p.id);
-
+            if (p.id) g.dialog.attr("id", p.id); 
             //设置锁定屏幕、拖动支持 和设置图片
             g.mask();
             if (p.isDrag)
@@ -162,8 +142,6 @@
                 $(".l-dialog-image", g.dialog).remove();
                 g.dialog.content.addClass("l-dialog-content-noimage");
             }
-            if (p.contentCls)
-                g.dialog.content.addClass(p.contentCls);
             if (!p.show)
             {
                 g.unmask();
@@ -177,24 +155,14 @@
             }
             else if (p.url)
             {
-                var url = $.isFunction(p.url) ? p.url.call(g) : p.url;
-                var urlParms = $.isFunction(p.urlParms) ? p.urlParms.call(g) : p.urlParms;
                 if (p.timeParmName)
                 {
-                    urlParms = urlParms || {};
-                    urlParms[p.timeParmName] = new Date().getTime();
-                }
-                if (urlParms)
-                { 
-                    for (var name in urlParms)
-                    {
-                        url += url.indexOf('?') == -1 ? "?" : "&";
-                        url += name + "=" + urlParms[name];
-                    }
+                    p.url += p.url.indexOf('?') == -1 ? "?" : "&";
+                    p.url += p.timeParmName + "=" + new Date().getTime();
                 }
                 if (p.load)
                 {
-                    g.dialog.body.load(url, function ()
+                    g.dialog.body.load(p.url, function ()
                     {
                         g._saveStatus();
                         g.trigger('loaded');
@@ -207,34 +175,12 @@
                     g.jiframe.attr("name", framename);
                     g.jiframe.attr("id", framename);
                     g.dialog.content.prepend(g.jiframe);
-                    g.dialog.content.addClass("l-dialog-content-nopadding l-dialog-content-frame");
-
+                    g.dialog.content.addClass("l-dialog-content-nopadding");
                     setTimeout(function ()
                     {
-                        if (g.dialog.body.find(".l-dialog-loading:first").length == 0)
-                            g.dialog.body.append("<div class='l-dialog-loading' style='display:block;'></div>");
-                        var iframeloading = $(".l-dialog-loading:first", g.dialog.body);
-                        g.jiframe[0].dialog = g;//增加窗口对dialog对象的引用
-                        /*
-                        可以在子窗口这样使用：
-                        var dialog = frameElement.dialog;
-                        var dialogData = dialog.get('data');//获取data参数
-                        dialog.set('title','新标题'); //设置标题
-                        dialog.close();//关闭dialog 
-                        */
-                        g.jiframe.attr("src", url).bind('load.dialog', function ()
-                        {
-                            iframeloading.hide();
-                            g.trigger('loaded');
-                        });
+                        g.jiframe.attr("src", p.url);
                         g.frame = window.frames[g.jiframe.attr("name")];
                     }, 0);
-                    // 为了解决ie下对含有iframe的div窗口销毁不正确，进而导致第二次打开时焦点不在当前图层的问题
-                    // 加入以下代码 
-                    tmpId = 'jquery_ligerui_' + new Date().getTime();
-                    g.tmpInput = $("<input></input>");
-                    g.tmpInput.attr("id", tmpId);
-                    g.dialog.content.prepend(g.tmpInput);
                 }
             }
             if (p.opener) g.dialog.opener = p.opener;
@@ -247,11 +193,7 @@
                     $(".l-dialog-btn-inner", btn).html(item.text);
                     $(".l-dialog-buttons-inner", g.dialog.buttons).prepend(btn);
                     item.width && btn.width(item.width);
-                    item.onclick && btn.click(function ()
-                    {
-                        item.onclick(item, g, i); 
-                    });
-                    item.cls && btn.addClass(item.cls);
+                    item.onclick && btn.click(function () { item.onclick(item, g, i) });
                 });
             } else
             {
@@ -266,6 +208,7 @@
             {
                 l.win.setFront(g);
             });
+
             //设置事件
             $(".l-dialog-tc .l-dialog-close", g.dialog).click(function ()
             {
@@ -275,19 +218,6 @@
                     g.close();
             });
             if (!p.fixedType)
-            {
-                if (p.width == 'auto')
-                {
-                    setTimeout(function ()
-                    {
-                        resetPos()
-                    }, 100);
-                } else
-                {
-                    resetPos();
-                }
-            }
-            function resetPos()
             {
                 //位置初始化
                 var left = 0;
@@ -319,11 +249,7 @@
             g._updateBtnsWidth();
             g._saveStatus();
             g._onReisze();
-            if (tmpId != "")
-            {
-                $("#" + tmpId).focus();
-                $("#" + tmpId).remove();
-            }
+
         },
         _borderX: 12,
         _borderY: 32,
@@ -413,28 +339,21 @@
         //最小化
         min: function ()
         {
-            var g = this, p = this.options; 
-            if (p.minIsHide)
+            var g = this, p = this.options;
+            var task = l.win.getTask(this);
+            if (p.slide)
             {
-                g.dialog.hide();
+                g.dialog.body.animate({ width: 1 }, p.slide);
+                task.y = task.offset().top + task.height();
+                task.x = task.offset().left + task.width() / 2;
+                g.dialog.animate({ left: task.x, top: task.y }, p.slide, function ()
+                {
+                    g.dialog.hide();
+                });
             }
             else
             {
-                var task = l.win.getTask(this);
-                if (p.slide)
-                {
-                    g.dialog.body.animate({ width: 1 }, p.slide);
-                    task.y = task.offset().top + task.height();
-                    task.x = task.offset().left + task.width() / 2;
-                    g.dialog.animate({ left: task.x, top: task.y }, p.slide, function ()
-                    {
-                        g.dialog.hide();
-                    });
-                }
-                else
-                {
-                    g.dialog.hide();
-                }
+                g.dialog.hide();
             }
             g.unmask();
             g.minimize = true;
@@ -487,17 +406,15 @@
         },
 
         //收缩
-        collapse: function (slide)
+        collapse: function ()
         {
             var g = this, p = this.options;
             if (!g.wintoggle) return;
-            if (p.slide && slide != false)
+            if (p.slide)
                 g.dialog.content.animate({ height: 1 }, p.slide);
             else
                 g.dialog.content.height(1);
             if (this.resizable) this.resizable.set({ disabled: true });
-
-            g.wintoggle.addClass("l-dialog-extend");
         },
 
         //展开
@@ -511,9 +428,6 @@
             else
                 g.dialog.content.height(contentHeight);
             if (this.resizable) this.resizable.set({ disabled: false });
-
-
-            g.wintoggle.removeClass("l-dialog-extend");
         },
         _updateBtnsWidth: function ()
         {
@@ -545,21 +459,10 @@
         {
             var g = this, p = this.options;
             if (!this.dialog) return;
-            if (value == "auto")
-            {
-                g.dialog.content.height('auto');
-            } else if (value >= this._borderY)
+            if (value >= this._borderY)
             {
                 var height = value - this._borderY - g.dialog.buttons.outerHeight();
-                if (g.trigger('ContentHeightChange', [height]) == false) return;
-                if (p.load)
-                {
-                    g.dialog.body.height(height);
-                } else
-                {
-                    g.dialog.content.height(height);
-                }
-                g.trigger('ContentHeightChanged', [height]);
+                g.dialog.content.height(height);
             }
         },
         _setShowMax: function (value)
@@ -613,10 +516,7 @@
                     {
                         g.min();
                     });
-                    if (!p.minIsHide)
-                    {
-                        l.win.addTask(g);
-                    }
+                    l.win.addTask(g);
                 }
             }
             else if (g.winmin)
@@ -699,47 +599,17 @@
             {
                 g.dialog.animate({ bottom: -1 * p.height }, function ()
                 {
-                    remove();
+                    g.dialog.remove();
                 });
-            }
-            else
+            } else
             {
-                remove();
-            }
-            function remove()
-            {
-                var jframe = $('iframe', g.dialog);
-                if (jframe.length)
-                {
-                    var frame = jframe[0];
-                    frame.src = "about:blank";
-                    if (frame.contentWindow && frame.contentWindow.document)
-                    { 
-                        try
-                        {
-                            frame.contentWindow.document.write('');
-                        } catch (e)
-                        {
-                        }
-                    }
-                    $.browser.msie && CollectGarbage();
-                    jframe.remove();
-                }
                 g.dialog.remove();
             }
         },
         close: function ()
         {
             var g = this, p = this.options;
-            if (g.trigger('Close') == false) return;
-            g.doClose();
-            if (g.trigger('Closed') == false) return;
-        },
-        doClose: function ()
-        {
-            var g = this;
             l.win.removeTask(this);
-            $.ligerui.remove(this);
             g.unmask();
             g._removeDialog();
             $('body').unbind('keydown.dialog');
@@ -810,7 +680,7 @@
                 }
                 else
                 {
-                    g.dialog.show().css({ bottom: 0 }).addClass("l-dialog-fixed");
+                    g.dialog.show().css({ bottom: 0 });
                 }
             }
             else
@@ -842,25 +712,13 @@
         {
             var g = this, p = this.options;
             if ($.fn.ligerDrag)
-            {
-                g.draggable = g.dialog.ligerDrag({
-                    handler: '.l-dialog-title', animate: false,
+                g.draggable = g.dialog.ligerDrag({ handler: '.l-dialog-title', animate: false,
                     onStartDrag: function ()
                     {
                         l.win.setFront(g);
-                        var mask = $("<div class='l-dragging-mask' style='display:block'></div>").height(g.dialog.height());
-                        g.dialog.append(mask);
-                        g.dialog.content.addClass('l-dialog-content-dragging');
-                    },
-                    onDrag: function (current, e)
-                    {
-                        var pageY = e.pageY || e.screenY;
-                        if (pageY < 0) return false;
                     },
                     onStopDrag: function ()
                     {
-                        g.dialog.find("div.l-dragging-mask:first").remove();
-                        g.dialog.content.removeClass('l-dialog-content-dragging');
                         if (p.target)
                         {
                             var triggers1 = l.find($.ligerui.controls.DateEditor);
@@ -875,19 +733,18 @@
                         g._saveStatus();
                     }
                 });
-            }
         },
         _onReisze: function ()
         {
             var g = this, p = this.options;
-            if (p.target || p.url)
+            if (p.target)
             {
                 var manager = $(p.target).liger();
                 if (!manager) manager = $(p.target).find(":first").liger();
                 if (!manager) return;
                 var contentHeight = g.dialog.content.height();
                 var contentWidth = g.dialog.content.width();
-                manager.trigger('resize', [{ width: contentWidth, height: contentHeight }]);
+                manager.trigger('resize', [{ width: contentWidth, height: contentHeight}]);
             }
         },
         _applyResize: function ()
@@ -923,7 +780,6 @@
                         }
                         g._onReisze();
                         g._saveStatus();
-                        g.trigger('stopResize');
                         return false;
                     }, animate: false
                 });
@@ -934,26 +790,25 @@
             var g = this, p = this.options;
             if (p.type)
             {
-                var alertCss = { paddingLeft: 74, paddingRight: 15, paddingBottom: 30 };
                 if (p.type == 'success' || p.type == 'donne' || p.type == 'ok')
                 {
                     $(".l-dialog-image", g.dialog).addClass("l-dialog-image-donne").show();
-                    g.dialog.content.css(alertCss);
+                    g.dialog.content.css({ paddingLeft: 64, paddingBottom: 30 });
                 }
                 else if (p.type == 'error')
                 {
                     $(".l-dialog-image", g.dialog).addClass("l-dialog-image-error").show();
-                    g.dialog.content.css(alertCss);
+                    g.dialog.content.css({ paddingLeft: 64, paddingBottom: 30 });
                 }
                 else if (p.type == 'warn')
                 {
                     $(".l-dialog-image", g.dialog).addClass("l-dialog-image-warn").show();
-                    g.dialog.content.css(alertCss);
+                    g.dialog.content.css({ paddingLeft: 64, paddingBottom: 30 });
                 }
                 else if (p.type == 'question')
                 {
                     $(".l-dialog-image", g.dialog).addClass("l-dialog-image-question").show();
-                    g.dialog.content.css(alertCss);
+                    g.dialog.content.css({ paddingLeft: 64, paddingBottom: 40 });
                 }
             }
         }
@@ -1018,11 +873,12 @@
         });
         return $.ligerDialog.open(options);
     };
-    $.ligerDialog.alert = function (content, title, type, callback, options)
+    $.ligerDialog.alert = function (content, title, type, callback)
     {
         content = content || "";
         if (typeof (title) == "function")
         {
+
             callback = title;
             type = null;
         }
@@ -1038,7 +894,7 @@
         };
         p = {
             content: content,
-            buttons: [{ text: $.ligerDefaults.DialogString.ok, onclick: btnclick }]
+            buttons: [{ text: $.ligerDefaults.DialogString.ok, onclick: btnclick}]
         };
         if (typeof (title) == "string" && title != "") p.title = title;
         if (typeof (type) == "string" && type != "") p.type = type;
@@ -1046,7 +902,7 @@
             showMax: false,
             showToggle: false,
             showMin: false
-        }, options || {});
+        });
         return $.ligerDialog(p);
     };
 
@@ -1068,13 +924,7 @@
         p = {
             type: 'question',
             content: content,
-            buttons: [
-                {
-                    text: $.ligerDefaults.DialogString.yes, onclick: btnclick, type: 'ok', cls: 'l-dialog-btn-ok'
-                }, {
-                    text: $.ligerDefaults.DialogString.no, onclick: btnclick, type: 'no', cls: 'l-dialog-btn-no'
-                }
-            ]
+            buttons: [{ text: $.ligerDefaults.DialogString.yes, onclick: btnclick, type: 'ok' }, { text: $.ligerDefaults.DialogString.no, onclick: btnclick, type: 'no'}]
         };
         if (typeof (title) == "string" && title != "") p.title = title;
         $.extend(p, {
@@ -1084,7 +934,7 @@
         });
         return $.ligerDialog(p);
     };
-    $.ligerDialog.warning = function (content, title, callback, options)
+    $.ligerDialog.warning = function (content, title, callback)
     {
         if (typeof (title) == "function")
         {
@@ -1102,14 +952,14 @@
         p = {
             type: 'question',
             content: content,
-            buttons: [{ text: $.ligerDefaults.DialogString.yes, onclick: btnclick, type: 'yes' }, { text: $.ligerDefaults.DialogString.no, onclick: btnclick, type: 'no' }, { text: $.ligerDefaults.DialogString.cancel, onclick: btnclick, type: 'cancel' }]
+            buttons: [{ text: $.ligerDefaults.DialogString.yes, onclick: btnclick, type: 'yes' }, { text: $.ligerDefaults.DialogString.no, onclick: btnclick, type: 'no' }, { text: $.ligerDefaults.DialogString.cancel, onclick: btnclick, type: 'cancel'}]
         };
         if (typeof (title) == "string" && title != "") p.title = title;
         $.extend(p, {
             showMax: false,
             showToggle: false,
             showMin: false
-        }, options || {});
+        });
         return $.ligerDialog(p);
     };
     $.ligerDialog.waitting = function (title)
@@ -1127,21 +977,21 @@
                 d.close();
         }
     };
-    $.ligerDialog.success = function (content, title, onBtnClick, options)
+    $.ligerDialog.success = function (content, title, onBtnClick)
     {
-        return $.ligerDialog.alert(content, title, 'success', onBtnClick, options);
+        return $.ligerDialog.alert(content, title, 'success', onBtnClick);
     };
-    $.ligerDialog.error = function (content, title, onBtnClick, options)
+    $.ligerDialog.error = function (content, title, onBtnClick)
     {
-        return $.ligerDialog.alert(content, title, 'error', onBtnClick, options);
+        return $.ligerDialog.alert(content, title, 'error', onBtnClick);
     };
-    $.ligerDialog.warn = function (content, title, onBtnClick, options)
+    $.ligerDialog.warn = function (content, title, onBtnClick)
     {
-        return $.ligerDialog.alert(content, title, 'warn', onBtnClick, options);
+        return $.ligerDialog.alert(content, title, 'warn', onBtnClick);
     };
-    $.ligerDialog.question = function (content, title, options)
+    $.ligerDialog.question = function (content, title)
     {
-        return $.ligerDialog.alert(content, title, 'question', null, options);
+        return $.ligerDialog.alert(content, title, 'question');
     };
 
 
@@ -1180,7 +1030,7 @@
             title: title,
             target: target,
             width: 320,
-            buttons: [{ text: $.ligerDefaults.DialogString.ok, onclick: btnclick, type: 'yes' }, { text: $.ligerDefaults.DialogString.cancel, onclick: btnclick, type: 'cancel' }]
+            buttons: [{ text: $.ligerDefaults.DialogString.ok, onclick: btnclick, type: 'yes' }, { text: $.ligerDefaults.DialogString.cancel, onclick: btnclick, type: 'cancel'}]
         };
         return $.ligerDialog(p);
     };
