@@ -4,100 +4,24 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="db19da85551343ce8646fc5ea684ae9f" Name="Diagram1" ZoomLevel="100">
-        <EntityTypeShape EntityType="OAModel.UserInfo" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="OAModel.performance_counter_report_group_items" Width="1.5" PointX="7.625" PointY="9.75" />
-        <EntityTypeShape EntityType="OAModel.snapshot_timetable_internal" Width="1.5" PointX="5.625" PointY="68.5" />
-        <EntityTypeShape EntityType="OAModel.snapshots_internal" Width="1.5" PointX="7.875" PointY="63.375" />
-        <EntityTypeShape EntityType="OAModel.source_info_internal" Width="1.5" PointX="5.625" PointY="63.75" />
-        <EntityTypeShape EntityType="OAModel.supported_collector_types_internal" Width="1.5" PointX="9.625" PointY="9.75" />
-        <EntityTypeShape EntityType="OAModel.wait_categories" Width="1.5" PointX="7.625" PointY="1.875" />
-        <EntityTypeShape EntityType="OAModel.wait_types" Width="1.5" PointX="9.875" PointY="1" />
-        <EntityTypeShape EntityType="OAModel.ActionInfo" Width="1.5" PointX="0.75" PointY="8" />
-        <EntityTypeShape EntityType="OAModel.Department" Width="1.5" PointX="3" PointY="10.625" />
-        <EntityTypeShape EntityType="OAModel.FileInfo" Width="1.5" PointX="11.625" PointY="9.75" />
-        <EntityTypeShape EntityType="OAModel.OrderInfo" Width="1.5" PointX="12.625" PointY="0.75" />
-        <EntityTypeShape EntityType="OAModel.R_UserInfo_ActionInfo" Width="1.5" PointX="5.25" PointY="8.5" />
-        <EntityTypeShape EntityType="OAModel.RoleInfo" Width="1.5" PointX="3" PointY="7.25" />
-        <EntityTypeShape EntityType="OAModel.WF_Instance" Width="1.5" PointX="7.875" PointY="4.5" />
-        <EntityTypeShape EntityType="OAModel.WF_StepInfo" Width="1.5" PointX="10.125" PointY="4" />
-        <EntityTypeShape EntityType="OAModel.WF_Temp" Width="1.5" PointX="5.625" PointY="4.625" />
-        <EntityTypeShape EntityType="OAModel.active_sessions_and_requests" Width="1.5" PointX="10.125" PointY="41.75" />
-        <EntityTypeShape EntityType="OAModel.disk_usage" Width="1.5" PointX="10.125" PointY="90.25" />
-        <EntityTypeShape EntityType="OAModel.distinct_queries" Width="1.5" PointX="7.875" PointY="60.75" />
-        <EntityTypeShape EntityType="OAModel.distinct_query_to_handle" Width="1.5" PointX="10.125" PointY="106" />
-        <EntityTypeShape EntityType="OAModel.io_virtual_file_stats" Width="1.5" PointX="10.125" PointY="121.125" />
-        <EntityTypeShape EntityType="OAModel.log_usage" Width="1.5" PointX="10.125" PointY="38.75" />
-        <EntityTypeShape EntityType="OAModel.notable_query_plan" Width="1.5" PointX="7.875" PointY="147.125" />
-        <EntityTypeShape EntityType="OAModel.notable_query_text" Width="1.5" PointX="7.875" PointY="151" />
-        <EntityTypeShape EntityType="OAModel.os_latch_stats" Width="1.5" PointX="10.125" PointY="53.5" />
-        <EntityTypeShape EntityType="OAModel.os_memory_nodes" Width="1.5" PointX="10.125" PointY="112.875" />
-        <EntityTypeShape EntityType="OAModel.os_process_memory" Width="1.5" PointX="10.125" PointY="116.625" />
-        <EntityTypeShape EntityType="OAModel.os_schedulers" Width="1.5" PointX="10.125" PointY="56.375" />
-        <EntityTypeShape EntityType="OAModel.os_wait_stats" Width="1.5" PointX="10.125" PointY="29.25" />
-        <EntityTypeShape EntityType="OAModel.performance_counter_instances" Width="1.5" PointX="12.625" PointY="2.75" />
-        <EntityTypeShape EntityType="OAModel.performance_counter_values" Width="1.5" PointX="10.125" PointY="32.25" />
-        <EntityTypeShape EntityType="OAModel.sql_process_and_system_memory" Width="1.5" PointX="10.125" PointY="83.5" />
-        <EntityTypeShape EntityType="OAModel.sysutility_ucp_cpu_memory_configurations_internal" Width="1.5" PointX="10.125" PointY="125.875" />
-        <EntityTypeShape EntityType="OAModel.sysutility_ucp_dac_collected_execution_statistics_internal" Width="1.5" PointX="10.125" PointY="24.75" />
-        <EntityTypeShape EntityType="OAModel.sysutility_ucp_volumes_internal" Width="1.5" PointX="10.125" PointY="109.125" />
-        <EntityTypeShape EntityType="OAModel.trace_info" Width="1.5" PointX="13.125" PointY="64.625" />
-        <EntityTypeShape EntityType="OAModel.computers_internal" Width="1.5" PointX="13.625" PointY="5.75" />
-        <EntityTypeShape EntityType="OAModel.cpu_utilization_internal" Width="1.5" PointX="13.625" PointY="11.75" />
-        <EntityTypeShape EntityType="OAModel.dacs_internal" Width="1.5" PointX="14.625" PointY="0.75" />
-        <EntityTypeShape EntityType="OAModel.databases_internal" Width="1.5" PointX="9.625" PointY="12.75" />
-        <EntityTypeShape EntityType="OAModel.datafiles_internal" Width="1.5" PointX="5.625" PointY="13.75" />
-        <EntityTypeShape EntityType="OAModel.filegroups_internal" Width="1.5" PointX="15.625" PointY="4.75" />
-        <EntityTypeShape EntityType="OAModel.logfiles_internal" Width="1.5" PointX="15.625" PointY="8.75" />
-        <EntityTypeShape EntityType="OAModel.smo_servers_internal" Width="1.5" PointX="2.625" PointY="14.75" />
-        <EntityTypeShape EntityType="OAModel.space_utilization_internal" Width="1.5" PointX="15.625" PointY="14.75" />
-        <EntityTypeShape EntityType="OAModel.volumes_internal" Width="1.5" PointX="16.625" PointY="0.75" />
-        <EntityTypeShape EntityType="OAModel.consistent_batch_manifests_internal" Width="1.5" PointX="17.625" PointY="4.75" />
-        <EntityTypeShape EntityType="OAModel.purge_info_internal" Width="1.5" PointX="17.625" PointY="7.75" />
-        <EntityTypeShape EntityType="OAModel.os_memory_clerks" Width="1.5" PointX="10.125" PointY="79.5" />
-        <EntityTypeShape EntityType="OAModel.query_stats" Width="1.5" PointX="10.125" PointY="96.75" />
-        <EntityTypeShape EntityType="OAModel.sysutility_ucp_batch_manifests_internal" Width="1.5" PointX="10.125" PointY="93.875" />
-        <EntityTypeShape EntityType="OAModel.sysutility_ucp_smo_properties_internal" Width="1.5" PointX="10.125" PointY="35.375" />
-        <EntityTypeShape EntityType="OAModel.trace_data" Width="1.5" PointX="10.125" PointY="61.25" />
-        <AssociationConnector Association="OAModel.FK_snapshots_snapshots_timetable" />
-        <AssociationConnector Association="OAModel.FK_active_sessions_and_requests_snapshots_internal" />
-        <AssociationConnector Association="OAModel.fk_dac_collected_execution_statistics_internal_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_disk_usage_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_io_virtual_file_stats" />
-        <AssociationConnector Association="OAModel.FK_log_usage_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_os_latch_stats_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_os_memory_clerks_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_os_memory_nodes_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_os_process_memory_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_os_schedulers_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_os_wait_stats_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_performance_counter_values_snapshot_id" />
-        <AssociationConnector Association="OAModel.FK_query_stats_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_snapshots_source_info" />
-        <AssociationConnector Association="OAModel.FK_sql_process_and_system_memory_internal" />
-        <AssociationConnector Association="OAModel.FK_sysutility_cpu_memory_related_info_snapshots_internal_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_sysutility_ucp_batch_manifests_internal" />
-        <AssociationConnector Association="OAModel.FK_sysutility_ucp_smo_properties_internal_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_trace_data_snapshot_id" />
-        <AssociationConnector Association="OAModel.FK_trace_info_last_snapshot_id" />
-        <AssociationConnector Association="OAModel.FK_volumes_info_snapshots_internal" />
-        <AssociationConnector Association="OAModel.FK_distinct_queries_source_info_internal" />
-        <AssociationConnector Association="OAModel.FK_distinct_query_to_handle_source_info_internal" />
-        <AssociationConnector Association="OAModel.FK_notable_query_plan_source_info_internal" />
-        <AssociationConnector Association="OAModel.FK_notable_query_text_source_info_internal" />
-        <AssociationConnector Association="OAModel.FK_trace_info_source_id" />
-        <AssociationConnector Association="OAModel.FK_events_categories" />
-        <AssociationConnector Association="OAModel.FK_ActionInfoR_UserInfo_ActionInfo" />
-        <AssociationConnector Association="OAModel.FK_UserInfoR_UserInfo_ActionInfo" />
-        <AssociationConnector Association="OAModel.FK_WF_InstanceWF_StepInfo" />
-        <AssociationConnector Association="OAModel.FK_WF_TempWF_Instance" />
-        <AssociationConnector Association="OAModel.FK_distinct_query_to_handle_distinct_queries" />
-        <AssociationConnector Association="OAModel.FK_distinct_query_to_handle_notable_query_text" />
-        <AssociationConnector Association="OAModel.FK_trace_data_trace_info_id" />
-        <AssociationConnector Association="OAModel.DepartmentActionInfo" />
-        <AssociationConnector Association="OAModel.RoleInfoActionInfo" />
-        <AssociationConnector Association="OAModel.UserInfoDepartment1" />
-        <AssociationConnector Association="OAModel.UserInfoRoleInfo" />
+      <Diagram DiagramId="0c3d053150174581baf1505d06a57a7f" Name="Diagram1">
+        <EntityTypeShape EntityType="OAModel.ActionInfo" Width="1.5" PointX="0.75" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="OAModel.Department" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="OAModel.FileInfo" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="OAModel.OrderInfo" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="OAModel.R_UserInfo_ActionInfo" Width="1.5" PointX="7.5" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="OAModel.RoleInfo" Width="1.5" PointX="3" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="OAModel.UserInfo" Width="1.5" PointX="5.25" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="OAModel.WF_Instance" Width="1.5" PointX="10" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="OAModel.WF_StepInfo" Width="1.5" PointX="12.25" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="OAModel.WF_Temp" Width="1.5" PointX="7.75" PointY="9.625" IsExpanded="true" />
+        <AssociationConnector Association="OAModel.FK_ActionInfoR_UserInfo_ActionInfo" ManuallyRouted="false" />
+        <AssociationConnector Association="OAModel.FK_UserInfoR_UserInfo_ActionInfo" ManuallyRouted="false" />
+        <AssociationConnector Association="OAModel.FK_WF_InstanceWF_StepInfo" ManuallyRouted="false" />
+        <AssociationConnector Association="OAModel.FK_WF_TempWF_Instance" ManuallyRouted="false" />
+        <AssociationConnector Association="OAModel.DepartmentActionInfo" ManuallyRouted="false" />
+        <AssociationConnector Association="OAModel.RoleInfoActionInfo" ManuallyRouted="false" />
+        <AssociationConnector Association="OAModel.UserInfoDepartment" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

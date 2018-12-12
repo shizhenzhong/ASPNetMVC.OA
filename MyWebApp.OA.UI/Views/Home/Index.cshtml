@@ -4,7 +4,7 @@
 <head>
     <title></title>
     <link href="~/Content/lib/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
-    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="~/Content/lib/jquery/jquery-1.9.0.min.js"></script>
     <script src="~/Content/lib/ligerUI/js/core/base.js" type="text/javascript"></script>
     <script src="~/Content/lib/ligerUI/js/ligerui.min.js"></script>
     <style type="text/css">
@@ -29,6 +29,7 @@
             left: 20px;
             top: 20px;
             width: 100%;
+            
         }
 
             #winlinks ul {
@@ -95,13 +96,73 @@
             width: 22px;
             height: 22px;
         }
+
+        .txt {
+            font-size: 18px;
+            font-weight: bolder;
+            float: left;
+            margin-top: 15px;
+            margin-left: 30px;
+        }
     </style>
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            $("#layout1").ligerLayout({});
+        });
+
+    </script>
+
+
 </head>
-<body style="overflow: hidden; background: url(images/applebg.jpg) no-repeat  center center;">
-    <div id="winlinks">
-        <ul></ul>
+
+<body>
+    <div id="layout1">
+       
+        <div position="center" title="标题">
+            
+        </div>
+     
+        <div position="top"  style="background:url(/Content/lib/images/bg3.png) no-repeat center center;">
+            <img src="~/Content/lib/images/logo.gif" style="float:left" />
+            <span class="txt">欢迎登录黑马OA系统</span>
+            <span style="float:right; margin-right:30px; margin-top:15px;">
+                欢迎 @ViewData["userName"] 登录&nbsp;&nbsp;<a href="/Login/LoginOut">退出</a>
+            </span>
+        </div>
+     
     </div>
+
+
 </body>
+
+@*<body>
+        <div  style="background-image:url(/Content/lib/images/bg3.png)">
+            <img src="~/Content/lib/images/logo.gif" style="float:left" />
+            <span class="txt">欢迎登录黑马OA系统</span>
+            <span style="float:right; margin-right:30px; margin-top:15px;">
+                欢迎 @ViewData["userName"] 登录&nbsp;&nbsp;<a href="/Login/LoginOut">退出</a>
+            </span>
+
+
+
+            <div id="layout1">
+                <div  title="标题" style="background:url(/Content/Images/bg.png) no-repeat 10px center;">
+                    <div id="winlinks">
+                        <ul></ul>
+                    </div>
+                </div>
+
+
+
+
+
+
+            </div>
+        </div>
+    </body>*@
 
 </html>
 <script type="text/javascript">
@@ -125,8 +186,8 @@
         return win;
     }
     var links = [
-        { icon: '~/Content/lib/images/3DSMAX.png', title: '填写周报', url: '../case/week.htm' },
-        { icon: '~/Content/lib/images/3DSMAX.png', title: 'treegrid', url: '../grid/treegrid/treegrid.htm' },
+        { icon: '/Content/lib/images/3DSMAX.png', title: '填写周报', url: '../case/week.htm' },
+        { icon: '/Content/lib/images/3DSMAX.png', title: 'treegrid', url: '../grid/treegrid/treegrid.htm' },
         { icon: 'images/3DSMAX.png', title: '多表头', url: '../grid/mulheader/grid2.htm' },
         { icon: 'images/Program Files Folder.png', title: '固定列', url: '../grid/frozen/frozengrid.htm' },
         { icon: 'images/Program Files Folder.png', title: '可拖动', url: '../base/drag.htm' },

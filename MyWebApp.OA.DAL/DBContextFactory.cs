@@ -23,7 +23,7 @@ namespace MyWebApp.OA.DAL
 
             if (dbContext == null)
             {
-                dbContext = new OAEntities();
+                dbContext = new OAEntities1();
                 CallContext.SetData("dbContext", dbContext);
             }
 

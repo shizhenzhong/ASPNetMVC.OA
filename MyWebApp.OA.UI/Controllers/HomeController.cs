@@ -6,17 +6,17 @@ using System.Web.Mvc;
 
 namespace MyWebApp.OA.UI.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController :BaseController
     {
         //
         // GET: /Home/
 
         public ActionResult Index()
         {
-            if (LoginUser != null)
-            {
-                ViewData["username"] = LoginUser.UName;
+            if (LoginUser!= null){
+                ViewData["userName"] = LoginUser.UName.ToString();
             }
+            
            
             return View();
         }

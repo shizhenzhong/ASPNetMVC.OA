@@ -18,7 +18,6 @@ namespace MyWebApp.OA.Model
         {
             this.R_UserInfo_ActionInfo = new HashSet<R_UserInfo_ActionInfo>();
             this.Department = new HashSet<Department>();
-            this.RoleInfo = new HashSet<RoleInfo>();
         }
     
         public int ID { get; set; }
@@ -33,6 +32,5 @@ namespace MyWebApp.OA.Model
     
         public virtual ICollection<R_UserInfo_ActionInfo> R_UserInfo_ActionInfo { get; set; }
         public virtual ICollection<Department> Department { get; set; }
-        public virtual ICollection<RoleInfo> RoleInfo { get; set; }
     }
 }

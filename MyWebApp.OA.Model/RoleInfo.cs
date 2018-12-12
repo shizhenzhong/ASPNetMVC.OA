@@ -17,7 +17,6 @@ namespace MyWebApp.OA.Model
         public RoleInfo()
         {
             this.ActionInfo = new HashSet<ActionInfo>();
-            this.UserInfo = new HashSet<UserInfo>();
         }
     
         public int ID { get; set; }
@@ -29,6 +28,5 @@ namespace MyWebApp.OA.Model
         public string Sort { get; set; }
     
         public virtual ICollection<ActionInfo> ActionInfo { get; set; }
-        public virtual ICollection<UserInfo> UserInfo { get; set; }
     }
 }
