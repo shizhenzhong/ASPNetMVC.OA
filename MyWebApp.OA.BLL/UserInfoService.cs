@@ -12,7 +12,7 @@ using System.Text;
 
 namespace MyWebApp.OA.BLL
 {
-    public class UserInfoService: BaseService<UserInfo>,IUserInfoService
+    public partial class UserInfoService: BaseService<UserInfo>,IUserInfoService
     {
         public bool DeleteEntities(List<int> list)
         {
@@ -69,9 +69,9 @@ namespace MyWebApp.OA.BLL
                .PageSize).Take<UserInfo>(userInfoSearchParam.PageSize);
         }
         #endregion
-        public override void SetCurrentDal()
-        {
-            CurrentDal = this.DbSession.UserInfoDal;
-        }
+        //public override void SetCurrentDal()
+        //{
+        //    CurrentDal = this.DbSession.UserInfoDal;
+        //}
     }
 }

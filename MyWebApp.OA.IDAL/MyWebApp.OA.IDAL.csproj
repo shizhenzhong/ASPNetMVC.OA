@@ -39,8 +39,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dal.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Dal.tt</DependentUpon>
+    </Compile>
     <Compile Include="IBaseDal.cs" />
     <Compile Include="IDBSession.cs" />
+    <Compile Include="IDBSession1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IDBSession.tt</DependentUpon>
+    </Compile>
     <Compile Include="IUserInfoDal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -49,6 +59,19 @@
       <Project>{f885ced5-597b-4e3e-9f06-f1603cc95e56}</Project>
       <Name>MyWebApp.OA.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Dal.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Dal.cs</LastGenOutput>
+    </Content>
+    <Content Include="IDBSession.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IDBSession1.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

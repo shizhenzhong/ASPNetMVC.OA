@@ -13,18 +13,18 @@ namespace MyWebApp.OA.DALFactory
     /// <summary>
     /// 抽象工厂：都是解决对象的创建问题，（通过反射的方式创建对象的实例）
     /// </summary>
-    public class DALAbstractFactory
+    public partial class DALAbstractFactory
     {
         private  static readonly string DalNameSpace = ConfigurationManager.AppSettings["DalNameSpace"];//获取命名空间
         private static readonly string DalAssembly = ConfigurationManager.AppSettings["DalAssembly"];//获取程序集
 
 
-        public static IUserInfoDal CreateUserInfoDal()
-        {
-            string fullClassName = DalNameSpace + ".UserInfoDal";//构建类的全名称
+        //public static IUserInfoDal CreateUserInfoDal()
+        //{
+           
 
-            return CreateInstance(fullClassName, DalAssembly) as IUserInfoDal;
-        }
+        //    return CreateInstance(DalNameSpace + ".UserInfoDal", DalAssembly) as IUserInfoDal;
+        //}
 
         private static object CreateInstance(string fullClassName,string assemblyPath)
         {

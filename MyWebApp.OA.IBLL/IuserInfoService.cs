@@ -9,7 +9,7 @@ using System.Text;
 
 namespace MyWebApp.OA.IBLL
 {
-    public interface IUserInfoService:IBaseService<UserInfo>
+    public partial interface IUserInfoService:IBaseService<UserInfo>
     {
 
         /// <summary>

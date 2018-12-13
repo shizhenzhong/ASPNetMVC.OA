@@ -40,6 +40,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IBaseService.cs" />
+    <Compile Include="IBll.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IBll.tt</DependentUpon>
+    </Compile>
     <Compile Include="IUserInfoService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -52,6 +57,15 @@
       <Project>{F885CED5-597B-4E3E-9F06-F1603CC95E56}</Project>
       <Name>MyWebApp.OA.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="IBll.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IBll.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

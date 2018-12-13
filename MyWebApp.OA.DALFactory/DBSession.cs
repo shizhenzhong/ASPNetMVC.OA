@@ -17,7 +17,7 @@ namespace MyWebApp.OA.DALFactory
     /// </summary>
     /// 
 
-   public class DBSession:IDBSession
+   public partial class DBSession:IDBSession
     {
 
         //DbContext Db = new OAEntities();
@@ -25,21 +25,21 @@ namespace MyWebApp.OA.DALFactory
         public DbContext Db {
             get { return DBContextFactory.CreateDbContext(); }//完成EF上下文创建
         }
-        private IUserInfoDal _UserInfoDal;
-        public IUserInfoDal UserInfoDal
-        {
-            get {
+        //private IUserInfoDal _UserInfoDal;
+        //public IUserInfoDal UserInfoDal
+        //{
+        //    get {
 
-                if (_UserInfoDal == null)
-                {
-                    _UserInfoDal = DALAbstractFactory.CreateUserInfoDal();//通过抽象工厂将数据会话层与数据层解耦
-                }
-                return _UserInfoDal;
-            }
-            set {
-                _UserInfoDal = value;
-            }
-        }
+        //        if (_UserInfoDal == null)
+        //        {
+        //            _UserInfoDal = DALAbstractFactory.CreateUserInfoDal();//通过抽象工厂将数据会话层与数据层解耦
+        //        }
+        //        return _UserInfoDal;
+        //    }
+        //    set {
+        //        _UserInfoDal = value;
+        //    }
+        //}
 
        
         /// <summary>

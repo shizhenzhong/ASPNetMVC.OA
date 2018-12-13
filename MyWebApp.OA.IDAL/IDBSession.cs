@@ -7,9 +7,9 @@ using System.Text;
 
 namespace MyWebApp.OA.IDAL
 {
-    public interface IDBSession
+    public partial interface IDBSession
     {
-        IUserInfoDal UserInfoDal { get; set; }
+        //IUserInfoDal UserInfoDal { get; set; }
         bool SaveChanges();
     }
 }

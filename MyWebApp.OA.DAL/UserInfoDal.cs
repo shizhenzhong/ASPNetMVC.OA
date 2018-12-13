@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MyWebApp.OA.DAL
 {
-    public class UserInfoDal : BaseDal<UserInfo>, IUserInfoDal
+    public partial class UserInfoDal : BaseDal<UserInfo>, IUserInfoDal
     {
 
     }
