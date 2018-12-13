@@ -87,6 +87,7 @@ namespace MyWebApp.OA.UI.Controllers
             userInfo.ModifiedOn = DateTime.Now;
             userInfo.Sort = "0";
             userInfo.DelFlag = 0;
+            userInfo.UPwd = Common.WebCommon.Md5String(userInfo.UPwd);
             userInfoService.AddEntity(userInfo);
 
             return Content("ok");
@@ -97,6 +98,7 @@ namespace MyWebApp.OA.UI.Controllers
         public ActionResult  EditUserInfo(UserInfo userInfo)
         {
             userInfo.ModifiedOn = DateTime.Now;
+            userInfo.UPwd = Common.WebCommon.Md5String(userInfo.UPwd);
             if (userInfoService.UpdateEntity(userInfo))
             {
                 return Content("ok");

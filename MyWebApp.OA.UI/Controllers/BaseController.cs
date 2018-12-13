@@ -13,11 +13,14 @@ namespace MyWebApp.OA.UI.Controllers
         public UserInfo LoginUser { get; set; }
         //执行控制器方法之前先执行该方法
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
+
+
+
         {
             bool isExt = false;
-            if (Request.Cookies["ASP.NET_SessionId"] != null)
+            if (Request.Cookies["sessionID"] != null)
             {
-                string sessionID = Request.Cookies["ASP.NET_SessionId"].Value;
+                string sessionID = Request.Cookies["sessionID"].Value;
                 object obj=Common.MemcacheHelper.Get(sessionID);
                 if (obj != null)
                 {
