@@ -68,6 +68,32 @@ namespace MyWebApp.OA.BLL
             return temp.Where(u=>u.DelFlag==userInfoSearchParam.DelFlag).OrderBy<UserInfo, string>(u => u.Sort).Skip<UserInfo>((userInfoSearchParam.PageIndex - 1) * userInfoSearchParam
                .PageSize).Take<UserInfo>(userInfoSearchParam.PageSize);
         }
+
+
+        #region 为用户分配角色
+        public bool SetUserRole(int userId, List<int> RoleIdList)
+        {
+            var userInfo = this.DbSession.UserInfoDal.LoadEntities(u => u.ID == userId).FirstOrDefault();
+            if (userInfo != null)
+            {
+
+                userInfo.RoleInfo.Clear();
+                foreach (int roleId in RoleIdList)
+                {
+                    var roleInfo = this.DbSession.RoleInfoDal.LoadEntities(r => r.ID == roleId).FirstOrDefault();
+                    userInfo.RoleInfo.Add(roleInfo);
+                }
+            }
+
+            return this.DbSession.SaveChanges();
+
+           
+        }
+        #endregion
+
+
+
+
         #endregion
         //public override void SetCurrentDal()
         //{

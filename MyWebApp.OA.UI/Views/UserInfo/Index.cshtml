@@ -20,6 +20,7 @@
         $(function () {
             $("#addDiv").css("display", "none");
             $("#editDiv").css("display", "none");
+            $("#setUserRole").css("display", "none");
             loadData();
 
             $("#btnSearch").click(function () {
@@ -86,10 +87,57 @@
                         handler: function () {
                             deleteInfo();
                         }
+                    },
+                    {
+                        id: 'btnSetRole',
+                        text: '设置用户角色',
+                        iconCls: 'icon-redo',
+                        handler: function () {
+                            setUserRoleInfo();
+                        }
                     }
                     ]
             });
         }
+        //为用户分配角色
+        function setUserRoleInfo() {
+            var rows = $("#tt").datagrid('getSelections');
+            if (rows.length != 1) {
+                $.messager.alert("提示", "请选择一条用户信息", "error");
+                return false;
+            }
+            $("#setUserRole").css("display", "block");
+            $("#setRoleFrame").attr("src", "/UserInfo/SetUserRoleInfo/?id=" + rows[0].ID);
+            $('#setUserRole').dialog({
+                title: "设置用户角色",
+                modal: true,
+                collapsible: true,
+                width: 400,
+                height: 500,
+                buttons: [{
+                    text: '确定',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        //自己完成表单校验
+                        var childWindow = $("#setRoleFrame")[0].contentWindow;
+                        childWindow.SetRoleForm();
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-no',
+                    handler: function () {
+                        $('#setUserRole').dialog('close');
+
+
+                    }
+                }]
+            });
+        }
+
+        function afterSet() {
+            $('#setUserRole').dialog('close');
+        }
+
         //添加用户信息
         function addUserInfo() {
             $("#addDiv").css("display", "block");
@@ -215,46 +263,38 @@
 
 </head>
 <body>
-       <div>
-           <div style="margin-bottom:2px">
-               用户名:&nbsp;<input id="txtUName" class="easyui-textbox" height="30" >&nbsp;
-               备注:&nbsp;<input id="txtURemark" class="easyui-textbox" height="30">&nbsp;
-               <a id="btnSearch" href="#" class="easyui-linkbutton" iconCls="icon-search" style="margin-bottom:5px;width:60px">搜索</a>
-           </div>
-            <table id="tt" style="width: 700px;" title="标题，可以使用代码进行初始化，也可以使用这种属性的方式" iconcls="icon-edit"></table>
+    <div>
+        <div style="margin-bottom:2px">
+            用户名:&nbsp;<input id="txtUName" class="easyui-textbox" height="30">&nbsp;
+            备注:&nbsp;<input id="txtURemark" class="easyui-textbox" height="30">&nbsp;
+            <a id="btnSearch" href="#" class="easyui-linkbutton" iconCls="icon-search" style="margin-bottom:5px;width:60px">搜索</a>
         </div>
+        <table id="tt" style="width: 700px;" title="标题，可以使用代码进行初始化，也可以使用这种属性的方式" iconcls="icon-edit"></table>
+    </div>
     <!--------------添加信息------->
     <div id="addDiv">
-    @using (Ajax.BeginForm("AddUserInfo",new { },new AjaxOptions() { Confirm = "确定要添加吗？",OnSuccess = "afterAdd", HttpMethod="post"},new { id= "addForm" }))
-    {
-        <table>
-            <tr><td>用户名</td><td><input type="text" name="UName" /></td></tr>
-            <tr><td>密码</td><td><input type="password" name="UPwd" /></td></tr>
-            <tr><td>备注</td><td><input type="text" name="Remark" /></td></tr>
-        </table>
-    }
-        
-   
+        @using (Ajax.BeginForm("AddUserInfo", new { }, new AjaxOptions() { OnSuccess = "afterAdd", HttpMethod = "post" }, new { id = "addForm" }))
+        {
+            <table>
+                <tr><td>用户名</td><td><input type="text" name="UName" /></td></tr>
+                <tr><td>密码</td><td><input type="password" name="UPwd" /></td></tr>
+                <tr><td>备注</td><td><input type="text" name="Remark" /></td></tr>
+            </table>
+        }
+
+
     </div>
     <!---------------添加信息结束-->
-
     <!--------------修改信息-->
     <div id="editDiv">
         <iframe id="editFrame" frameborder="0" scrolling="no" width="100%" height="100%"></iframe>
-        @*@using (Ajax.BeginForm("EditUserInfo", new { }, new AjaxOptions() { Confirm = "确定要修改吗？", OnSuccess = "afterEdit", HttpMethod = "post" }, new { id = "editForm" }))
-        {
-            <input type="hidden" name="ID" id="txtID" />
-            <input type="hidden"  name="SubTime" id="txtSubTime"/>
-            <table>
-                <tr><td>用户名</td><td><input type="text" name="UName" id="txtName" /></td></tr>
-                <tr><td>密码</td><td><input type="text" name="UPwd" id="txtPwd" /></td></tr>
-                <tr><td>状态</td><td><input type="text" name="DelFlag" id="txtDelFlag" /></td></tr>
-                <tr><td>排序</td><td><input type="text" name="Sort" id="txtSort" /></td></tr>
-                <tr><td>备注</td><td><input type="text" name="Remark" id="txtRemark" /></td></tr>
-            </table>
-        }*@
-
     </div>
-    <!------------------------------------修改信息结束-->
+    <!----------------修改信息结束---------------------->
+    <!------------------分配用户角色-------------------->
+
+    <div id="setUserRole">
+        <iframe id="setRoleFrame" frameborder="0" scrolling="no" width="100%" height="100%"></iframe>
+    </div>
+    <!----------------------------------------------->
 </body>
 </html>

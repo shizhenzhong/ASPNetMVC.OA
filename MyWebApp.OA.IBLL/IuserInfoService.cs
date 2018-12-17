@@ -27,5 +27,7 @@ namespace MyWebApp.OA.IBLL
         IQueryable<UserInfo> LoadSearchUserInfo(UserInfoSearchParam userInfoSearchParam);
 
         void FindUserPwd(UserInfo userInfo);
+
+        bool SetUserRole(int userId, List<int> RoleIdList);
     }
 }

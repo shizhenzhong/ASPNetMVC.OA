@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <objects xmlns="http://www.springframework.net">
   <object type="MyWebApp.OA.UI.Controllers.UserInfoController, MyWebApp.OA.UI" singleton="false" >
-    <property name="userInfoService" ref="userInfoService" /> 
+    <property name="userInfoService" ref="userInfoService" />
+    <property name="roleInfoService" ref="roleInfoService" />
   </object>
   
   <object type="MyWebApp.OA.UI.Controllers.LoginController, MyWebApp.OA.UI" singleton="false" >
@@ -11,4 +12,6 @@
   <object type="MyWebApp.OA.UI.Controllers.RoleInfoController, MyWebApp.OA.UI" singleton="false" >
     <property name="roleInfoService" ref="roleInfoService" />
   </object>
+
+ 
 </objects>

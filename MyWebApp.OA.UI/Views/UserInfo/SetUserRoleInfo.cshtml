@@ -1,0 +1,66 @@
+﻿@{
+    Layout = null;
+}
+@using MyWebApp.OA.Model;
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>为用户设置角色</title>
+    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
+
+        function SetRoleForm() {
+            $("#form1").submit();
+        }
+
+        function afterSet() {
+            window.parent.afterSet();
+        }
+    </script>
+</head>
+<body>
+    <div>
+        为用户@{
+            UserInfo user = (UserInfo)ViewBag.UserInfo;
+            <span style="font-size:18px;color:red">@user.UName</span>
+
+        }设置角色
+
+        @{
+            using (Ajax.BeginForm("SetUserRoleInfo", new { }, new AjaxOptions() { OnSuccess = "afterSet" }, new { id = "form1" }))
+            {
+
+
+
+
+                <input type="hidden" name="userId" value="@user.ID" />
+                List<RoleInfo> roleInfos = (List<RoleInfo>)ViewBag.AllRoles;
+                List<int> ExtRoleIDs = (List<int>)ViewBag.ExtRoles;
+
+                foreach (var item in roleInfos)
+                {
+                    string roleName = "cba_" + item.ID;
+                    if (ExtRoleIDs.Contains(item.ID))//判断当前用户是否已经有了角色
+                    {
+                        <input type="checkbox" name="@roleName" value="@item.ID" checked="checked" />@item.RoleName
+                    }
+                    else
+                    {
+                        <input type="checkbox" name="@roleName" value="@item.ID" />@item.RoleName
+                    }
+                }
+
+
+
+
+            }
+
+
+        }
+        
+    </div>
+</body>
+</html>

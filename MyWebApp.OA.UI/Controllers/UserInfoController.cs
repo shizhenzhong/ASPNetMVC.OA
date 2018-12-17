@@ -17,7 +17,8 @@ namespace MyWebApp.OA.UI.Controllers
         //
         // GET: /UserInfo/
 
-        public  IUserInfoService userInfoService { get; set; } //new UserInfoService();
+        public IUserInfoService userInfoService { get; set; } //new UserInfoService();
+        public IRoleInfoService roleInfoService { get; set; }
         public ActionResult Index()
         {
             return View();
@@ -44,13 +45,13 @@ namespace MyWebApp.OA.UI.Controllers
                 TotalCount = totalCount
 
             };
-           
+
             var userInfoList = userInfoService.LoadSearchUserInfo(userInfoSearchParam);
             //var userInfoList=userInfoService.LoadPagedEntities<string>(pageIndex, pageSize, out totalCount, 
             //    c =>c.DelFlag== deleteType, c=>c.Sort,true);
             var temp = from u in userInfoList
                        select new { ID = u.ID, UName = u.UName, UPwd = u.UPwd,
-                           Remark = u.Remark, SubTime = u.SubTime,DelFlag=u.DelFlag,Sort=u.Sort  };
+                           Remark = u.Remark, SubTime = u.SubTime, DelFlag = u.DelFlag, Sort = u.Sort };
             return Json(new { rows = temp, total = userInfoSearchParam.TotalCount }, JsonRequestBehavior.AllowGet);
         }
         #endregion
@@ -95,11 +96,11 @@ namespace MyWebApp.OA.UI.Controllers
         #endregion
 
         #region 修改用户信息
-        public ActionResult  EditUserInfo(UserInfo userInfo)
+        public ActionResult EditUserInfo(UserInfo userInfo)
         {
-         
+
             userInfo.ModifiedOn = DateTime.Now;
-            
+
 
             if (userInfoService.UpdateEntity(userInfo))
             {
@@ -124,5 +125,40 @@ namespace MyWebApp.OA.UI.Controllers
             return View();
         }
         #endregion
+
+
+       
+        public ActionResult SetUserRoleInfo()
+        {
+            int id = int.Parse(Request["id"]);
+            var userInfo = userInfoService.LoadEntities(u => u.ID == id).FirstOrDefault();
+            ViewBag.UserInfo = userInfo;
+            short Delflag = (short)DeleteEnumType.Normal;
+            ViewBag.AllRoles = roleInfoService.LoadEntities(r=>r.DelFlag==Delflag).ToList();
+            ViewBag.ExtRoles = (from r in userInfo.RoleInfo
+                                select r.ID).ToList();//获取当前用户已经有的角色的编号
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SetUserRoleInfo(FormCollection collection)
+        {
+            int userId = int.Parse(Request["userId"]);
+            string[] AllKeys = Request.Form.AllKeys;
+            List<int> list = new List<int>();
+            foreach (string key in AllKeys)
+            {
+                if (key.StartsWith("cba_"))
+                {
+                    string roleId = key.Replace("cba_", "");
+                    list.Add(int.Parse(roleId));
+                }
+            }
+
+            userInfoService.SetUserRole(userId, list);
+            return Content("ok");
+            
+        }
     }
 }

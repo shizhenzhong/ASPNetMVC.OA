@@ -992,6 +992,7 @@
     <Content Include="Views\Login\FindPwd.cshtml" />
     <Content Include="Views\RoleInfo\Index.cshtml" />
     <Content Include="Views\RoleInfo\ShowEdit.cshtml" />
+    <Content Include="Views\UserInfo\SetUserRoleInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
