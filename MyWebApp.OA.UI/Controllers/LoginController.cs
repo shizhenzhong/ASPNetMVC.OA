@@ -139,5 +139,28 @@ namespace MyWebApp.OA.UI.Controllers
             return View();
         }
         #endregion
+
+
+
+
+        public ActionResult LoginOut()
+        {
+            if (Request.Cookies["sessionID"] != null)
+            {
+                string key = Request.Cookies["sessionID"].Value;
+                Common.MemcacheHelper.Delete(key);
+                if (Request.Cookies["cp1"]!=null && Request.Cookies["cp2"] != null)
+                {
+                    Response.Cookies["cp1"].Expires = DateTime.Now.AddDays(-1);
+                    Response.Cookies["cp2"].Expires = DateTime.Now.AddDays(-1);
+                }
+                
+
+
+            }
+
+
+            return Redirect("/login/index");
+        }
     }
 }

@@ -22,21 +22,6 @@ namespace MyWebApp.OA.UI.Controllers
         }
 
 
-        public ActionResult LoginOut()
-        {
-            if (Request.Cookies["sessionID"] != null)
-            {
-                string key = Request.Cookies["sessionID"].Value;
-                Common.MemcacheHelper.Delete(key);
-                Request.Cookies["cp1"].Expires = DateTime.Now.AddDays(-1);
-                Request.Cookies["cp2"].Expires = DateTime.Now.AddDays(-1);
-                
-
-            }
-
-          
-            return Redirect("/Login/Index");
-        }
 
 
 

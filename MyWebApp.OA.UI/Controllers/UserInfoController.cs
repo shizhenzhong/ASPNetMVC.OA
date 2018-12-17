@@ -98,7 +98,7 @@ namespace MyWebApp.OA.UI.Controllers
         public ActionResult  EditUserInfo(UserInfo userInfo)
         {
             userInfo.ModifiedOn = DateTime.Now;
-            userInfo.UPwd = Common.WebCommon.Md5String(userInfo.UPwd);
+           // userInfo.UPwd = Common.WebCommon.Md5String(userInfo.UPwd);
             if (userInfoService.UpdateEntity(userInfo))
             {
                 return Content("ok");
