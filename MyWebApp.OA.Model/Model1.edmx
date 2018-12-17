@@ -78,7 +78,7 @@
           <Property Name="DelFlag" Type="smallint" Nullable="false" />
           <Property Name="SubTime" Type="datetime" Nullable="false" />
           <Property Name="Remark" Type="nvarchar" MaxLength="256" />
-          <Property Name="ModifiedOn" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="Sort" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="RoleInfoActionInfo">
@@ -453,7 +453,7 @@
           <Property Name="DelFlag" Type="Int16" Nullable="false" />
           <Property Name="SubTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Remark" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedOn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Sort" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ActionInfo" Relationship="Self.RoleInfoActionInfo" FromRole="RoleInfo" ToRole="ActionInfo" />
           <NavigationProperty Name="UserInfo" Relationship="OAModel.UserInfoRoleInfo" FromRole="RoleInfo" ToRole="UserInfo" />

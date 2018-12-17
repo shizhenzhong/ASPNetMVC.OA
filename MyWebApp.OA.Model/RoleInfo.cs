@@ -25,7 +25,7 @@ namespace MyWebApp.OA.Model
         public short DelFlag { get; set; }
         public System.DateTime SubTime { get; set; }
         public string Remark { get; set; }
-        public string ModifiedOn { get; set; }
+        public System.DateTime ModifiedOn { get; set; }
         public string Sort { get; set; }
     
         public virtual ICollection<ActionInfo> ActionInfo { get; set; }

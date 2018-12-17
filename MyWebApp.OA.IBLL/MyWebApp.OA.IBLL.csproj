@@ -45,6 +45,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IBll.tt</DependentUpon>
     </Compile>
+    <Compile Include="IRoleInfoService.cs" />
     <Compile Include="IUserInfoService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

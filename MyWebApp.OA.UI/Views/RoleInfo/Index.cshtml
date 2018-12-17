@@ -1,5 +1,7 @@
 ﻿@{
-    Layout = null;
+                /**/
+
+                Layout = null;
 }
 
 <!DOCTYPE html>
@@ -22,45 +24,54 @@
             $("#editDiv").css("display", "none");
             loadData();
 
-            $("#btnSearch").click(function () {
-                $('#tt').datagrid('clearSelections');
-                var pars = {
-                    name: $("#txtUName").val(),
-                    remark: $("#txtURemark").val()
-                };
+            ////$("#btnSearch").click(function () {
+            ////    $('#tt').datagrid('clearSelections');
+            ////    var pars = {
+            ////        name: $("#txtUName").val(),
+            ////        remark: $("#txtURemark").val()
+            ////    };
 
-                loadData(pars);
-            });
+            //    loadData(pars);
+            //});
         })
 
         function loadData(pars) {
             $('#tt').datagrid({
-                url: '/UserInfo/GetUserInfo',
-                title: '用户数据表格',
+                url: '/RoleInfo/GetRoleInfo',
+                title: '角色数据表格',
                 width: 900,
                 height: 500,
                 fitColumns: true, //列自适应
                 nowrap: false,
                 idField: 'ID',//主键列的列明
-                loadMsg: '正在加载用户的信息...',
+                loadMsg: '正在加载角色的信息...',
                 pagination: true,//是否有分页
                 singleSelect: false,//是否单行选择
                 pageSize: 5,//页大小，一页多少条数据
                 pageNumber: 1,//当前页，默认的
                 pageList: [5, 10, 15],
-                queryParams:pars,//往后台传递参数
+                queryParams: pars,//往后台传递参数
                 columns: [[//c.UserName, c.UserPass, c.Email, c.RegTime
                     { field: 'ck', checkbox: true, align: 'left', width: 50 },
                     { field: 'ID', title: '编号', width: 200 },
-                    { field: 'UName', title: '姓名', width: 200 },
-                    { field: 'UPwd', title: '密码', width: 500 },
+                    { field: 'RoleName', title: '角色名', width: 250 },
+                    { field: 'Sort', title: '排序', width: 200 },
                     { field: 'Remark', title: '备注', width: 200 },
                     {
                         field: 'SubTime', title: '时间', width: 500,
                         formatter: function (value, row, index) {
                             return (eval(value.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"))).pattern("yyyy-MM-dd HH:mm:ss");
                         }
+                    },
+                    {
+                        field: 'Operator', title: '操作', width: 500,
+                        formatter: function (value, row, index) {
+                            var str = "<a href='javascript:void(0)' ids='" + row.ID + "' class='deleteLink' >删除</a> ";
+                            str += "&nbsp;&nbsp;<a href='javascript:void(0)' ids='" + row.ID + "' class='editLink'>修改</a>";
+                            return str;
+                        }
                     }
+
                 ]],
                 toolbar: [
                     {
@@ -87,14 +98,28 @@
                             deleteInfo();
                         }
                     }
-                    ]
+                ],
+                onLoadSuccess: function (e, field) {
+                    $(".deleteLink").click(function () {
+                        var id = $(this).attr("ids");
+                        deleteInfo(id);
+
+
+                    });
+
+                    $(".editLink").click(function () {
+                        var id = $(this).attr("ids");
+                        editInfo(id);
+                    });
+                }
+
             });
         }
         //添加用户信息
         function addUserInfo() {
             $("#addDiv").css("display", "block");
             $('#addDiv').dialog({
-                title: "添加用户信息",
+                title: "添加角色信息",
                 modal: true,
                 collapsible: true,
                 width: 300,
@@ -111,7 +136,7 @@
                     iconCls: 'icon-no',
                     handler: function () {
                         $('#addDiv').dialog('close');
-                      
+
 
                     }
                 }]
@@ -126,21 +151,35 @@
 
 
         //删除信息
-        function deleteInfo() {
-            var rows = $('#tt').datagrid('getSelections');
-            if (rows.length == 0 || !rows) {
-                $.messager.alert("提醒", "请选择要删除的记录!", 'error');
-                return;
+        function deleteInfo(ids) {
+
+            if (typeof (ids) == "undefined") {
+                var rows = $('#tt').datagrid('getSelections');
+                if (rows.length == 0 || !rows) {
+                    $.messager.alert("提醒", "请选择要删除的记录!", 'error');
+                    return;
+                }
             }
+
             if ($.messager.confirm("提示", "您确定要删除吗？", function (r) {
                 if (r) {
                     var strId = "";
-                    for (var i = 0; i < rows.length; i++) {
-                        strId = strId + rows[i].ID + ",";
+
+                    if (typeof (ids) == "undefined") {
+                        for (var i = 0; i < rows.length; i++) {
+                            strId = strId + rows[i].ID + ",";
+                        }
+
+                        strId = strId.substr(0, strId.length - 1);
+                    } else {
+                        strId = ids;
                     }
 
-                    strId = strId.substr(0, strId.length - 1);
-                    $.post("/UserInfo/DeleteUserInfo", { "strId": strId }, function (data) {
+
+
+
+
+                    $.post("/RoleInfo/DeleteRoleInfo", { "strId": strId }, function (data) {
                         if (data == "ok") {
                             $('#tt').datagrid('reload');
                             $('#tt').datagrid('clearSelections');
@@ -155,15 +194,26 @@
 
 
         //修改信息
-        function editInfo(){
-            var rows = $("#tt").datagrid('getSelections');
-            if (rows.length != 1) {
-                $.messager.alert("提示", "请选择一条要修改的数据", "error");
-                return;
+        function editInfo(ids) {
+            var id;
+            if (typeof (ids) == "undefined") {
+                var rows = $("#tt").datagrid('getSelections');
+                if (rows.length != 1) {
+                    $.messager.alert("提示", "请选择一条要修改的数据", "error");
+                    return;
+                }
+
+                id = rows[0].ID;
+
+            } else {
+                id = ids;
             }
 
-            $("#editDiv").css("display", "block");
-            $("#editFrame").attr("src", "/UserInfo/ShowEdit/?id=" + rows[0].ID);
+
+
+
+            $("#editRoleDiv").css("display", "block");
+            $("#editRoleFrame").attr("src", "/RoleInfo/ShowEdit/?id=" + id);
             //$("#txtName").val(rows[0].UName);
             //$("#txtPwd").val(rows[0].UPwd);
             //$("#txtRemark").val(rows[0].Remark);
@@ -171,37 +221,36 @@
             //$("#txtSubTime").val(ChangeDateFormat(rows[0].SubTime));
             //$("#txtDelFlag").val(rows[0].DelFlag);
             //$("#txtSort").val(rows[0].Sort);
-            $('#editDiv').dialog({
-                title: "修改用户信息",
+            $('#editRoleDiv').dialog({
+                title: "修改角色信息",
                 modal: true,
                 collapsible: true,
                 width: 400,
-                height:500,
+                height: 500,
                 buttons: [{
                     text: '确定',
                     iconCls: 'icon-ok',
                     handler: function () {
                         //自己完成表单校验
-                        var childWindow = $("#editFrame")[0].contentWindow;
-                        childWindow.submitForm();
+                        $("#editRoleFrame")[0].contentWindow.submitForm();
+                     
                     }
                 }, {
                     text: '取消',
                     iconCls: 'icon-no',
                     handler: function () {
-                        $('#editDiv').dialog('close');
-
+                        $('#editRoleDiv').dialog('close');
 
                     }
                 }]
             });
         }
         function afterEdit() {
-            $('#editDiv').dialog('close');
+            $('#editRoleDiv').dialog('close');
             $("#tt").datagrid('reload');
         }
 
-         //将序列化成json格式后日期(毫秒数)转成日期格式
+        //将序列化成json格式后日期(毫秒数)转成日期格式
         function ChangeDateFormat(cellval) {
             var date = new Date(parseInt(cellval.replace("/Date(", "").replace(")/", ""), 10));
             var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
@@ -209,50 +258,30 @@
             var Hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
             var mm = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
             var ss = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-            return date.getFullYear() + "-" + month + "-" + currentDate+" "+Hour + ":" + mm + ":" + ss;
+            return date.getFullYear() + "-" + month + "-" + currentDate + " " + Hour + ":" + mm + ":" + ss;
         }
     </script>
 
 </head>
 <body>
-       <div>
-           <div style="margin-bottom:2px">
-               用户名:&nbsp;<input id="txtUName" class="easyui-textbox" height="30" >&nbsp;
-               备注:&nbsp;<input id="txtURemark" class="easyui-textbox" height="30">&nbsp;
-               <a id="btnSearch" href="#" class="easyui-linkbutton" iconCls="icon-search" style="margin-bottom:5px;width:60px">搜索</a>
-           </div>
-            <table id="tt" style="width: 700px;" title="标题，可以使用代码进行初始化，也可以使用这种属性的方式" iconcls="icon-edit"></table>
-        </div>
-    <!--------------添加信息------->
+      
+        <table id="tt" style="width: 700px;" title="标题，可以使用代码进行初始化，也可以使用这种属性的方式" iconcls="icon-edit"></table>
+    
+    <!--------------添加角色信息------->
     <div id="addDiv">
-    @using (Ajax.BeginForm("AddUserInfo",new { },new AjaxOptions() { Confirm = "确定要添加吗？",OnSuccess = "afterAdd", HttpMethod="post"},new { id= "addForm" }))
-    {
-        <table>
-            <tr><td>用户名</td><td><input type="text" name="UName" /></td></tr>
-            <tr><td>密码</td><td><input type="password" name="UPwd" /></td></tr>
-            <tr><td>备注</td><td><input type="text" name="Remark" /></td></tr>
-        </table>
-    }
-        
-   
+        @using (Ajax.BeginForm("AddRoleInfo", new { }, new AjaxOptions() { Confirm = "确定要添加吗？", OnSuccess = "afterAdd", HttpMethod = "post" }, new { id = "addForm" }))
+        {
+            <table>
+                <tr><td>角色名</td><td><input type="text" name="RoleName" /></td></tr>
+                <tr><td>排序</td><td><input type="text" name="Sort" /></td></tr>
+                <tr><td>备注</td><td><input type="text" name="Remark" /></td></tr>
+            </table>
+        }
     </div>
     <!---------------添加信息结束-->
-
     <!--------------修改信息-->
-    <div id="editDiv">
-        <iframe id="editFrame" frameborder="0" scrolling="no" width="100%" height="100%"></iframe>
-        @*@using (Ajax.BeginForm("EditUserInfo", new { }, new AjaxOptions() { Confirm = "确定要修改吗？", OnSuccess = "afterEdit", HttpMethod = "post" }, new { id = "editForm" }))
-        {
-            <input type="hidden" name="ID" id="txtID" />
-            <input type="hidden"  name="SubTime" id="txtSubTime"/>
-            <table>
-                <tr><td>用户名</td><td><input type="text" name="UName" id="txtName" /></td></tr>
-                <tr><td>密码</td><td><input type="text" name="UPwd" id="txtPwd" /></td></tr>
-                <tr><td>状态</td><td><input type="text" name="DelFlag" id="txtDelFlag" /></td></tr>
-                <tr><td>排序</td><td><input type="text" name="Sort" id="txtSort" /></td></tr>
-                <tr><td>备注</td><td><input type="text" name="Remark" id="txtRemark" /></td></tr>
-            </table>
-        }*@
+    <div id="editRoleDiv">
+        <iframe id="editRoleFrame" frameborder="0" scrolling="no" width="100%" height="100%"></iframe>
 
     </div>
     <!------------------------------------修改信息结束-->

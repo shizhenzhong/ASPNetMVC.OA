@@ -97,8 +97,10 @@ namespace MyWebApp.OA.UI.Controllers
         #region 修改用户信息
         public ActionResult  EditUserInfo(UserInfo userInfo)
         {
+         
             userInfo.ModifiedOn = DateTime.Now;
-           // userInfo.UPwd = Common.WebCommon.Md5String(userInfo.UPwd);
+            
+
             if (userInfoService.UpdateEntity(userInfo))
             {
                 return Content("ok");
