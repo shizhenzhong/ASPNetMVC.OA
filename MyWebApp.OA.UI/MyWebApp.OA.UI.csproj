@@ -995,6 +995,7 @@
     <Content Include="Views\RoleInfo\ShowEdit.cshtml" />
     <Content Include="Views\UserInfo\SetUserRoleInfo.cshtml" />
     <Content Include="Views\ActionInfo\Index.cshtml" />
+    <Content Include="Views\ActionInfo\ShowEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

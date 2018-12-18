@@ -81,5 +81,50 @@ namespace MyWebApp.OA.UI.Controllers
             return Content("ok");
         }
 
+
+                    
+        public ActionResult DeleteActionInfo()
+        {
+            string strs = Request["strId"];
+            string[] strId = strs.Split(',');
+            List<int> list = new List<int>();
+            foreach (var item in strId)
+            {
+                list.Add(int.Parse(item));
+            }
+            if (actionInfoService.DeleteEntities(list))
+            {
+                return Content("ok");
+            }
+            else
+            {
+                return Content("no");
+            }
+
+
+        }
+
+
+        public ActionResult ShowEdit()
+        {
+            int id = int.Parse(Request["id"]);
+            ViewData.Model=actionInfoService.LoadEntities(a => a.ID == id).FirstOrDefault();
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditInfo(ActionInfo actionInfo)
+        {
+            actionInfo.ModifiedOn = DateTime.Now;
+            if (actionInfoService.UpdateEntity(actionInfo))
+            {
+                return Content("ok");
+            }
+            else
+            {
+                return Content("no");
+            }
+        }
+
     }
 }

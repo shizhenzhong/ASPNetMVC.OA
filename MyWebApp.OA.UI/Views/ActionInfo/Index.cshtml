@@ -228,7 +228,7 @@
 
 
 
-                    $.post("/RoleInfo/DeleteRoleInfo", { "strId": strId }, function (data) {
+                    $.post("/ActionInfo/DeleteActionInfo", { "strId": strId }, function (data) {
                         if (data == "ok") {
                             $('#tt').datagrid('reload');
                             $('#tt').datagrid('clearSelections');
@@ -261,8 +261,8 @@
 
 
 
-            $("#editRoleDiv").css("display", "block");
-            $("#editRoleFrame").attr("src", "/RoleInfo/ShowEdit/?id=" + id);
+            $("#editActionDiv").css("display", "block");
+            $("#editActionFrame").attr("src", "/ActionInfo/ShowEdit/?id=" + id);
             //$("#txtName").val(rows[0].UName);
             //$("#txtPwd").val(rows[0].UPwd);
             //$("#txtRemark").val(rows[0].Remark);
@@ -270,8 +270,8 @@
             //$("#txtSubTime").val(ChangeDateFormat(rows[0].SubTime));
             //$("#txtDelFlag").val(rows[0].DelFlag);
             //$("#txtSort").val(rows[0].Sort);
-            $('#editRoleDiv').dialog({
-                title: "修改角色信息",
+            $('#editActionDiv').dialog({
+                title: "修改权限信息",
                 modal: true,
                 collapsible: true,
                 width: 400,
@@ -281,21 +281,21 @@
                     iconCls: 'icon-ok',
                     handler: function () {
                         //自己完成表单校验
-                        $("#editRoleFrame")[0].contentWindow.submitForm();
+                        $("#editActionFrame")[0].contentWindow.submitActionForm();
 
                     }
                 }, {
                     text: '取消',
                     iconCls: 'icon-no',
                     handler: function () {
-                        $('#editRoleDiv').dialog('close');
+                        $('#editActionDiv').dialog('close');
 
                     }
                 }]
             });
         }
-        function afterEdit() {
-            $('#editRoleDiv').dialog('close');
+        function afterActionEdit() {
+            $('#editActionDiv').dialog('close');
             $("#tt").datagrid('reload');
         }
 
@@ -361,8 +361,8 @@
     </div>
     <!---------------添加信息结束-->
     <!--------------修改信息-->
-    <div id="editRoleDiv">
-        <iframe id="editRoleFrame" frameborder="0" scrolling="no" width="100%" height="100%"></iframe>
+    <div id="editActionDiv">
+        <iframe id="editActionFrame" frameborder="0"  width="380" height="400"></iframe>
 
     </div>
     <!------------------------------------修改信息结束-->
