@@ -54,7 +54,9 @@ namespace MyWebApp.OA.UI.Controllers
             {
                 list.Add(int.Parse(item));
             }
+          
             roleInfoService.DeleteEntities(list);
+           
             return Content("ok");
         }
 

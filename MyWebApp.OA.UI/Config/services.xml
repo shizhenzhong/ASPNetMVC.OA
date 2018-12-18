@@ -5,4 +5,7 @@
 
  <object type=" MyWebApp.OA.BLL.RoleInfoService, MyWebApp.OA.BLL" singleton="false" name="roleInfoService" >
   </object>
+
+  <object type=" MyWebApp.OA.BLL.ActionInfoService, MyWebApp.OA.BLL" singleton="false" name="actionInfoService" >
+  </object>
 </objects>
