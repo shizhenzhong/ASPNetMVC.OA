@@ -17,23 +17,53 @@
     <script src="~/Scripts/easyui-lang-zh_CN.js"></script>
     <script src="~/Scripts/datapattern.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/MyAjaxForm.js"></script>
     <script type="text/javascript">
 
         $(function () {
             $("#addDiv").css("display", "none");
             $("#editDiv").css("display", "none");
             loadData();
+            bindselActionType();//绑定选择权限类型事件
+            bindFileUpload();//绑定文件上传按钮事件
 
-            ////$("#btnSearch").click(function () {
-            ////    $('#tt').datagrid('clearSelections');
-            ////    var pars = {
-            ////        name: $("#txtUName").val(),
-            ////        remark: $("#txtURemark").val()
-            ////    };
-
-            //    loadData(pars);
-            //});
         })
+
+        function bindFileUpload() {
+            if ($("#imgIcon").val == "") {
+                $.messager.alert("提示", "请选择图片文件");
+                return;
+            }
+
+            $("#btnUpload").click(function () {
+                $("#addDiv form").ajaxSubmit({
+                    type: 'post',
+                    url: '/ActionInfo/GetMenuIcon',
+                    success: function (data) {
+                        var serverData = data.split(':');
+                        if (serverData[0] == "ok") {
+                            $("#hidd").attr("value", serverData[1]);
+                            $("#menuIconShow").append("<img src='" + serverData[1] + "' width='50px'height='50px'/>");
+
+                        } else {
+                            $.messager.alert("提示", "上传图片有误");
+                            return false;
+                        }
+                    }
+                })
+            });
+           
+        }
+
+        function bindselActionType() {
+            $("#selActionType").change(function () {
+                if ($(this).val() == "0") {
+                    $("#ImgIconTr").fadeOut("slow");
+                } else {
+                    $("#ImgIconTr").fadeIn("slow");
+                }
+            });
+        }
 
         function loadData(pars) {
             $('#tt').datagrid({
@@ -58,7 +88,16 @@
                     { field: 'Sort', title: '排序', width: 200 },
                     { field: 'Url', title: '请求地址', width: 300 },
                     { field: 'HttpMethod', title: '请求方式', width: 200 },
-                    { field: 'ActionTypeEnum', title: '权限类型', width: 200 },
+                    {
+                        field: 'ActionTypeEnum', title: '权限类型', width: 200,
+                        formatter: function (value, row, index) {
+                            if (value == 1) {
+                                return "菜单权限";
+                            } else {
+                                return "普通权限";
+                            }
+                        }
+                    },
                     { field: 'Remark', title: '备注', width: 300 },
                     {
                         field: 'SubTime', title: '时间', width: 500,
@@ -82,7 +121,7 @@
                         text: '添加',
                         iconCls: 'icon-add',
                         handler: function () {
-                            addUserInfo();
+                            addActionInfo();
                         }
                     },
                     {
@@ -118,15 +157,22 @@
 
             });
         }
-        //添加用户信息
-        function addUserInfo() {
+        //添加权限信息
+        function addActionInfo() {
             $("#addDiv").css("display", "block");
+            $("#addDiv").css("display", "block");
+
+            $("#menuIconShow").text("");
+            $("#btnUpload").val("异步上传");
+            $("#selActionType").val(0);
+            $("#ImgIconTr").hide();
+           
             $('#addDiv').dialog({
-                title: "添加角色信息",
+                title: "添加权限信息",
                 modal: true,
                 collapsible: true,
-                width: 300,
-                height: 200,
+                width: 400,
+                height: 400,
                 buttons: [{
                     text: '确定',
                     iconCls: 'icon-ok',
@@ -271,14 +317,46 @@
     <table id="tt" style="width: 700px;" title="标题，可以使用代码进行初始化，也可以使用这种属性的方式" iconcls="icon-edit"></table>
 
     <!--------------添加角色信息------->
-    <div id="addDiv">
-        @using (Ajax.BeginForm("AddRoleInfo", new { }, new AjaxOptions() { Confirm = "确定要添加吗？", OnSuccess = "afterAdd", HttpMethod = "post" }, new { id = "addForm" }))
+    <div id="addDiv"style="padding:10px">
+        @using (Ajax.BeginForm("AddActionInfo", new { }, new AjaxOptions() { Confirm = "确定要添加吗？", OnSuccess = "afterAdd", HttpMethod = "post" }, new { id = "addForm" }))
         {
-            <table>
-                <tr><td>角色名</td><td><input type="text" name="RoleName" /></td></tr>
-                <tr><td>排序</td><td><input type="text" name="Sort" /></td></tr>
-                <tr><td>备注</td><td><input type="text" name="Remark" /></td></tr>
-            </table>
+        <table>
+
+            <tr><td>权限名称：</td><td>
+                   <input type="hidden" id="hidd" name="MenuIcon" value="" />
+                <input type="text" name="ActionInfoName" />
+            </td></tr>
+            <tr><td>URL：</td><td><input type="text" name="URL" /></td></tr>
+            <tr>
+                <td>HttpMethod：</td>
+                <td>
+                    <select name="HttpMethod">
+                        <option value="Get" >Get</option>
+                        <option value="Post">Post</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>权限类型：</td>
+                <td>
+                    <select name="ActionTypeEnum" id="selActionType">
+                        <option value="0" >普通权限</option>
+                        <option value="1">菜单权限</option>
+                    </select>
+                </td>
+            </tr>
+            <tr id="ImgIconTr" style="display:none">
+                <td>菜单图标：</td>
+                <td>
+                <input type="file" name="imgIcon"  id="imgIcon"/>
+                <input type="button" name="ss" value="异步上传" id="btnUpload"/>
+               
+                <div id="menuIconShow"></div>
+                </td>
+            </tr>
+            <tr><td>排序：</td><td><input type="text" name="Sort" /></td></tr>
+            <tr><td>备注：</td><td><input type="text" name="Remark" /></td></tr>
+        </table>
         }
     </div>
     <!---------------添加信息结束-->

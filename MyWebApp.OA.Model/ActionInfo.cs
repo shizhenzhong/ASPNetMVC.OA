@@ -23,7 +23,7 @@ namespace MyWebApp.OA.Model
         public int ID { get; set; }
         public System.DateTime SubTime { get; set; }
         public short DelFlag { get; set; }
-        public string ModifiedOn { get; set; }
+        public System.DateTime ModifiedOn { get; set; }
         public string Remark { get; set; }
         public string Url { get; set; }
         public string HttpMethod { get; set; }
