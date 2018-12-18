@@ -100,7 +100,13 @@
                     },
                     { field: 'Remark', title: '备注', width: 300 },
                     {
-                        field: 'SubTime', title: '时间', width: 500,
+                        field: 'SubTime', title: '提交时间', width: 500,
+                        formatter: function (value, row, index) {
+                            return (eval(value.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"))).pattern("yyyy-MM-dd HH:mm:ss");
+                        }
+                    },
+                    {
+                        field: 'ModifiedOn', title: '更新时间', width: 500,
                         formatter: function (value, row, index) {
                             return (eval(value.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"))).pattern("yyyy-MM-dd HH:mm:ss");
                         }
@@ -274,8 +280,8 @@
                 title: "修改权限信息",
                 modal: true,
                 collapsible: true,
-                width: 400,
-                height: 500,
+                width: 500,
+                height: 600,
                 buttons: [{
                     text: '确定',
                     iconCls: 'icon-ok',
@@ -362,7 +368,7 @@
     <!---------------添加信息结束-->
     <!--------------修改信息-->
     <div id="editActionDiv">
-        <iframe id="editActionFrame" frameborder="0"  width="380" height="400"></iframe>
+        <iframe id="editActionFrame" frameborder="0" scrolling="no" width="100%" height="100%"></iframe>
 
     </div>
     <!------------------------------------修改信息结束-->

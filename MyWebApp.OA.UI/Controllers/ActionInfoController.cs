@@ -44,7 +44,8 @@ namespace MyWebApp.OA.UI.Controllers
                            Sort = a.Sort,
                            a.ControllerName,
                            Remark = a.Remark,
-                           SubTime = a.SubTime
+                           SubTime = a.SubTime,
+                           ModifiedOn =a.ModifiedOn
                        };
             return Json(new { rows = rows, total = totalCount }, JsonRequestBehavior.AllowGet);
         }
@@ -108,13 +109,18 @@ namespace MyWebApp.OA.UI.Controllers
         public ActionResult ShowEdit()
         {
             int id = int.Parse(Request["id"]);
-            ViewData.Model=actionInfoService.LoadEntities(a => a.ID == id).FirstOrDefault();
+             ViewBag.Action=actionInfoService.LoadEntities(a => a.ID == id).FirstOrDefault();
             return View();
         }
 
         [HttpPost]
         public ActionResult EditInfo(ActionInfo actionInfo)
         {
+
+            if (actionInfo.ActionTypeEnum == 0)
+            {
+                actionInfo.MenuIcon = "";
+            }
             actionInfo.ModifiedOn = DateTime.Now;
             if (actionInfoService.UpdateEntity(actionInfo))
             {
