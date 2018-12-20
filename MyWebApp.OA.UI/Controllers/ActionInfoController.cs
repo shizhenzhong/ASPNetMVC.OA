@@ -11,13 +11,14 @@ using System.Web.Mvc;
 namespace MyWebApp.OA.UI.Controllers
 {
 
-   
+
 
     public class ActionInfoController : Controller
     {
         //
         // GET: /ActionInfo/
         public IActionInfoService actionInfoService { get; set; }
+        public IRoleInfoService roleInfoService { get; set; }
 
         public ActionResult Index()
         {
@@ -27,10 +28,10 @@ namespace MyWebApp.OA.UI.Controllers
 
         public ActionResult GetActionInfo()
         {
-            int pageIndex =int.Parse(Request["page"]);
-            int pageSize =int.Parse(Request["rows"]);
+            int pageIndex = int.Parse(Request["page"]);
+            int pageSize = int.Parse(Request["rows"]);
             int totalCount;
-            short delFlag =(short)DeleteEnumType.Normal;
+            short delFlag = (short)DeleteEnumType.Normal;
             var actionInfoList = actionInfoService.LoadPagedEntities<string>(pageIndex, pageSize, out totalCount, a => a.DelFlag == delFlag,
                 a => a.Sort, true);
             var rows = from a in actionInfoList
@@ -39,13 +40,13 @@ namespace MyWebApp.OA.UI.Controllers
                            ID = a.ID,
                            ActionInfoName = a.ActionInfoName,
                            Url = a.Url,
-                           ActionTypeEnum= a.ActionTypeEnum,
-                           HttpMethod=a.HttpMethod,
+                           ActionTypeEnum = a.ActionTypeEnum,
+                           HttpMethod = a.HttpMethod,
                            Sort = a.Sort,
                            a.ControllerName,
                            Remark = a.Remark,
                            SubTime = a.SubTime,
-                           ModifiedOn =a.ModifiedOn
+                           ModifiedOn = a.ModifiedOn
                        };
             return Json(new { rows = rows, total = totalCount }, JsonRequestBehavior.AllowGet);
         }
@@ -71,10 +72,10 @@ namespace MyWebApp.OA.UI.Controllers
 
 
 
-       public ActionResult AddActionInfo(ActionInfo actionInfo)
+        public ActionResult AddActionInfo(ActionInfo actionInfo)
         {
             actionInfo.DelFlag = 0;
-            actionInfo.ModifiedOn = DateTime.Now ;
+            actionInfo.ModifiedOn = DateTime.Now;
             actionInfo.SubTime = DateTime.Now;
             actionInfo.Url = actionInfo.Url.ToLower();
             actionInfo.HttpMethod = actionInfo.HttpMethod.ToLower();
@@ -83,7 +84,7 @@ namespace MyWebApp.OA.UI.Controllers
         }
 
 
-                    
+
         public ActionResult DeleteActionInfo()
         {
             string strs = Request["strId"];
@@ -109,7 +110,7 @@ namespace MyWebApp.OA.UI.Controllers
         public ActionResult ShowEdit()
         {
             int id = int.Parse(Request["id"]);
-             ViewBag.Action=actionInfoService.LoadEntities(a => a.ID == id).FirstOrDefault();
+            ViewBag.Action = actionInfoService.LoadEntities(a => a.ID == id).FirstOrDefault();
             return View();
         }
 
@@ -132,5 +133,37 @@ namespace MyWebApp.OA.UI.Controllers
             }
         }
 
+
+        public ActionResult SetActionRole()
+        {
+            int id = int.Parse(Request["id"]);
+            var actionInfo = actionInfoService.LoadEntities(a => a.ID == id).FirstOrDefault();
+            ViewBag.ActionInfo = actionInfo;
+            short delFlag = (short)DeleteEnumType.Normal;
+            ViewBag.AllRoles = roleInfoService.LoadEntities(r => r.DelFlag == delFlag).ToList();
+            ViewBag.AllExtRoles = (from r in actionInfo.RoleInfo
+                                   select r.ID).ToList();
+            return View();
+
+        }
+
+        [HttpPost]
+        public ActionResult SetActionRole(FormCollection formCollection)
+        {
+            int actionId = int.Parse(Request["actionId"]);
+            string[] keys = Request.Form.AllKeys;
+            List<int> list = new List<int>();
+            foreach (var key in keys)
+            {
+                if (key.StartsWith("cba_"))
+                {
+                    string id = key.Replace("cba_", "");
+                    list.Add(int.Parse(id));
+                }
+            }
+
+            actionInfoService.setActionRoleInfo(actionId, list);
+            return Content("ok");
+        }
     }
 }

@@ -44,16 +44,6 @@ namespace MyWebApp.OA.BLL
     }
 	
 
-    public partial class OrderInfoService:BaseService<OrderInfo>,IOrderInfoService
-
-    {
-      public override void SetCurrentDal()
-        {
-            CurrentDal = this.DbSession.OrderInfoDal;
-        }
-    }
-	
-
     public partial class R_UserInfo_ActionInfoService:BaseService<R_UserInfo_ActionInfo>,IR_UserInfo_ActionInfoService
 
     {

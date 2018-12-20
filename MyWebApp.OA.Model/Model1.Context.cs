@@ -28,7 +28,6 @@ namespace MyWebApp.OA.Model
         public DbSet<ActionInfo> ActionInfo { get; set; }
         public DbSet<Department> Department { get; set; }
         public DbSet<FileInfo> FileInfo { get; set; }
-        public DbSet<OrderInfo> OrderInfo { get; set; }
         public DbSet<R_UserInfo_ActionInfo> R_UserInfo_ActionInfo { get; set; }
         public DbSet<RoleInfo> RoleInfo { get; set; }
         public DbSet<UserInfo> UserInfo { get; set; }

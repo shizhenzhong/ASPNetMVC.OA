@@ -9,5 +9,8 @@ namespace MyWebApp.OA.IBLL
     public partial interface IActionInfoService
     {
         bool DeleteEntities(List<int> list);
+        bool setActionRoleInfo(int actionId, List<int> list);
     }
+
+  
 }

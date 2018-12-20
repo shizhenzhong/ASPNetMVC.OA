@@ -32,13 +32,6 @@ namespace MyWebApp.OA.IBLL
     }
 	
 
-    public partial interface IOrderInfoService:IBaseService<OrderInfo>
-
-    {
-      
-    }
-	
-
     public partial interface IR_UserInfo_ActionInfoService:IBaseService<R_UserInfo_ActionInfo>
 
     {

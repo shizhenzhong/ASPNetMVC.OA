@@ -54,12 +54,6 @@
           <Property Name="Url" Type="nvarchar(max)" Nullable="false" />
           <Property Name="FileSize" Type="nvarchar" MaxLength="32" Nullable="false" />
         </EntityType>
-        <EntityType Name="OrderInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-        </EntityType>
         <EntityType Name="R_UserInfo_ActionInfo">
           <Key>
             <PropertyRef Name="ID" />
@@ -319,7 +313,6 @@
           <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DepartmentActionInfo" EntityType="Self.DepartmentActionInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileInfo" EntityType="Self.FileInfo" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OrderInfo" EntityType="Self.OrderInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="R_UserInfo_ActionInfo" EntityType="Self.R_UserInfo_ActionInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoleInfo" EntityType="Self.RoleInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoleInfoActionInfo" EntityType="Self.RoleInfoActionInfo" Schema="dbo" store:Type="Tables" />
@@ -382,6 +375,49 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="OAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="OAEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ActionInfo" EntityType="OAModel.ActionInfo" />
+          <EntitySet Name="Department" EntityType="OAModel.Department" />
+          <EntitySet Name="FileInfo" EntityType="OAModel.FileInfo" />
+          <EntitySet Name="R_UserInfo_ActionInfo" EntityType="OAModel.R_UserInfo_ActionInfo" />
+          <EntitySet Name="RoleInfo" EntityType="OAModel.RoleInfo" />
+          <EntitySet Name="UserInfo" EntityType="OAModel.UserInfo" />
+          <EntitySet Name="WF_Instance" EntityType="OAModel.WF_Instance" />
+          <EntitySet Name="WF_StepInfo" EntityType="OAModel.WF_StepInfo" />
+          <EntitySet Name="WF_Temp" EntityType="OAModel.WF_Temp" />
+          <AssociationSet Name="FK_ActionInfoR_UserInfo_ActionInfo" Association="OAModel.FK_ActionInfoR_UserInfo_ActionInfo">
+            <End Role="ActionInfo" EntitySet="ActionInfo" />
+            <End Role="R_UserInfo_ActionInfo" EntitySet="R_UserInfo_ActionInfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserInfoR_UserInfo_ActionInfo" Association="OAModel.FK_UserInfoR_UserInfo_ActionInfo">
+            <End Role="UserInfo" EntitySet="UserInfo" />
+            <End Role="R_UserInfo_ActionInfo" EntitySet="R_UserInfo_ActionInfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WF_InstanceWF_StepInfo" Association="OAModel.FK_WF_InstanceWF_StepInfo">
+            <End Role="WF_Instance" EntitySet="WF_Instance" />
+            <End Role="WF_StepInfo" EntitySet="WF_StepInfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WF_TempWF_Instance" Association="OAModel.FK_WF_TempWF_Instance">
+            <End Role="WF_Temp" EntitySet="WF_Temp" />
+            <End Role="WF_Instance" EntitySet="WF_Instance" />
+          </AssociationSet>
+          <AssociationSet Name="DepartmentActionInfo" Association="OAModel.DepartmentActionInfo">
+            <End Role="ActionInfo" EntitySet="ActionInfo" />
+            <End Role="Department" EntitySet="Department" />
+          </AssociationSet>
+          <AssociationSet Name="RoleInfoActionInfo" Association="OAModel.RoleInfoActionInfo">
+            <End Role="ActionInfo" EntitySet="ActionInfo" />
+            <End Role="RoleInfo" EntitySet="RoleInfo" />
+          </AssociationSet>
+          <AssociationSet Name="UserInfoDepartment" Association="OAModel.UserInfoDepartment">
+            <End Role="Department" EntitySet="Department" />
+            <End Role="UserInfo" EntitySet="UserInfo" />
+          </AssociationSet>
+          <AssociationSet Name="UserInfoRoleInfo" Association="OAModel.UserInfoRoleInfo">
+            <End Role="RoleInfo" EntitySet="RoleInfo" />
+            <End Role="UserInfo" EntitySet="UserInfo" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="ActionInfo">
           <Key>
             <PropertyRef Name="ID" />
@@ -391,47 +427,42 @@
           <Property Name="DelFlag" Type="Int16" Nullable="false" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Remark" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
-          <Property Name="Url" Type="String" MaxLength="512" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="HttpMethod" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Url" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="true" />
+          <Property Name="HttpMethod" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="true" />
           <Property Name="ActionMethodName" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
           <Property Name="ControllerName" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="ActionInfoName" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ActionInfoName" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="true" />
           <Property Name="Sort" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ActionTypeEnum" Type="Int16" Nullable="false" />
           <Property Name="MenuIcon" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
           <Property Name="IconWidth" Type="Int32" Nullable="false" />
           <Property Name="IconHeight" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="R_UserInfo_ActionInfo" Relationship="Self.FK_ActionInfoR_UserInfo_ActionInfo" FromRole="ActionInfo" ToRole="R_UserInfo_ActionInfo" />
-          <NavigationProperty Name="Department" Relationship="Self.DepartmentActionInfo" FromRole="ActionInfo" ToRole="Department" />
+          <NavigationProperty Name="R_UserInfo_ActionInfo" Relationship="OAModel.FK_ActionInfoR_UserInfo_ActionInfo" FromRole="ActionInfo" ToRole="R_UserInfo_ActionInfo" />
+          <NavigationProperty Name="Department" Relationship="OAModel.DepartmentActionInfo" FromRole="ActionInfo" ToRole="Department" />
+          <NavigationProperty Name="RoleInfo" Relationship="OAModel.RoleInfoActionInfo" FromRole="ActionInfo" ToRole="RoleInfo" />
         </EntityType>
         <EntityType Name="Department">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="DepName" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DepName" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="true" />
           <Property Name="ParentId" Type="Int32" Nullable="false" />
-          <Property Name="TreePath" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TreePath" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Level" Type="Int32" Nullable="false" />
           <Property Name="IsLeaf" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="ActionInfo" Relationship="Self.DepartmentActionInfo" FromRole="Department" ToRole="ActionInfo" />
-          <NavigationProperty Name="UserInfo" Relationship="Self.UserInfoDepartment" FromRole="Department" ToRole="UserInfo" />
+          <NavigationProperty Name="ActionInfo" Relationship="OAModel.DepartmentActionInfo" FromRole="Department" ToRole="ActionInfo" />
+          <NavigationProperty Name="UserInfo" Relationship="OAModel.UserInfoDepartment" FromRole="Department" ToRole="UserInfo" />
         </EntityType>
         <EntityType Name="FileInfo">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FileName" Type="String" MaxLength="512" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FileName" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="true" />
           <Property Name="Ext" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
-          <Property Name="Url" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="FileSize" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
-        </EntityType>
-        <EntityType Name="OrderInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Url" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FileSize" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="R_UserInfo_ActionInfo">
           <Key>
@@ -441,21 +472,21 @@
           <Property Name="UserInfoID" Type="Int32" Nullable="false" />
           <Property Name="ActionInfoID" Type="Int32" Nullable="false" />
           <Property Name="IsPass" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="ActionInfo" Relationship="Self.FK_ActionInfoR_UserInfo_ActionInfo" FromRole="R_UserInfo_ActionInfo" ToRole="ActionInfo" />
-          <NavigationProperty Name="UserInfo" Relationship="Self.FK_UserInfoR_UserInfo_ActionInfo" FromRole="R_UserInfo_ActionInfo" ToRole="UserInfo" />
+          <NavigationProperty Name="ActionInfo" Relationship="OAModel.FK_ActionInfoR_UserInfo_ActionInfo" FromRole="R_UserInfo_ActionInfo" ToRole="ActionInfo" />
+          <NavigationProperty Name="UserInfo" Relationship="OAModel.FK_UserInfoR_UserInfo_ActionInfo" FromRole="R_UserInfo_ActionInfo" ToRole="UserInfo" />
         </EntityType>
         <EntityType Name="RoleInfo">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="RoleName" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RoleName" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="true" />
           <Property Name="DelFlag" Type="Int16" Nullable="false" />
           <Property Name="SubTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Remark" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Sort" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ActionInfo" Relationship="Self.RoleInfoActionInfo" FromRole="RoleInfo" ToRole="ActionInfo" />
+          <NavigationProperty Name="ActionInfo" Relationship="OAModel.RoleInfoActionInfo" FromRole="RoleInfo" ToRole="ActionInfo" />
           <NavigationProperty Name="UserInfo" Relationship="OAModel.UserInfoRoleInfo" FromRole="RoleInfo" ToRole="UserInfo" />
         </EntityType>
         <EntityType Name="UserInfo">
@@ -464,15 +495,15 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UName" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
-          <Property Name="UPwd" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UPwd" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SubTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="DelFlag" Type="Int16" Nullable="false" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Remark" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="Sort" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Mail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="R_UserInfo_ActionInfo" Relationship="Self.FK_UserInfoR_UserInfo_ActionInfo" FromRole="UserInfo" ToRole="R_UserInfo_ActionInfo" />
-          <NavigationProperty Name="Department" Relationship="Self.UserInfoDepartment" FromRole="UserInfo" ToRole="Department" />
+          <NavigationProperty Name="R_UserInfo_ActionInfo" Relationship="OAModel.FK_UserInfoR_UserInfo_ActionInfo" FromRole="UserInfo" ToRole="R_UserInfo_ActionInfo" />
+          <NavigationProperty Name="Department" Relationship="OAModel.UserInfoDepartment" FromRole="UserInfo" ToRole="Department" />
           <NavigationProperty Name="RoleInfo" Relationship="OAModel.UserInfoRoleInfo" FromRole="UserInfo" ToRole="RoleInfo" />
         </EntityType>
         <EntityType Name="WF_Instance">
@@ -489,15 +520,15 @@
           <Property Name="Result" Type="Int16" Nullable="false" />
           <Property Name="WF_TempID" Type="Int32" Nullable="false" />
           <Property Name="ApplicationId" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="WF_StepInfo" Relationship="Self.FK_WF_InstanceWF_StepInfo" FromRole="WF_Instance" ToRole="WF_StepInfo" />
-          <NavigationProperty Name="WF_Temp" Relationship="Self.FK_WF_TempWF_Instance" FromRole="WF_Instance" ToRole="WF_Temp" />
+          <NavigationProperty Name="WF_StepInfo" Relationship="OAModel.FK_WF_InstanceWF_StepInfo" FromRole="WF_Instance" ToRole="WF_StepInfo" />
+          <NavigationProperty Name="WF_Temp" Relationship="OAModel.FK_WF_TempWF_Instance" FromRole="WF_Instance" ToRole="WF_Temp" />
         </EntityType>
         <EntityType Name="WF_StepInfo">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SetpName" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SetpName" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="true" />
           <Property Name="IsProcessed" Type="Boolean" Nullable="false" />
           <Property Name="IsStartStep" Type="Boolean" Nullable="false" />
           <Property Name="IsEndStep" Type="Boolean" Nullable="false" />
@@ -512,7 +543,7 @@
           <Property Name="ParentStepID" Type="Int32" Nullable="false" />
           <Property Name="ChildStepID" Type="Int32" Nullable="false" />
           <Property Name="WF_InstanceID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="WF_Instance" Relationship="Self.FK_WF_InstanceWF_StepInfo" FromRole="WF_StepInfo" ToRole="WF_Instance" />
+          <NavigationProperty Name="WF_Instance" Relationship="OAModel.FK_WF_InstanceWF_StepInfo" FromRole="WF_StepInfo" ToRole="WF_Instance" />
         </EntityType>
         <EntityType Name="WF_Temp">
           <Key>
@@ -525,14 +556,14 @@
           <Property Name="DelFlag" Type="Int16" Nullable="false" />
           <Property Name="Remark" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="TempDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TempForm" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TempForm" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TempStatus" Type="Int16" Nullable="false" />
           <Property Name="SubBy" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="WF_Instance" Relationship="Self.FK_WF_TempWF_Instance" FromRole="WF_Temp" ToRole="WF_Instance" />
+          <NavigationProperty Name="WF_Instance" Relationship="OAModel.FK_WF_TempWF_Instance" FromRole="WF_Temp" ToRole="WF_Instance" />
         </EntityType>
         <Association Name="FK_ActionInfoR_UserInfo_ActionInfo">
-          <End Role="ActionInfo" Type="Self.ActionInfo" Multiplicity="1" />
-          <End Role="R_UserInfo_ActionInfo" Type="Self.R_UserInfo_ActionInfo" Multiplicity="*" />
+          <End Type="OAModel.ActionInfo" Role="ActionInfo" Multiplicity="1" />
+          <End Type="OAModel.R_UserInfo_ActionInfo" Role="R_UserInfo_ActionInfo" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ActionInfo">
               <PropertyRef Name="ID" />
@@ -543,8 +574,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_UserInfoR_UserInfo_ActionInfo">
-          <End Role="UserInfo" Type="Self.UserInfo" Multiplicity="1" />
-          <End Role="R_UserInfo_ActionInfo" Type="Self.R_UserInfo_ActionInfo" Multiplicity="*" />
+          <End Type="OAModel.UserInfo" Role="UserInfo" Multiplicity="1" />
+          <End Type="OAModel.R_UserInfo_ActionInfo" Role="R_UserInfo_ActionInfo" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserInfo">
               <PropertyRef Name="ID" />
@@ -555,8 +586,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_WF_InstanceWF_StepInfo">
-          <End Role="WF_Instance" Type="Self.WF_Instance" Multiplicity="1" />
-          <End Role="WF_StepInfo" Type="Self.WF_StepInfo" Multiplicity="*" />
+          <End Type="OAModel.WF_Instance" Role="WF_Instance" Multiplicity="1" />
+          <End Type="OAModel.WF_StepInfo" Role="WF_StepInfo" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="WF_Instance">
               <PropertyRef Name="ID" />
@@ -567,8 +598,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_WF_TempWF_Instance">
-          <End Role="WF_Temp" Type="Self.WF_Temp" Multiplicity="1" />
-          <End Role="WF_Instance" Type="Self.WF_Instance" Multiplicity="*" />
+          <End Type="OAModel.WF_Temp" Role="WF_Temp" Multiplicity="1" />
+          <End Type="OAModel.WF_Instance" Role="WF_Instance" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="WF_Temp">
               <PropertyRef Name="ID" />
@@ -579,118 +610,67 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="DepartmentActionInfo">
-          <End Role="ActionInfo" Type="Self.ActionInfo" Multiplicity="*" />
-          <End Role="Department" Type="Self.Department" Multiplicity="*" />
+          <End Type="OAModel.ActionInfo" Role="ActionInfo" Multiplicity="*" />
+          <End Type="OAModel.Department" Role="Department" Multiplicity="*" />
         </Association>
         <Association Name="RoleInfoActionInfo">
-          <End Role="ActionInfo" Type="Self.ActionInfo" Multiplicity="*" />
-          <End Role="RoleInfo" Type="Self.RoleInfo" Multiplicity="*" />
+          <End Type="OAModel.ActionInfo" Role="ActionInfo" Multiplicity="*" />
+          <End Type="OAModel.RoleInfo" Role="RoleInfo" Multiplicity="*" />
         </Association>
         <Association Name="UserInfoDepartment">
-          <End Role="Department" Type="Self.Department" Multiplicity="*" />
-          <End Role="UserInfo" Type="Self.UserInfo" Multiplicity="*" />
+          <End Type="OAModel.Department" Role="Department" Multiplicity="*" />
+          <End Type="OAModel.UserInfo" Role="UserInfo" Multiplicity="*" />
         </Association>
-        <EntityContainer Name="OAEntities1" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="ActionInfo" EntityType="Self.ActionInfo" />
-          <EntitySet Name="Department" EntityType="Self.Department" />
-          <EntitySet Name="FileInfo" EntityType="Self.FileInfo" />
-          <EntitySet Name="OrderInfo" EntityType="Self.OrderInfo" />
-          <EntitySet Name="R_UserInfo_ActionInfo" EntityType="Self.R_UserInfo_ActionInfo" />
-          <EntitySet Name="RoleInfo" EntityType="Self.RoleInfo" />
-          <EntitySet Name="UserInfo" EntityType="Self.UserInfo" />
-          <EntitySet Name="WF_Instance" EntityType="Self.WF_Instance" />
-          <EntitySet Name="WF_StepInfo" EntityType="Self.WF_StepInfo" />
-          <EntitySet Name="WF_Temp" EntityType="Self.WF_Temp" />
-          <AssociationSet Name="FK_ActionInfoR_UserInfo_ActionInfo" Association="Self.FK_ActionInfoR_UserInfo_ActionInfo">
-            <End Role="ActionInfo" EntitySet="ActionInfo" />
-            <End Role="R_UserInfo_ActionInfo" EntitySet="R_UserInfo_ActionInfo" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserInfoR_UserInfo_ActionInfo" Association="Self.FK_UserInfoR_UserInfo_ActionInfo">
-            <End Role="UserInfo" EntitySet="UserInfo" />
-            <End Role="R_UserInfo_ActionInfo" EntitySet="R_UserInfo_ActionInfo" />
-          </AssociationSet>
-          <AssociationSet Name="FK_WF_InstanceWF_StepInfo" Association="Self.FK_WF_InstanceWF_StepInfo">
-            <End Role="WF_Instance" EntitySet="WF_Instance" />
-            <End Role="WF_StepInfo" EntitySet="WF_StepInfo" />
-          </AssociationSet>
-          <AssociationSet Name="FK_WF_TempWF_Instance" Association="Self.FK_WF_TempWF_Instance">
-            <End Role="WF_Temp" EntitySet="WF_Temp" />
-            <End Role="WF_Instance" EntitySet="WF_Instance" />
-          </AssociationSet>
-          <AssociationSet Name="DepartmentActionInfo" Association="Self.DepartmentActionInfo">
-            <End Role="ActionInfo" EntitySet="ActionInfo" />
-            <End Role="Department" EntitySet="Department" />
-          </AssociationSet>
-          <AssociationSet Name="RoleInfoActionInfo" Association="Self.RoleInfoActionInfo">
-            <End Role="ActionInfo" EntitySet="ActionInfo" />
-            <End Role="RoleInfo" EntitySet="RoleInfo" />
-          </AssociationSet>
-          <AssociationSet Name="UserInfoDepartment" Association="Self.UserInfoDepartment">
-            <End Role="Department" EntitySet="Department" />
-            <End Role="UserInfo" EntitySet="UserInfo" />
-          </AssociationSet>
-          <AssociationSet Name="UserInfoRoleInfo" Association="OAModel.UserInfoRoleInfo">
-            <End Role="RoleInfo" EntitySet="RoleInfo" />
-            <End Role="UserInfo" EntitySet="UserInfo" />
-          </AssociationSet>
-        </EntityContainer>
         <Association Name="UserInfoRoleInfo">
           <End Type="OAModel.RoleInfo" Role="RoleInfo" Multiplicity="*" />
           <End Type="OAModel.UserInfo" Role="UserInfo" Multiplicity="*" />
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="OAModelStoreContainer" CdmEntityContainer="OAEntities1">
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="OAModelStoreContainer" CdmEntityContainer="OAEntities1">
           <EntitySetMapping Name="ActionInfo">
             <EntityTypeMapping TypeName="OAModel.ActionInfo">
               <MappingFragment StoreEntitySet="ActionInfo">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="SubTime" ColumnName="SubTime" />
-                <ScalarProperty Name="DelFlag" ColumnName="DelFlag" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="Remark" ColumnName="Remark" />
-                <ScalarProperty Name="Url" ColumnName="Url" />
-                <ScalarProperty Name="HttpMethod" ColumnName="HttpMethod" />
-                <ScalarProperty Name="ActionMethodName" ColumnName="ActionMethodName" />
-                <ScalarProperty Name="ControllerName" ColumnName="ControllerName" />
-                <ScalarProperty Name="ActionInfoName" ColumnName="ActionInfoName" />
-                <ScalarProperty Name="Sort" ColumnName="Sort" />
-                <ScalarProperty Name="ActionTypeEnum" ColumnName="ActionTypeEnum" />
-                <ScalarProperty Name="MenuIcon" ColumnName="MenuIcon" />
-                <ScalarProperty Name="IconWidth" ColumnName="IconWidth" />
                 <ScalarProperty Name="IconHeight" ColumnName="IconHeight" />
+                <ScalarProperty Name="IconWidth" ColumnName="IconWidth" />
+                <ScalarProperty Name="MenuIcon" ColumnName="MenuIcon" />
+                <ScalarProperty Name="ActionTypeEnum" ColumnName="ActionTypeEnum" />
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="ActionInfoName" ColumnName="ActionInfoName" />
+                <ScalarProperty Name="ControllerName" ColumnName="ControllerName" />
+                <ScalarProperty Name="ActionMethodName" ColumnName="ActionMethodName" />
+                <ScalarProperty Name="HttpMethod" ColumnName="HttpMethod" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="DelFlag" ColumnName="DelFlag" />
+                <ScalarProperty Name="SubTime" ColumnName="SubTime" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Department">
             <EntityTypeMapping TypeName="OAModel.Department">
               <MappingFragment StoreEntitySet="Department">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="DepName" ColumnName="DepName" />
-                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
-                <ScalarProperty Name="TreePath" ColumnName="TreePath" />
-                <ScalarProperty Name="Level" ColumnName="Level" />
                 <ScalarProperty Name="IsLeaf" ColumnName="IsLeaf" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="TreePath" ColumnName="TreePath" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="DepName" ColumnName="DepName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="FileInfo">
             <EntityTypeMapping TypeName="OAModel.FileInfo">
               <MappingFragment StoreEntitySet="FileInfo">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="FileName" ColumnName="FileName" />
-                <ScalarProperty Name="Ext" ColumnName="Ext" />
-                <ScalarProperty Name="Url" ColumnName="Url" />
                 <ScalarProperty Name="FileSize" ColumnName="FileSize" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="OrderInfo">
-            <EntityTypeMapping TypeName="OAModel.OrderInfo">
-              <MappingFragment StoreEntitySet="OrderInfo">
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="Ext" ColumnName="Ext" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -698,117 +678,117 @@
           <EntitySetMapping Name="R_UserInfo_ActionInfo">
             <EntityTypeMapping TypeName="OAModel.R_UserInfo_ActionInfo">
               <MappingFragment StoreEntitySet="R_UserInfo_ActionInfo">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="UserInfoID" ColumnName="UserInfoID" />
-                <ScalarProperty Name="ActionInfoID" ColumnName="ActionInfoID" />
                 <ScalarProperty Name="IsPass" ColumnName="IsPass" />
+                <ScalarProperty Name="ActionInfoID" ColumnName="ActionInfoID" />
+                <ScalarProperty Name="UserInfoID" ColumnName="UserInfoID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="RoleInfo">
             <EntityTypeMapping TypeName="OAModel.RoleInfo">
               <MappingFragment StoreEntitySet="RoleInfo">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
-                <ScalarProperty Name="DelFlag" ColumnName="DelFlag" />
-                <ScalarProperty Name="SubTime" ColumnName="SubTime" />
-                <ScalarProperty Name="Remark" ColumnName="Remark" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="SubTime" ColumnName="SubTime" />
+                <ScalarProperty Name="DelFlag" ColumnName="DelFlag" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="UserInfo">
             <EntityTypeMapping TypeName="OAModel.UserInfo">
               <MappingFragment StoreEntitySet="UserInfo">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="UName" ColumnName="UName" />
-                <ScalarProperty Name="UPwd" ColumnName="UPwd" />
-                <ScalarProperty Name="SubTime" ColumnName="SubTime" />
-                <ScalarProperty Name="DelFlag" ColumnName="DelFlag" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="Remark" ColumnName="Remark" />
-                <ScalarProperty Name="Sort" ColumnName="Sort" />
                 <ScalarProperty Name="Mail" ColumnName="Mail" />
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="DelFlag" ColumnName="DelFlag" />
+                <ScalarProperty Name="SubTime" ColumnName="SubTime" />
+                <ScalarProperty Name="UPwd" ColumnName="UPwd" />
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="WF_Instance">
             <EntityTypeMapping TypeName="OAModel.WF_Instance">
               <MappingFragment StoreEntitySet="WF_Instance">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="InstanceName" ColumnName="InstanceName" />
-                <ScalarProperty Name="SubTime" ColumnName="SubTime" />
-                <ScalarProperty Name="StartedBy" ColumnName="StartedBy" />
-                <ScalarProperty Name="Level" ColumnName="Level" />
-                <ScalarProperty Name="SubForm" ColumnName="SubForm" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Result" ColumnName="Result" />
-                <ScalarProperty Name="WF_TempID" ColumnName="WF_TempID" />
                 <ScalarProperty Name="ApplicationId" ColumnName="ApplicationId" />
+                <ScalarProperty Name="WF_TempID" ColumnName="WF_TempID" />
+                <ScalarProperty Name="Result" ColumnName="Result" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="SubForm" ColumnName="SubForm" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="StartedBy" ColumnName="StartedBy" />
+                <ScalarProperty Name="SubTime" ColumnName="SubTime" />
+                <ScalarProperty Name="InstanceName" ColumnName="InstanceName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="WF_StepInfo">
             <EntityTypeMapping TypeName="OAModel.WF_StepInfo">
               <MappingFragment StoreEntitySet="WF_StepInfo">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="SetpName" ColumnName="SetpName" />
-                <ScalarProperty Name="IsProcessed" ColumnName="IsProcessed" />
-                <ScalarProperty Name="IsStartStep" ColumnName="IsStartStep" />
-                <ScalarProperty Name="IsEndStep" ColumnName="IsEndStep" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="Comment" ColumnName="Comment" />
-                <ScalarProperty Name="StepResult" ColumnName="StepResult" />
-                <ScalarProperty Name="DelFlag" ColumnName="DelFlag" />
-                <ScalarProperty Name="SubTime" ColumnName="SubTime" />
-                <ScalarProperty Name="ProcessTime" ColumnName="ProcessTime" />
-                <ScalarProperty Name="Remark" ColumnName="Remark" />
-                <ScalarProperty Name="ProcessBy" ColumnName="ProcessBy" />
-                <ScalarProperty Name="ParentStepID" ColumnName="ParentStepID" />
-                <ScalarProperty Name="ChildStepID" ColumnName="ChildStepID" />
                 <ScalarProperty Name="WF_InstanceID" ColumnName="WF_InstanceID" />
+                <ScalarProperty Name="ChildStepID" ColumnName="ChildStepID" />
+                <ScalarProperty Name="ParentStepID" ColumnName="ParentStepID" />
+                <ScalarProperty Name="ProcessBy" ColumnName="ProcessBy" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="ProcessTime" ColumnName="ProcessTime" />
+                <ScalarProperty Name="SubTime" ColumnName="SubTime" />
+                <ScalarProperty Name="DelFlag" ColumnName="DelFlag" />
+                <ScalarProperty Name="StepResult" ColumnName="StepResult" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="IsEndStep" ColumnName="IsEndStep" />
+                <ScalarProperty Name="IsStartStep" ColumnName="IsStartStep" />
+                <ScalarProperty Name="IsProcessed" ColumnName="IsProcessed" />
+                <ScalarProperty Name="SetpName" ColumnName="SetpName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="WF_Temp">
             <EntityTypeMapping TypeName="OAModel.WF_Temp">
               <MappingFragment StoreEntitySet="WF_Temp">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="TempName" ColumnName="TempName" />
-                <ScalarProperty Name="SubTime" ColumnName="SubTime" />
-                <ScalarProperty Name="ModfiedOn" ColumnName="ModfiedOn" />
-                <ScalarProperty Name="DelFlag" ColumnName="DelFlag" />
-                <ScalarProperty Name="Remark" ColumnName="Remark" />
-                <ScalarProperty Name="TempDescription" ColumnName="TempDescription" />
-                <ScalarProperty Name="TempForm" ColumnName="TempForm" />
-                <ScalarProperty Name="TempStatus" ColumnName="TempStatus" />
                 <ScalarProperty Name="SubBy" ColumnName="SubBy" />
+                <ScalarProperty Name="TempStatus" ColumnName="TempStatus" />
+                <ScalarProperty Name="TempForm" ColumnName="TempForm" />
+                <ScalarProperty Name="TempDescription" ColumnName="TempDescription" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="DelFlag" ColumnName="DelFlag" />
+                <ScalarProperty Name="ModfiedOn" ColumnName="ModfiedOn" />
+                <ScalarProperty Name="SubTime" ColumnName="SubTime" />
+                <ScalarProperty Name="TempName" ColumnName="TempName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <AssociationSetMapping Name="DepartmentActionInfo" TypeName="OAModel.DepartmentActionInfo" StoreEntitySet="DepartmentActionInfo">
-            <EndProperty Name="ActionInfo">
-              <ScalarProperty Name="ID" ColumnName="ActionInfo_ID" />
-            </EndProperty>
             <EndProperty Name="Department">
               <ScalarProperty Name="ID" ColumnName="Department_ID" />
+            </EndProperty>
+            <EndProperty Name="ActionInfo">
+              <ScalarProperty Name="ID" ColumnName="ActionInfo_ID" />
             </EndProperty>
           </AssociationSetMapping>
           <AssociationSetMapping Name="RoleInfoActionInfo" TypeName="OAModel.RoleInfoActionInfo" StoreEntitySet="RoleInfoActionInfo">
-            <EndProperty Name="ActionInfo">
-              <ScalarProperty Name="ID" ColumnName="ActionInfo_ID" />
-            </EndProperty>
             <EndProperty Name="RoleInfo">
               <ScalarProperty Name="ID" ColumnName="RoleInfo_ID" />
             </EndProperty>
+            <EndProperty Name="ActionInfo">
+              <ScalarProperty Name="ID" ColumnName="ActionInfo_ID" />
+            </EndProperty>
           </AssociationSetMapping>
           <AssociationSetMapping Name="UserInfoDepartment" TypeName="OAModel.UserInfoDepartment" StoreEntitySet="UserInfoDepartment">
-            <EndProperty Name="Department">
-              <ScalarProperty Name="ID" ColumnName="Department_ID" />
-            </EndProperty>
             <EndProperty Name="UserInfo">
               <ScalarProperty Name="ID" ColumnName="UserInfo_ID" />
+            </EndProperty>
+            <EndProperty Name="Department">
+              <ScalarProperty Name="ID" ColumnName="Department_ID" />
             </EndProperty>
           </AssociationSetMapping>
           <AssociationSetMapping Name="UserInfoRoleInfo" TypeName="OAModel.UserInfoRoleInfo" StoreEntitySet="UserInfoRoleInfo">
@@ -820,8 +800,7 @@
             </EndProperty>
           </AssociationSetMapping>
         </EntityContainerMapping>
-      </Mapping>
-    </edmx:Mappings>
+</Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
   <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
@@ -835,7 +814,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="false" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
-        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
       </DesignerInfoPropertySet>
     </Options>

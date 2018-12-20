@@ -37,13 +37,6 @@ namespace MyWebApp.OA.DALFactory
             return CreateInstance(DalNameSpace + ".FileInfoDal", DalAssembly) as IFileInfoDal;
         }
 		
-	    public static IOrderInfoDal CreateOrderInfoDal()
-        {
-           
-
-            return CreateInstance(DalNameSpace + ".OrderInfoDal", DalAssembly) as IOrderInfoDal;
-        }
-		
 	    public static IR_UserInfo_ActionInfoDal CreateR_UserInfo_ActionInfoDal()
         {
            

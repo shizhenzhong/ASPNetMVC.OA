@@ -17,8 +17,6 @@ namespace MyWebApp.OA.IDAL
 	
 	 IFileInfoDal FileInfoDal { get; set; }
 	
-	 IOrderInfoDal OrderInfoDal { get; set; }
-	
 	 IR_UserInfo_ActionInfoDal R_UserInfo_ActionInfoDal { get; set; }
 	
 	 IRoleInfoDal RoleInfoDal { get; set; }

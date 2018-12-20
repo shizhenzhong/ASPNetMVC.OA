@@ -27,11 +27,6 @@ namespace MyWebApp.OA.DAL
       
     }
 	
-	public partial class OrderInfoDal :BaseDal<OrderInfo>,IOrderInfoDal
-    {
-      
-    }
-	
 	public partial class R_UserInfo_ActionInfoDal :BaseDal<R_UserInfo_ActionInfo>,IR_UserInfo_ActionInfoDal
     {
       

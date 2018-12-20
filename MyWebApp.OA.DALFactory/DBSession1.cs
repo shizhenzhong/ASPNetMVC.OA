@@ -63,22 +63,6 @@ namespace MyWebApp.OA.DALFactory
             }
         }
 	
-	  private IOrderInfoDal _OrderInfoDal;
-        public IOrderInfoDal OrderInfoDal
-        {
-            get {
-
-                if (_OrderInfoDal == null)
-                {
-                    _OrderInfoDal = DALAbstractFactory.CreateOrderInfoDal();//通过抽象工厂将数据会话层与数据层解耦
-                }
-                return _OrderInfoDal;
-            }
-            set {
-                _OrderInfoDal = value;
-            }
-        }
-	
 	  private IR_UserInfo_ActionInfoDal _R_UserInfo_ActionInfoDal;
         public IR_UserInfo_ActionInfoDal R_UserInfo_ActionInfoDal
         {

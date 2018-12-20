@@ -14,6 +14,7 @@
   </object>
   <object type="MyWebApp.OA.UI.Controllers.ActionInfoController, MyWebApp.OA.UI" singleton="false" >
     <property name="actionInfoService" ref="actionInfoService" />
+    <property name="roleInfoService" ref="roleInfoService" />
   </object>
  
 </objects>

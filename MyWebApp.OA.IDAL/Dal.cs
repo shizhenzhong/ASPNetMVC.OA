@@ -27,11 +27,6 @@ namespace MyWebApp.OA.IDAL
       
     }
 	
-	public partial interface IOrderInfoDal :IBaseDal<OrderInfo>
-    {
-      
-    }
-	
 	public partial interface IR_UserInfo_ActionInfoDal :IBaseDal<R_UserInfo_ActionInfo>
     {
       

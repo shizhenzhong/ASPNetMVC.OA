@@ -23,6 +23,7 @@
         $(function () {
             $("#addDiv").css("display", "none");
             $("#editDiv").css("display", "none");
+            $("#setActionRoleDiv").css("display","none")
             loadData();
             bindselActionType();//绑定选择权限类型事件
             bindFileUpload();//绑定文件上传按钮事件
@@ -30,12 +31,13 @@
         })
 
         function bindFileUpload() {
-            if ($("#imgIcon").val == "") {
-                $.messager.alert("提示", "请选择图片文件");
-                return;
-            }
+            
 
             $("#btnUpload").click(function () {
+                if ($("#imgIcon").val() == "") {
+                    $.messager.alert("提示", "请选择图片文件");
+                    return false;
+                }
                 $("#addDiv form").ajaxSubmit({
                     type: 'post',
                     url: '/ActionInfo/GetMenuIcon',
@@ -145,6 +147,14 @@
                         handler: function () {
                             deleteInfo();
                         }
+                    },
+                    {
+                        id: 'btnSetActionRoleInfo',
+                        text: '给权限分配角色',
+                        iconCls: 'icon-redo',
+                        handler: function () {
+                            setActionRoleInfo();
+                        }
                     }
                 ],
                 onLoadSuccess: function (e, field) {
@@ -163,6 +173,44 @@
 
             });
         }
+
+
+        function setActionRoleInfo() {
+            var rows = $("#tt").datagrid('getSelections');
+            if (rows.length != 1) {
+                $.messager.alert("提示", "请选择一条数据", "error");
+                return;
+            }
+            $("#setActionRoleDiv").css("display", "block");
+            $("#SetActionRoleFrame").attr("src", "/ActionInfo/SetActionRole/?id=" + rows[0].ID);
+            $('#setActionRoleDiv').dialog({
+                title: "为权限分配角色",
+                modal: true,
+                collapsible: true,
+                width: 400,
+                height: 500,
+                buttons: [{
+                    text: '确定',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        //自己完成表单校验
+                        var childWindow = $("#SetActionRoleFrame")[0].contentWindow;
+                        childWindow.SetActionRoleForm();
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-no',
+                    handler: function () {
+                        $('#setActionRoleDiv').dialog('close');
+
+
+                    }
+                }]
+            });
+        }
+        function afterSet() {
+            $('#setActionRoleDiv').dialog('close');
+        } 
         //添加权限信息
         function addActionInfo() {
             $("#addDiv").css("display", "block");
@@ -372,5 +420,9 @@
 
     </div>
     <!------------------------------------修改信息结束-->
+    <!--------------为权限分配角色-->
+    <div id="setActionRoleDiv">
+        <iframe id="SetActionRoleFrame" frameborder="0" width="100%" height="100%"></iframe>
+    </div>
 </body>
 </html>
