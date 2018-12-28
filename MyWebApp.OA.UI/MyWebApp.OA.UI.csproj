@@ -629,6 +629,7 @@
     <Content Include="Content\lib\ligerUI\skins\Tab\images\win\dialog-winbtns.gif" />
     <Content Include="Content\lib\ligerUI\skins\Tab\images\win\dialogbtn.gif" />
     <Content Include="Content\lib\ligerUI\skins\Tab\images\win\dialogicon.gif" />
+    <Content Include="Content\tableStyle.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -997,6 +998,7 @@
     <Content Include="Views\ActionInfo\Index.cshtml" />
     <Content Include="Views\ActionInfo\ShowEdit.cshtml" />
     <Content Include="Views\ActionInfo\SetActionRole.cshtml" />
+    <Content Include="Views\UserInfo\SetUserActionInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

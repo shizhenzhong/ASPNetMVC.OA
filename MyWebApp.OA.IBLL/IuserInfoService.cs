@@ -29,5 +29,6 @@ namespace MyWebApp.OA.IBLL
         void FindUserPwd(UserInfo userInfo);
 
         bool SetUserRole(int userId, List<int> RoleIdList);
+        bool SetUserAction(int userId, int actionid, bool value);
     }
 }

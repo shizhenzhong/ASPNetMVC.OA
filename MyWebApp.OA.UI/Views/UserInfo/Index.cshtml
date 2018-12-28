@@ -21,6 +21,8 @@
             $("#addDiv").css("display", "none");
             $("#editDiv").css("display", "none");
             $("#setUserRole").css("display", "none");
+            $("#setUserActionDiv").css("display", "none");
+          
             loadData();
 
             $("#btnSearch").click(function () {
@@ -95,10 +97,56 @@
                         handler: function () {
                             setUserRoleInfo();
                         }
+                    },
+                    {
+                        id: 'btnSetRole',
+                        text: '为用户设置特殊权限',
+                        iconCls: 'icon-redo',
+                        handler: function () {
+                            setUserAction();
+                        }
                     }
                     ]
             });
         }
+
+        function setUserAction(){
+            var rows = $("#tt").datagrid('getSelections');
+            if (rows.length != 1) {
+                $.messager.alert("提示", "请选择一条用户信息", "error");
+                return false;
+            }
+            $("#setUserActionDiv").css("display", "block");
+            $("#setActionFrame").attr("src", "/UserInfo/SetUserActionInfo/?id=" + rows[0].ID);
+            $('#setUserActionDiv').dialog({
+                title: "设置用户设置特殊权限",
+                modal: true,
+                collapsible: true,
+                width: 600,
+                height: 500,
+                buttons: [
+                //    {
+                //    text: '确定',
+                //    iconCls: 'icon-ok',
+                //    handler: function () {
+                //        //自己完成表单校验
+                //        var childWindow = $("#setActionFrame")[0].contentWindow;
+                //        childWindow.setUserAction();
+                //    }
+                    //}, 
+                    {
+                    text: '取消',
+                    iconCls: 'icon-no',
+                    handler: function () {
+                        $('#setUserActionDiv').dialog('close');
+
+
+                    }
+                }]
+            });
+        }
+
+
         //为用户分配角色
         function setUserRoleInfo() {
             var rows = $("#tt").datagrid('getSelections');
@@ -293,8 +341,11 @@
     <!------------------分配用户角色-------------------->
 
     <div id="setUserRole">
-        <iframe id="setRoleFrame" frameborder="0" scrolling="no" width="100%" height="100%"></iframe>
+        <iframe id="setRoleFrame"  frameborder="0" scrolling="no" width="100%" height="100%"></iframe>
     </div>
     <!----------------------------------------------->
+    <div id="setUserActionDiv" style="overflow:hidden">
+    <iframe id="setActionFrame" frameborder="0" height="100%" width="100%"></iframe>
+    </div>
 </body>
 </html>

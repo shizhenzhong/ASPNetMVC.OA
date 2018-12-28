@@ -69,6 +69,32 @@ namespace MyWebApp.OA.BLL
                .PageSize).Take<UserInfo>(userInfoSearchParam.PageSize);
         }
 
+        #region 为用户设置特殊权限
+        public bool SetUserAction(int userId, int actionid, bool value)
+        {
+            var actionInfo = this.DbSession.R_UserInfo_ActionInfoDal.LoadEntities(r => r.UserInfoID == userId && r.ActionInfoID == actionid).FirstOrDefault();
+            if (actionInfo == null)
+            {
+                R_UserInfo_ActionInfo userInfo_ActionInfo = new R_UserInfo_ActionInfo();
+                userInfo_ActionInfo.ActionInfoID = actionid;
+                userInfo_ActionInfo.UserInfoID = userId;
+                userInfo_ActionInfo.IsPass = value;
+                this.DbSession.R_UserInfo_ActionInfoDal.AddEntity(userInfo_ActionInfo);
+            }
+            else
+            {
+                if (actionInfo.IsPass != value)
+                {
+                    actionInfo.IsPass = value;
+                   
+                }
+            }
+
+            return this.DbSession.SaveChanges();
+        }
+        #endregion
+
+
 
         #region 为用户分配角色
         public bool SetUserRole(int userId, List<int> RoleIdList)

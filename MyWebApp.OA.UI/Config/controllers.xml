@@ -3,6 +3,8 @@
   <object type="MyWebApp.OA.UI.Controllers.UserInfoController, MyWebApp.OA.UI" singleton="false" >
     <property name="userInfoService" ref="userInfoService" />
     <property name="roleInfoService" ref="roleInfoService" />
+    <property name="actionInfoService" ref="actionInfoService" />
+    <property name="r_UserInfo_ActionInfoService" ref="r_UserInfo_ActionInfoService" />
   </object>
   
   <object type="MyWebApp.OA.UI.Controllers.LoginController, MyWebApp.OA.UI" singleton="false" >

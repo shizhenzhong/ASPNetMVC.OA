@@ -8,4 +8,7 @@
 
   <object type=" MyWebApp.OA.BLL.ActionInfoService, MyWebApp.OA.BLL" singleton="false" name="actionInfoService" >
   </object>
+
+  <object type=" MyWebApp.OA.BLL.R_UserInfo_ActionInfoService, MyWebApp.OA.BLL" singleton="false" name="r_UserInfo_ActionInfoService" >
+  </object>
 </objects>
