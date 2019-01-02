@@ -164,20 +164,20 @@
         return win;
     }
     var links = [
-        { icon: '/Content/images/3DSMAX.png', title: '用户管理', url: '/UserInfo/Index' },
-        { icon: '/Content/images/3DSMAX.png', title: '角色管理', url: '/RoleInfo/Index' },
-        { icon: '/Content/images/3DSMAX.png', title: '权限管理', url: '/ActionInfo/Index' },
-        //      { icon: '/MenuIcon/423b339b-ddb2-4b02-abfb-c3617eb1c17f.jpg', title: '我的相册', url: '/ActionInfo/Index' },
-        //{ icon: 'images/3DSMAX.png', title: '多表头', url: '../grid/mulheader/grid2.htm' },
-        //{ icon: 'images/Program Files Folder.png', title: '固定列', url: '../grid/frozen/frozengrid.htm' },
-        //{ icon: 'images/Program Files Folder.png', title: '可拖动', url: '../base/drag.htm' },
-        //{ icon: 'images/Alien Folder.png', title: '树', url: '../tree/draggable.htm' },
-        //{ icon: 'images/Xp-G5 006.png', title: '下拉框', url: '../comboBox/comboBoxGrid.htm' },
-        //{ icon: 'images/Xp-G5 006.png', title: '下拉框', url: '../comboBox/comboBoxGrid.htm' },
-        //{ icon: 'images/Alien Folder.png', title: 'layout', url: '../layout/layoutFullHeight.htm' },
-        // { icon: 'images/Alien Folder.png', title: 'menu', url: '../menu/menubar.htm' },
-        // { icon: 'images/Xp-G5 006.png', title: 'tab', url: '../tab/tabHtml.htm' },
-        // { icon: 'images/3DSMAX.png', title: '分组', url: '../grid/groupable/checkbox.htm' }
+        //{ icon: '/Content/images/3DSMAX.png', title: '用户管理', url: '/UserInfo/Index' },
+        //{ icon: '/Content/images/3DSMAX.png', title: '角色管理', url: '/RoleInfo/Index' },
+        //{ icon: '/Content/images/3DSMAX.png', title: '权限管理', url: '/ActionInfo/Index' },
+        ////      { icon: '/MenuIcon/423b339b-ddb2-4b02-abfb-c3617eb1c17f.jpg', title: '我的相册', url: '/ActionInfo/Index' },
+        ////{ icon: 'images/3DSMAX.png', title: '多表头', url: '../grid/mulheader/grid2.htm' },
+        ////{ icon: 'images/Program Files Folder.png', title: '固定列', url: '../grid/frozen/frozengrid.htm' },
+        ////{ icon: 'images/Program Files Folder.png', title: '可拖动', url: '../base/drag.htm' },
+        ////{ icon: 'images/Alien Folder.png', title: '树', url: '../tree/draggable.htm' },
+        ////{ icon: 'images/Xp-G5 006.png', title: '下拉框', url: '../comboBox/comboBoxGrid.htm' },
+        ////{ icon: 'images/Xp-G5 006.png', title: '下拉框', url: '../comboBox/comboBoxGrid.htm' },
+        ////{ icon: 'images/Alien Folder.png', title: 'layout', url: '../layout/layoutFullHeight.htm' },
+        //// { icon: 'images/Alien Folder.png', title: 'menu', url: '../menu/menubar.htm' },
+        //// { icon: 'images/Xp-G5 006.png', title: 'tab', url: '../tab/tabHtml.htm' },
+        //// { icon: 'images/3DSMAX.png', title: '分组', url: '../grid/groupable/checkbox.htm' }
     ];
 
     function onResize() {
@@ -221,14 +221,13 @@
     $.ligerui.win.removeTaskbar = function () { }; //不允许移除
     $.ligerui.win.createTaskbar(); //页面加载时创建任务栏
     //到跳转到该视图时，立即发送异步请求，根据登录用户，找出该用户有的菜单权限。填充数组
-    //$.getJSON("/Home/GetMenuItmes", {}, function (data) {
-    //    links = data;
-    //    linksInit();
-    //    onResize();
-
-    //});
-    linksInit();
-    onResize();
+    $.getJSON("/Home/GetMenuItems", {}, function (data) {
+        links = data;
+        linksInit();
+        onResize();
+    });
+    
+    
 </script>
 </html>
 

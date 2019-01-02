@@ -18,5 +18,8 @@
     <property name="actionInfoService" ref="actionInfoService" />
     <property name="roleInfoService" ref="roleInfoService" />
   </object>
- 
+
+  <object type="MyWebApp.OA.UI.Controllers.HomeController, MyWebApp.OA.UI" singleton="false" >
+    <property name="userInfoService" ref="userInfoService" />
+  </object>
 </objects>
