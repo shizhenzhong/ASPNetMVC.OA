@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 namespace MyWebApp.OA.UI.Controllers
 {
-    public class UserInfoController : Controller
+    public class UserInfoController : BaseController
     {
         //
         // GET: /UserInfo/

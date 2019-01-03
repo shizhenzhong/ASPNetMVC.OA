@@ -172,6 +172,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="actioninfo.html" />
     <Content Include="Config\controllers.xml" />
     <Content Include="Config\services.xml" />
     <Content Include="Content\Images\3DSMAX.png" />

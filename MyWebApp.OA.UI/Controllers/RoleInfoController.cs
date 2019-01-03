@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace MyWebApp.OA.UI.Controllers
 {
-    public class RoleInfoController : Controller
+    public class RoleInfoController :BaseController
     {
         //
         // GET: /RoleInfo/

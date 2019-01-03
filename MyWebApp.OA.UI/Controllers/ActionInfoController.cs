@@ -13,7 +13,7 @@ namespace MyWebApp.OA.UI.Controllers
 
 
 
-    public class ActionInfoController : Controller
+    public class ActionInfoController : BaseController
     {
         //
         // GET: /ActionInfo/
