@@ -171,7 +171,15 @@ namespace MyWebApp.OA.UI.Controllers
             ViewData.Model = userInfo;
             ViewBag.UserInfo = userInfo;
             short delFlag = (short)DeleteEnumType.Normal;
-            ViewBag.AllActions = actionInfoService.LoadEntities(a => a.DelFlag == delFlag).ToList();//找出所有的权限
+
+            int pageSize = Request["pageSize"] == null ? 5 : int.Parse(Request["pageSize"]);
+            int pageIndex = Request["pageIndex"] == null ? 1 : int.Parse(Request["pageIndex"]);
+            int total = 0;
+            ViewBag.AllActions = actionInfoService.LoadPagedEntities<string>(pageIndex, pageSize, out total,
+                a => a.DelFlag == delFlag,a=>a.Sort,true).ToList();//找出所有的权限
+            ViewData["pageSize"] = pageSize;
+            ViewData["pageIndex"] = pageIndex;
+            ViewBag.Totla = total;
             ViewBag.AllExtActions = userInfo.R_UserInfo_ActionInfo.ToList();//当前用户所有的权限
             return View();
         }

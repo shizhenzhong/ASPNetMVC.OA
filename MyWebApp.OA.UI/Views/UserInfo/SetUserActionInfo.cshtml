@@ -14,6 +14,54 @@
     <script src="~/Scripts/jquery.easyui.min.js"></script>
     <script src="~/Scripts/easyui-lang-zh_CN.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <style type="text/css">
+        .paginator {
+            font: 12px Arial, Helvetica, sans-serif;
+            padding: 10px 20px 10px 0;
+            margin: 0px;
+        }
+
+            .paginator a {
+                border: solid 1px #ccc;
+                color: #0063dc;
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+                .paginator a:visited {
+                    padding: 1px 6px;
+                    border: solid 1px #ddd;
+                    background: #fff;
+                    text-decoration: none;
+                }
+
+            .paginator .cpb {
+                border: 1px solid #F50;
+                font-weight: 700;
+                color: #F50;
+                background-color: #ffeee5;
+            }
+
+            .paginator a:hover {
+                border: solid 1px #F50;
+                color: #f60;
+                text-decoration: none;
+            }
+
+            .paginator a, .paginator a:visited, .paginator .cpb, .paginator a:hover {
+                float: left;
+                height: 16px;
+                line-height: 16px;
+                min-width: 10px;
+                _width: 10px;
+                margin-right: 5px;
+                text-align: center;
+                white-space: nowrap;
+                font-size: 12px;
+                font-family: Arial,SimSun;
+                padding: 0 3px;
+            }
+    </style>
     <script type="text/javascript">
         $(function () {
             setUserAction();
@@ -122,6 +170,8 @@
        }
     </table>
             }
-     
+    <div class="paginator">
+        @Html.ShowPageNavigate(int.Parse(ViewData["pageIndex"].ToString()), int.Parse(ViewData["pageSize"].ToString()), (int)ViewBag.Totla,userInfo.ID);
+    </div>
     </body>
 </html>
