@@ -18,6 +18,27 @@ namespace MyWebApp.OA.IBLL
     }
 	
 
+    public partial interface IBillService:IBaseService<Bill>
+
+    {
+      
+    }
+	
+
+    public partial interface IBillTypeService:IBaseService<BillType>
+
+    {
+      
+    }
+	
+
+    public partial interface ICurrentUnitService:IBaseService<CurrentUnit>
+
+    {
+      
+    }
+	
+
     public partial interface IDepartmentService:IBaseService<Department>
 
     {
@@ -26,6 +47,13 @@ namespace MyWebApp.OA.IBLL
 	
 
     public partial interface IFileInfoService:IBaseService<FileInfo>
+
+    {
+      
+    }
+	
+
+    public partial interface IPayTypeService:IBaseService<PayType>
 
     {
       

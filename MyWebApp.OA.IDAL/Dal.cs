@@ -17,12 +17,32 @@ namespace MyWebApp.OA.IDAL
       
     }
 	
+	public partial interface IBillDal :IBaseDal<Bill>
+    {
+      
+    }
+	
+	public partial interface IBillTypeDal :IBaseDal<BillType>
+    {
+      
+    }
+	
+	public partial interface ICurrentUnitDal :IBaseDal<CurrentUnit>
+    {
+      
+    }
+	
 	public partial interface IDepartmentDal :IBaseDal<Department>
     {
       
     }
 	
 	public partial interface IFileInfoDal :IBaseDal<FileInfo>
+    {
+      
+    }
+	
+	public partial interface IPayTypeDal :IBaseDal<PayType>
     {
       
     }

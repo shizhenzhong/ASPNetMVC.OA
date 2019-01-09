@@ -17,12 +17,32 @@ namespace MyWebApp.OA.DAL
       
     }
 	
+	public partial class BillDal :BaseDal<Bill>,IBillDal
+    {
+      
+    }
+	
+	public partial class BillTypeDal :BaseDal<BillType>,IBillTypeDal
+    {
+      
+    }
+	
+	public partial class CurrentUnitDal :BaseDal<CurrentUnit>,ICurrentUnitDal
+    {
+      
+    }
+	
 	public partial class DepartmentDal :BaseDal<Department>,IDepartmentDal
     {
       
     }
 	
 	public partial class FileInfoDal :BaseDal<FileInfo>,IFileInfoDal
+    {
+      
+    }
+	
+	public partial class PayTypeDal :BaseDal<PayType>,IPayTypeDal
     {
       
     }

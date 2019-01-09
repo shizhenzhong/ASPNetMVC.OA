@@ -25,6 +25,36 @@
           <Property Name="IconWidth" Type="int" Nullable="false" />
           <Property Name="IconHeight" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="Bill">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GoodMsg" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreateTime" Type="datetime" Nullable="false" />
+          <Property Name="OrderNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="100" />
+          <Property Name="OrderImg" Type="nvarchar" MaxLength="100" />
+          <Property Name="CurrentUnitId" Type="int" Nullable="false" />
+          <Property Name="PayTypeId" Type="int" Nullable="false" />
+          <Property Name="BillTypeId" Type="int" Nullable="false" />
+          <Property Name="Money" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Type" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BillType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BillTypeName" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CurrentUnit">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UintName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="Department">
           <Key>
             <PropertyRef Name="ID" />
@@ -53,6 +83,13 @@
           <Property Name="Ext" Type="nvarchar" MaxLength="32" />
           <Property Name="Url" Type="nvarchar(max)" Nullable="false" />
           <Property Name="FileSize" Type="nvarchar" MaxLength="32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PayType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PayTypeName" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
         <EntityType Name="R_UserInfo_ActionInfo">
           <Key>
@@ -176,6 +213,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BillTypeBill">
+          <End Role="BillType" Type="Self.BillType" Multiplicity="1" />
+          <End Role="Bill" Type="Self.Bill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BillType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Bill">
+              <PropertyRef Name="BillTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CurrentUnitBill">
+          <End Role="CurrentUnit" Type="Self.CurrentUnit" Multiplicity="1" />
+          <End Role="Bill" Type="Self.Bill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CurrentUnit">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Bill">
+              <PropertyRef Name="CurrentUnitId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_DepartmentActionInfo_ActionInfo">
           <End Role="ActionInfo" Type="Self.ActionInfo" Multiplicity="1" />
           <End Role="DepartmentActionInfo" Type="Self.DepartmentActionInfo" Multiplicity="*" />
@@ -197,6 +258,18 @@
             </Principal>
             <Dependent Role="DepartmentActionInfo">
               <PropertyRef Name="Department_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PayTypeBill">
+          <End Role="PayType" Type="Self.PayType" Multiplicity="1" />
+          <End Role="Bill" Type="Self.Bill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PayType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Bill">
+              <PropertyRef Name="PayTypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -310,9 +383,13 @@
         </Association>
         <EntityContainer Name="OAModelStoreContainer">
           <EntitySet Name="ActionInfo" EntityType="Self.ActionInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Bill" EntityType="Self.Bill" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BillType" EntityType="Self.BillType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CurrentUnit" EntityType="Self.CurrentUnit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DepartmentActionInfo" EntityType="Self.DepartmentActionInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileInfo" EntityType="Self.FileInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PayType" EntityType="Self.PayType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="R_UserInfo_ActionInfo" EntityType="Self.R_UserInfo_ActionInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoleInfo" EntityType="Self.RoleInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoleInfoActionInfo" EntityType="Self.RoleInfoActionInfo" Schema="dbo" store:Type="Tables" />
@@ -326,6 +403,14 @@
             <End Role="ActionInfo" EntitySet="ActionInfo" />
             <End Role="R_UserInfo_ActionInfo" EntitySet="R_UserInfo_ActionInfo" />
           </AssociationSet>
+          <AssociationSet Name="FK_BillTypeBill" Association="Self.FK_BillTypeBill">
+            <End Role="BillType" EntitySet="BillType" />
+            <End Role="Bill" EntitySet="Bill" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CurrentUnitBill" Association="Self.FK_CurrentUnitBill">
+            <End Role="CurrentUnit" EntitySet="CurrentUnit" />
+            <End Role="Bill" EntitySet="Bill" />
+          </AssociationSet>
           <AssociationSet Name="FK_DepartmentActionInfo_ActionInfo" Association="Self.FK_DepartmentActionInfo_ActionInfo">
             <End Role="ActionInfo" EntitySet="ActionInfo" />
             <End Role="DepartmentActionInfo" EntitySet="DepartmentActionInfo" />
@@ -333,6 +418,10 @@
           <AssociationSet Name="FK_DepartmentActionInfo_Department" Association="Self.FK_DepartmentActionInfo_Department">
             <End Role="Department" EntitySet="Department" />
             <End Role="DepartmentActionInfo" EntitySet="DepartmentActionInfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PayTypeBill" Association="Self.FK_PayTypeBill">
+            <End Role="PayType" EntitySet="PayType" />
+            <End Role="Bill" EntitySet="Bill" />
           </AssociationSet>
           <AssociationSet Name="FK_RoleInfoActionInfo_ActionInfo" Association="Self.FK_RoleInfoActionInfo_ActionInfo">
             <End Role="ActionInfo" EntitySet="ActionInfo" />
@@ -416,6 +505,22 @@
           <AssociationSet Name="UserInfoRoleInfo" Association="OAModel.UserInfoRoleInfo">
             <End Role="RoleInfo" EntitySet="RoleInfo" />
             <End Role="UserInfo" EntitySet="UserInfo" />
+          </AssociationSet>
+          <EntitySet Name="Bill" EntityType="OAModel.Bill" />
+          <EntitySet Name="BillType" EntityType="OAModel.BillType" />
+          <EntitySet Name="CurrentUnit" EntityType="OAModel.CurrentUnit" />
+          <EntitySet Name="PayType" EntityType="OAModel.PayType" />
+          <AssociationSet Name="FK_BillTypeBill" Association="OAModel.FK_BillTypeBill">
+            <End Role="BillType" EntitySet="BillType" />
+            <End Role="Bill" EntitySet="Bill" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CurrentUnitBill" Association="OAModel.FK_CurrentUnitBill">
+            <End Role="CurrentUnit" EntitySet="CurrentUnit" />
+            <End Role="Bill" EntitySet="Bill" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PayTypeBill" Association="OAModel.FK_PayTypeBill">
+            <End Role="PayType" EntitySet="PayType" />
+            <End Role="Bill" EntitySet="Bill" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="ActionInfo">
@@ -625,6 +730,85 @@
           <End Type="OAModel.RoleInfo" Role="RoleInfo" Multiplicity="*" />
           <End Type="OAModel.UserInfo" Role="UserInfo" Multiplicity="*" />
         </Association>
+        <EntityType Name="Bill">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GoodMsg" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="OrderNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Remark" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OrderImg" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CurrentUnitId" Type="Int32" Nullable="false" />
+          <Property Name="PayTypeId" Type="Int32" Nullable="false" />
+          <Property Name="BillTypeId" Type="Int32" Nullable="false" />
+          <Property Name="Money" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="Type" Type="Byte" Nullable="false" />
+          <NavigationProperty Name="BillType" Relationship="OAModel.FK_BillTypeBill" FromRole="Bill" ToRole="BillType" />
+          <NavigationProperty Name="CurrentUnit" Relationship="OAModel.FK_CurrentUnitBill" FromRole="Bill" ToRole="CurrentUnit" />
+          <NavigationProperty Name="PayType" Relationship="OAModel.FK_PayTypeBill" FromRole="Bill" ToRole="PayType" />
+        </EntityType>
+        <EntityType Name="BillType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillTypeName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Bill" Relationship="OAModel.FK_BillTypeBill" FromRole="BillType" ToRole="Bill" />
+        </EntityType>
+        <EntityType Name="CurrentUnit">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UintName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Bill" Relationship="OAModel.FK_CurrentUnitBill" FromRole="CurrentUnit" ToRole="Bill" />
+        </EntityType>
+        <EntityType Name="PayType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PayTypeName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Bill" Relationship="OAModel.FK_PayTypeBill" FromRole="PayType" ToRole="Bill" />
+        </EntityType>
+        <Association Name="FK_BillTypeBill">
+          <End Type="OAModel.BillType" Role="BillType" Multiplicity="1" />
+          <End Type="OAModel.Bill" Role="Bill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BillType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Bill">
+              <PropertyRef Name="BillTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CurrentUnitBill">
+          <End Type="OAModel.CurrentUnit" Role="CurrentUnit" Multiplicity="1" />
+          <End Type="OAModel.Bill" Role="Bill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CurrentUnit">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Bill">
+              <PropertyRef Name="CurrentUnitId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PayTypeBill">
+          <End Type="OAModel.PayType" Role="PayType" Multiplicity="1" />
+          <End Type="OAModel.Bill" Role="Bill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PayType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Bill">
+              <PropertyRef Name="PayTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -799,6 +983,47 @@
               <ScalarProperty Name="ID" ColumnName="RoleInfo_ID" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="Bill">
+            <EntityTypeMapping TypeName="OAModel.Bill">
+              <MappingFragment StoreEntitySet="Bill">
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Money" ColumnName="Money" />
+                <ScalarProperty Name="BillTypeId" ColumnName="BillTypeId" />
+                <ScalarProperty Name="PayTypeId" ColumnName="PayTypeId" />
+                <ScalarProperty Name="CurrentUnitId" ColumnName="CurrentUnitId" />
+                <ScalarProperty Name="OrderImg" ColumnName="OrderImg" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="GoodMsg" ColumnName="GoodMsg" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BillType">
+            <EntityTypeMapping TypeName="OAModel.BillType">
+              <MappingFragment StoreEntitySet="BillType">
+                <ScalarProperty Name="BillTypeName" ColumnName="BillTypeName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CurrentUnit">
+            <EntityTypeMapping TypeName="OAModel.CurrentUnit">
+              <MappingFragment StoreEntitySet="CurrentUnit">
+                <ScalarProperty Name="UintName" ColumnName="UintName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PayType">
+            <EntityTypeMapping TypeName="OAModel.PayType">
+              <MappingFragment StoreEntitySet="PayType">
+                <ScalarProperty Name="PayTypeName" ColumnName="PayTypeName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>

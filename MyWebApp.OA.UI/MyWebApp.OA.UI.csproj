@@ -160,6 +160,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ActionInfoController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\BillController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\RoleInfoController.cs" />
@@ -1001,6 +1002,7 @@
     <Content Include="Views\ActionInfo\ShowEdit.cshtml" />
     <Content Include="Views\ActionInfo\SetActionRole.cshtml" />
     <Content Include="Views\UserInfo\SetUserActionInfo.cshtml" />
+    <Content Include="Views\Bill\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

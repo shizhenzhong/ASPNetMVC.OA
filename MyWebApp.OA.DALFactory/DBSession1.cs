@@ -31,6 +31,54 @@ namespace MyWebApp.OA.DALFactory
             }
         }
 	
+	  private IBillDal _BillDal;
+        public IBillDal BillDal
+        {
+            get {
+
+                if (_BillDal == null)
+                {
+                    _BillDal = DALAbstractFactory.CreateBillDal();//通过抽象工厂将数据会话层与数据层解耦
+                }
+                return _BillDal;
+            }
+            set {
+                _BillDal = value;
+            }
+        }
+	
+	  private IBillTypeDal _BillTypeDal;
+        public IBillTypeDal BillTypeDal
+        {
+            get {
+
+                if (_BillTypeDal == null)
+                {
+                    _BillTypeDal = DALAbstractFactory.CreateBillTypeDal();//通过抽象工厂将数据会话层与数据层解耦
+                }
+                return _BillTypeDal;
+            }
+            set {
+                _BillTypeDal = value;
+            }
+        }
+	
+	  private ICurrentUnitDal _CurrentUnitDal;
+        public ICurrentUnitDal CurrentUnitDal
+        {
+            get {
+
+                if (_CurrentUnitDal == null)
+                {
+                    _CurrentUnitDal = DALAbstractFactory.CreateCurrentUnitDal();//通过抽象工厂将数据会话层与数据层解耦
+                }
+                return _CurrentUnitDal;
+            }
+            set {
+                _CurrentUnitDal = value;
+            }
+        }
+	
 	  private IDepartmentDal _DepartmentDal;
         public IDepartmentDal DepartmentDal
         {
@@ -60,6 +108,22 @@ namespace MyWebApp.OA.DALFactory
             }
             set {
                 _FileInfoDal = value;
+            }
+        }
+	
+	  private IPayTypeDal _PayTypeDal;
+        public IPayTypeDal PayTypeDal
+        {
+            get {
+
+                if (_PayTypeDal == null)
+                {
+                    _PayTypeDal = DALAbstractFactory.CreatePayTypeDal();//通过抽象工厂将数据会话层与数据层解耦
+                }
+                return _PayTypeDal;
+            }
+            set {
+                _PayTypeDal = value;
             }
         }
 	

@@ -22,6 +22,13 @@
         <AssociationConnector Association="OAModel.RoleInfoActionInfo" />
         <AssociationConnector Association="OAModel.UserInfoDepartment" />
         <AssociationConnector Association="OAModel.UserInfoRoleInfo" />
+        <EntityTypeShape EntityType="OAModel.Bill" Width="1.5" PointX="12.625" PointY="1" />
+        <EntityTypeShape EntityType="OAModel.BillType" Width="1.5" PointX="10.375" PointY="14.125" />
+        <EntityTypeShape EntityType="OAModel.CurrentUnit" Width="1.5" PointX="10.375" PointY="2" />
+        <EntityTypeShape EntityType="OAModel.PayType" Width="1.5" PointX="10.375" PointY="4.875" />
+        <AssociationConnector Association="OAModel.FK_BillTypeBill" />
+        <AssociationConnector Association="OAModel.FK_CurrentUnitBill" />
+        <AssociationConnector Association="OAModel.FK_PayTypeBill" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

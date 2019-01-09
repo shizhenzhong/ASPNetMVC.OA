@@ -24,6 +24,36 @@ namespace MyWebApp.OA.BLL
     }
 	
 
+    public partial class BillService:BaseService<Bill>,IBillService
+
+    {
+      public override void SetCurrentDal()
+        {
+            CurrentDal = this.DbSession.BillDal;
+        }
+    }
+	
+
+    public partial class BillTypeService:BaseService<BillType>,IBillTypeService
+
+    {
+      public override void SetCurrentDal()
+        {
+            CurrentDal = this.DbSession.BillTypeDal;
+        }
+    }
+	
+
+    public partial class CurrentUnitService:BaseService<CurrentUnit>,ICurrentUnitService
+
+    {
+      public override void SetCurrentDal()
+        {
+            CurrentDal = this.DbSession.CurrentUnitDal;
+        }
+    }
+	
+
     public partial class DepartmentService:BaseService<Department>,IDepartmentService
 
     {
@@ -40,6 +70,16 @@ namespace MyWebApp.OA.BLL
       public override void SetCurrentDal()
         {
             CurrentDal = this.DbSession.FileInfoDal;
+        }
+    }
+	
+
+    public partial class PayTypeService:BaseService<PayType>,IPayTypeService
+
+    {
+      public override void SetCurrentDal()
+        {
+            CurrentDal = this.DbSession.PayTypeDal;
         }
     }
 	

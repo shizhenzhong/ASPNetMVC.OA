@@ -11,4 +11,13 @@
 
   <object type=" MyWebApp.OA.BLL.R_UserInfo_ActionInfoService, MyWebApp.OA.BLL" singleton="false" name="r_UserInfo_ActionInfoService" >
   </object>
+
+  <object type=" MyWebApp.OA.BLL.BillService, MyWebApp.OA.BLL" singleton="false" name="billService" >
+  </object>
+  <object type=" MyWebApp.OA.BLL.BillTypeService, MyWebApp.OA.BLL" singleton="false" name="billTypeService" >
+  </object>
+  <object type=" MyWebApp.OA.BLL.PayTypeService, MyWebApp.OA.BLL" singleton="false" name="payTypeService" >
+  </object>
+  <object type=" MyWebApp.OA.BLL.CurrentUnitService, MyWebApp.OA.BLL" singleton="false" name="currentUnitService" >
+  </object>
 </objects>

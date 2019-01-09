@@ -13,9 +13,17 @@ namespace MyWebApp.OA.IDAL
 	
 	 IActionInfoDal ActionInfoDal { get; set; }
 	
+	 IBillDal BillDal { get; set; }
+	
+	 IBillTypeDal BillTypeDal { get; set; }
+	
+	 ICurrentUnitDal CurrentUnitDal { get; set; }
+	
 	 IDepartmentDal DepartmentDal { get; set; }
 	
 	 IFileInfoDal FileInfoDal { get; set; }
+	
+	 IPayTypeDal PayTypeDal { get; set; }
 	
 	 IR_UserInfo_ActionInfoDal R_UserInfo_ActionInfoDal { get; set; }
 	

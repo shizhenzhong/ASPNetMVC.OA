@@ -22,4 +22,11 @@
   <object type="MyWebApp.OA.UI.Controllers.HomeController, MyWebApp.OA.UI" singleton="false" >
     <property name="userInfoService" ref="userInfoService" />
   </object>
+
+  <object type="MyWebApp.OA.UI.Controllers.BillController, MyWebApp.OA.UI" singleton="false" >
+    <property name="BillService" ref="billService" />
+    <property name="BillTypeService" ref="billTypeService" />
+    <property name="PayTypeService" ref="payTypeService" />
+    <property name="CurrentUnitService" ref="currentUnitService" />
+  </object>
 </objects>

@@ -23,6 +23,27 @@ namespace MyWebApp.OA.DALFactory
             return CreateInstance(DalNameSpace + ".ActionInfoDal", DalAssembly) as IActionInfoDal;
         }
 		
+	    public static IBillDal CreateBillDal()
+        {
+           
+
+            return CreateInstance(DalNameSpace + ".BillDal", DalAssembly) as IBillDal;
+        }
+		
+	    public static IBillTypeDal CreateBillTypeDal()
+        {
+           
+
+            return CreateInstance(DalNameSpace + ".BillTypeDal", DalAssembly) as IBillTypeDal;
+        }
+		
+	    public static ICurrentUnitDal CreateCurrentUnitDal()
+        {
+           
+
+            return CreateInstance(DalNameSpace + ".CurrentUnitDal", DalAssembly) as ICurrentUnitDal;
+        }
+		
 	    public static IDepartmentDal CreateDepartmentDal()
         {
            
@@ -35,6 +56,13 @@ namespace MyWebApp.OA.DALFactory
            
 
             return CreateInstance(DalNameSpace + ".FileInfoDal", DalAssembly) as IFileInfoDal;
+        }
+		
+	    public static IPayTypeDal CreatePayTypeDal()
+        {
+           
+
+            return CreateInstance(DalNameSpace + ".PayTypeDal", DalAssembly) as IPayTypeDal;
         }
 		
 	    public static IR_UserInfo_ActionInfoDal CreateR_UserInfo_ActionInfoDal()

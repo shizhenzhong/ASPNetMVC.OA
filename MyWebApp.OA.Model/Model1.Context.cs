@@ -34,5 +34,9 @@ namespace MyWebApp.OA.Model
         public DbSet<WF_Instance> WF_Instance { get; set; }
         public DbSet<WF_StepInfo> WF_StepInfo { get; set; }
         public DbSet<WF_Temp> WF_Temp { get; set; }
+        public DbSet<Bill> Bill { get; set; }
+        public DbSet<BillType> BillType { get; set; }
+        public DbSet<CurrentUnit> CurrentUnit { get; set; }
+        public DbSet<PayType> PayType { get; set; }
     }
 }

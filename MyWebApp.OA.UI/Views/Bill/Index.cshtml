@@ -1,0 +1,187 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/Content/themes/default/easyui.css" rel="stylesheet" />
+    <link href="~/Content/themes/icon.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="~/Scripts/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/easyui-lang-zh_CN.js"></script>
+    <script src="~/Scripts/datapattern.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#addDiv").css("display", "none");
+            loadData();
+        })
+
+
+        function loadData(pars) {
+            $('#tt').datagrid({
+                url: '/Bill/GetBillInfo',
+                title: '账单信息列表',
+                width: 900,
+                height: 500,
+                fitColumns: true, //列自适应
+                nowrap: false,
+                idField: 'ID',//主键列的列明
+                loadMsg: '正在加载账单的信息...',
+                pagination: true,//是否有分页
+                singleSelect: false,//是否单行选择
+                pageSize: 5,//页大小，一页多少条数据
+                pageNumber: 1,//当前页，默认的
+                pageList: [5, 10, 15],
+                queryParams: pars,//往后台传递参数
+                columns: [[//c.UserName, c.UserPass, c.Email, c.RegTime
+                    { field: 'ck', checkbox: true, align: 'left', width: 50 },
+                    { field: 'ID', title: '编号', width: 200 },
+                    { field: 'OrderNumber', title: '订单编号', width: 500 },
+                    { field: 'GoodMsg', title: '账单名称', width: 200 },
+                    { field: 'BillTypeName',title: '账单类型', width: 200 },
+                    { field: 'PayTypeName', title: '支付类型', width: 200 },
+                    {
+                        field: 'Type', title: '支出类型', width: 200,
+                        formatter: function (value, row, index) {
+                            if (value == 0) {
+                                return "收入";
+                            } else {
+                                return "支出";
+                            }
+                        }
+                    },
+                    {
+                        field: 'Money', title: '金额', width: 200,
+                        formatter: function (value, row, index) {
+                            if (row != null) {
+                                return parseFloat(value).toFixed(2);
+                            }
+                        }
+
+                    },
+                    { field: 'CurrentUnit', title: '往来单位', width: 200 },
+                    { field: 'Remark', title: '备注', width: 200 },
+                    {
+                        field: 'CreateTime', title: '创建时间', width: 500,
+                        formatter: function (value, row, index) {
+                            return (eval(value.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"))).pattern("yyyy-MM-dd HH:mm:ss");
+                        }
+                    }
+                ]],
+                toolbar: [
+                    {
+                        id: 'btnAdd',
+                        text: '添加',
+                        iconCls: 'icon-add',
+                        handler: function () {
+                            addBillInfo();
+                        }
+                    },
+                    {
+                        id: 'btnEdit',
+                        text: '修改',
+                        iconCls: 'icon-edit',
+                        handler: function () {
+                            editInfo();
+                        }
+                    },
+                    {
+                        id: 'btnDelete',
+                        text: '删除',
+                        iconCls: 'icon-remove',
+                        handler: function () {
+                            deleteInfo();
+                        }
+                    }
+                ]
+            });
+        }
+
+        function afterAdd() {
+            $('#addDiv').dialog('close');
+            $("#tt").datagrid('reload');
+            $("#addForm input").val("");
+        }
+        function addBillInfo() {
+            $("#addDiv").css("display", "block");
+            $('#addDiv').dialog({
+                title: "添加账单信息",
+                modal: true,
+                collapsible: true,
+                width: 350,
+                height: 400,
+                buttons: [{
+                    text: '确定',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        //自己完成表单校验
+                        $("#addForm").submit();//提交表单.
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-no',
+                    handler: function () {
+                        $('#addDiv').dialog('close');
+
+
+                    }
+                }]
+            });
+        }
+    </script>
+</head>
+<body>
+    <div>
+
+
+        <table id="tt" style="width: 700px;" title="标题，可以使用代码进行初始化，也可以使用这种属性的方式" iconcls="icon-edit"></table>
+
+    </div>
+
+    <div id="addDiv">
+        @using (Ajax.BeginForm("AddBillInfo", new { }, new AjaxOptions() { OnSuccess = "afterAdd", HttpMethod = "post" }, new { id = "addForm" }))
+        {
+        <table>
+            <tr><td>账单名称:</td><td><input id="aa" class="easyui-textbox" type="text" name="GoodMsg" /></td></tr>
+            <tr>
+                <td>账单类型:</td>
+                <td>
+                    <input id="cc" class="easyui-combobox" name="BillTypeId"
+                           data-options="valueField:'id',textField:'text',url:'/Bill/GetBillTypeData'">
+                </td>
+            </tr>
+            <tr>
+                <td>支付方式：</td>
+                <td>
+                    <input id="cc" class="easyui-combobox" name="PayTypeId"
+                           data-options="valueField:'id',textField:'text',url:'/Bill/GetPayTypeData'">
+                </td>
+            </tr>
+            <tr>
+                <td>收支类型：</td>
+                <td>
+                    <select class="easyui-combobox" name="Type">
+                        <option value="0">收入</option>
+                        <option value="1">支出</option>
+                    </select>
+                </td>
+            </tr>
+            <tr><td>金额:</td><td><input class="easyui-numberbox"  name="Money" value="" data-options="precision:2,groupSeparator:','"></td></tr>
+          
+            <tr><td>往来单位:</td><td>
+    <input id="cc" class="easyui-combobox" name="CurrentUnitId"
+           data-options="valueField:'id',textField:'text',url:'/Bill/GetUnitData'">
+</td></tr>
+            <tr><td>备注:</td><td><input  class="easyui-textbox" data-options="" name="Remark"></td></tr>
+        </table>
+        }
+
+
+    </div>
+</body>
+</html>
